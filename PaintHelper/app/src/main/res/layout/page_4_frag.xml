@@ -1,18 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<com.ntu.sdp2.painthelper.SwipeableViewPager
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/settingpager"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:gravity="center"
-    android:orientation="vertical" >
-
-    <ListView
-        android:id="@id/android:list"
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent">
-
-
-
-    </ListView>
-</LinearLayout>
-
-
+    android:layout_height="match_parent" />
