@@ -5,6 +5,8 @@ package com.ntu.sdp2.painthelper;
  */
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,4 +20,5 @@ public class Page_2 extends Fragment {
         ((TextView)page_2.findViewById(R.id.textView)).setText("Page 2");
         return page_2;
     }
+
 }

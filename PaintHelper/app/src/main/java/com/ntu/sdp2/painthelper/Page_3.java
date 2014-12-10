@@ -3,8 +3,11 @@ package com.ntu.sdp2.painthelper;
 /**
  * Created by JimmyPrime on 2014/10/26.
  */
+import android.app.Activity;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,4 +21,5 @@ public class Page_3 extends Fragment {
         ((TextView)page_3.findViewById(R.id.textView)).setText("Page 3");
         return page_3;
     }
+
 }
