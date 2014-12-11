@@ -5,6 +5,7 @@ import android.app.FragmentTransaction;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.app.ListFragment;
 import android.support.v4.view.ViewPager;
 import android.view.KeyEvent;
@@ -29,7 +30,6 @@ public class Page_4_default extends ListFragment{
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        //viewPager = (ViewPager)getView().findViewById(R.id.settingpager);
 
     }
 
@@ -42,11 +42,18 @@ public class Page_4_default extends ListFragment{
         ListView listView = getListView();
         this.setListAdapter(arrayAdapter);
 
+
     }
 
-/*
+
     @Override
     public void onListItemClick (ListView l, View v, int position, long id){
+        FragmentActivity fa = getActivity();
+        FragmentManager fm = fa.getSupportFragmentManager();
+        ViewPager vp = (ViewPager)fa.findViewById(R.id.pager);
+        Fragment f4 = fm.findFragmentByTag("android:switcher:"+vp.getId()+":"+3);
+        View view = f4.getView();
+        viewPager = (ViewPager)view.findViewById(R.id.settingpager);
         switch(position) {
             case 0:
                 viewPager.setCurrentItem(1);
@@ -63,5 +70,4 @@ public class Page_4_default extends ListFragment{
 
     }
 
-*/
 }

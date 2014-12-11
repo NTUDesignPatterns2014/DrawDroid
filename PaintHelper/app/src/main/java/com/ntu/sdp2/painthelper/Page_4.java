@@ -36,6 +36,7 @@ public class Page_4 extends Fragment {
         // get view first
         viewPager = (ViewPager)page_4.findViewById(R.id.settingpager);
         viewPager.setAdapter(settingsAdapter);
+        viewPager.setCurrentItem(0);
         return page_4;
     }
 
