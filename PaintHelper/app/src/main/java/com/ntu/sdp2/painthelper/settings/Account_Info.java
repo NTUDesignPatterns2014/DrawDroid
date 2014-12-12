@@ -7,6 +7,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import com.facebook.Session;
 import com.facebook.SessionState;
@@ -27,6 +28,7 @@ public class Account_Info extends Fragment{
             onSessionStateChange(session, state, exception);
         }
     };
+    TextView userInfo;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -43,6 +45,7 @@ public class Account_Info extends Fragment{
         View view = (View)inflater.inflate(R.layout.account_info_frag, container, false);
         LoginButton authButton = (LoginButton) view.findViewById(R.id.authButton);
         authButton.setFragment(this);
+        userInfo = (TextView) view.findViewById(R.id.userInfo);
 
         return view;
     }
@@ -90,8 +93,10 @@ public class Account_Info extends Fragment{
     private void onSessionStateChange(Session session, SessionState state, Exception exception) {
         if (state.isOpened()) {
             Log.i(TAG, "Logged in...");
+            userInfo.setVisibility(View.VISIBLE);
         } else if (state.isClosed()) {
             Log.i(TAG, "Logged out...");
+            userInfo.setVisibility(View.INVISIBLE);
         }
     }
 
