@@ -20,7 +20,9 @@ android {
 }
 
 dependencies {
-    compile fileTree(include: ['*.jar'], dir: 'libs')
+    //compile fileTree(include: ['*.jar'], dir: 'libs')
     //compile 'com.android.support:appcompat-v7:21.0.0'
-    compile files('libs/android-support-v4.jar')
+    //compile files('libs/android-support-v4.jar')
+    compile 'com.android.support:support-v4:21.0.2'
+    compile project(':facebook')
 }
