@@ -3,63 +3,59 @@ package com.ntu.sdp2.painthelper;
 /**
  * Created by JimmyPrime on 2014/10/26.
  */
-import android.app.Activity;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
-import android.support.v4.app.ListFragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
-import android.widget.ListView;
+import android.widget.TextView;
+import android.widget.Toast;
 
-import com.ntu.sdp2.painthelper.settings.Account_Info;
+import com.ntu.sdp2.painthelper.settings.Settings;
 
-public class Page_4 extends ListFragment {
-    static final String[] itemList = {"Account", "Default Tab", "About"};
-    //static Account_Info account_info = new Account_Info();
-
-
+public class Page_4 extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        /*if( savedInstanceState == null ) {
-            if (!account_info.isAdded()) {
-                FragmentManager fragmentManager = getFragmentManager();
-                FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-                fragmentTransaction.add(0, account_info);
-                fragmentTransaction.commit();
-            }
-        }
-        */
+
+
+
+
+    }
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        View page_4 = inflater.inflate(R.layout.page_4_frag, container, false);
+        return page_4;
     }
 
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        ArrayAdapter<String> itemAdapter = new ArrayAdapter<String>((Activity)getActivity(), android.R.layout.simple_list_item_1, itemList);
-        setListAdapter(itemAdapter);
 
-
-    }
-
-    //TODO: Something wrong here....fragment transaction does not work every time.
-    @Override
-    public void onListItemClick(ListView l, View v, int position, long id) {
-        super.onListItemClick(l, v, position, id);
-        switch(position){
-            case 0:
-                FragmentManager fragmentManager = getFragmentManager();
-                FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-                fragmentTransaction.replace(R.id.pager, new Account_Info());
-                fragmentTransaction.addToBackStack(null);
-                fragmentTransaction.commit();
-                fragmentManager.executePendingTransactions();
-                //Toast.makeText((Activity)getActivity(), "add!!", Toast.LENGTH_LONG).show();
-
+        // If we're being restored from a previous state,
+        // then we don't need to do anything and should return or else
+        // we could end up with overlapping fragments.
+        if (savedInstanceState != null) {
+            return;
         }
 
+        // Create a new Fragment to be placed in the activity layout
+        Settings settingsFragment = new Settings();
+
+
+
+        // Add the fragment to the 'page_4' FrameLayout
+        try{
+            getChildFragmentManager().beginTransaction()
+                    .add(R.id.page_4, settingsFragment).commit();
+        }catch( Exception ex ){
+            Toast.makeText(getActivity(), "Setting Fragment Add Failed!!", Toast.LENGTH_SHORT);
+            Log.d("Page_4", "Settings Fragment Add Failed !!!");
+            //TODO: should do something
+
+        }
     }
 }
