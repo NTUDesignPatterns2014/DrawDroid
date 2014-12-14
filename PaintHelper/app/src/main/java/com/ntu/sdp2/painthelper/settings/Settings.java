@@ -43,7 +43,7 @@ public class Settings extends ListFragment {
             case 0:
                 FragmentManager fragmentManager = getFragmentManager();
                 FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-                fragmentTransaction.replace(getId(), new Account_Info());
+                fragmentTransaction.replace(getId(), new Account_Info(), getString(R.string.account_info_frag_tag));
                 fragmentTransaction.addToBackStack(null);
                 fragmentTransaction.commit();
                 fragmentManager.executePendingTransactions();

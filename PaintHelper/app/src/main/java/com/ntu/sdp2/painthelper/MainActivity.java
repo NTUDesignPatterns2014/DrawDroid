@@ -58,19 +58,23 @@ public class MainActivity extends FragmentActivity {
 
 
         // Generate HashKey
+        PackageInfo info;
         try {
-            PackageInfo info = getPackageManager().getPackageInfo(
-                    "com.ntu.sdp2.painthelper",
-                    PackageManager.GET_SIGNATURES);
+            info = getPackageManager().getPackageInfo("com.ntu.sdp2.painthelper", PackageManager.GET_SIGNATURES);
             for (Signature signature : info.signatures) {
-                MessageDigest md = MessageDigest.getInstance("SHA");
+                MessageDigest md;
+                md = MessageDigest.getInstance("SHA");
                 md.update(signature.toByteArray());
-                Log.d("Your Tag", Base64.encodeToString(md.digest(), Base64.DEFAULT));
+                String something = new String(Base64.encode(md.digest(), 0));
+                //String something = new String(Base64.encodeBytes(md.digest()));
+                Log.e("hash key", something);
             }
-        } catch (PackageManager.NameNotFoundException e) {
-
+        } catch (PackageManager.NameNotFoundException e1) {
+            Log.e("name not found", e1.toString());
         } catch (NoSuchAlgorithmException e) {
-
+            Log.e("no such an algorithm", e.toString());
+        } catch (Exception e) {
+            Log.e("exception", e.toString());
         }
     }
 }
