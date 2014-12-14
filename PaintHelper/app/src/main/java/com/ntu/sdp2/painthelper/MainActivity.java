@@ -68,4 +68,10 @@ public class MainActivity extends FragmentActivity {
     {
         super.onActivityResult(requestCode, resultCode, data);
     }
+
+
+
+    static {
+        System.loadLibrary("edge_detection");
+    }
 }

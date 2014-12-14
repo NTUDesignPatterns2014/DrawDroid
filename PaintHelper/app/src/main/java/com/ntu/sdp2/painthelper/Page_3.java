@@ -15,6 +15,10 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.ntu.sdp2.painthelper.capture.NativeEdgeDetector;
+
+import org.opencv.android.OpenCVLoader;
+
 public class Page_3 extends Fragment {
     private static final String TAG = "Page_3";
 
@@ -24,6 +28,10 @@ public class Page_3 extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
+        if (!OpenCVLoader.initDebug()) {
+            // Handle initialization error
+            Log.e(TAG, "init failed");
+        }
         if (!mCaptured) {
             startCamera();
             mCaptured = true;
@@ -48,6 +56,8 @@ public class Page_3 extends Fragment {
             Bundle extras = data.getExtras();
             Bitmap bmp = (Bitmap) extras.get("data");
             mImgView.setImageBitmap(bmp);
+            Bitmap bmpEdge = detectEdge(bmp);
+            mImgView.setImageBitmap(bmpEdge);
         }
         super.onActivityResult(requestCode, resultCode, data);
     }
@@ -57,4 +67,33 @@ public class Page_3 extends Fragment {
         Intent intent_camera = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
         startActivityForResult(intent_camera, 0);
     }
+
+    private Bitmap detectEdge(Bitmap bmp) {
+        NativeEdgeDetector detector = new NativeEdgeDetector();
+        return detector.detectEdge(bmp);
+    }
+
+
+
+
+    /* Below is for OpenCV */
+    /*
+    private BaseLoaderCallback mLoaderCallback = new BaseLoaderCallback(this) {
+        @Override
+        public void onManagerConnected(int status) {
+            switch (status) {
+                case LoaderCallbackInterface.SUCCESS:
+                {
+                    Log.i(TAG, "OpenCV loaded successfully");
+                    // Load native library after(!) OpenCV initialization
+
+                } break;
+                default:
+                {
+                    super.onManagerConnected(status);
+                } break;
+            }
+        }
+    };
+    */
 }
