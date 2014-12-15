@@ -10,6 +10,9 @@ import android.support.v4.app.FragmentActivity;
 import android.util.Base64;
 import android.util.Log;
 
+import com.ntu.sdp2.painthelper.BackButtonHandler.BackButtonHandler;
+import com.ntu.sdp2.painthelper.BackButtonHandler.FragmentHandler;
+
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
@@ -18,38 +21,44 @@ public class MainActivity extends FragmentActivity {
     NonSwipeableViewPager Tab;
     TabPagerAdapter TabAdapter;
     ActionBar actionBar;
+    BackButtonHandler backButtonHandler = new BackButtonHandler();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         TabAdapter = new TabPagerAdapter(getSupportFragmentManager());
-        Tab = (NonSwipeableViewPager)findViewById(R.id.pager);
+        Tab = (NonSwipeableViewPager) findViewById(R.id.pager);
         Tab.setOnPageChangeListener(
                 new NonSwipeableViewPager.SimpleOnPageChangeListener() {
                     @Override
                     public void onPageSelected(int position) {
                         actionBar = getActionBar();
-                        actionBar.setSelectedNavigationItem(position);                    }
+                        actionBar.setSelectedNavigationItem(position);
+                    }
                 });
         Tab.setAdapter(TabAdapter);
         actionBar = getActionBar();
         //Enable Tabs on Action Bar
         actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
-        ActionBar.TabListener tabListener = new ActionBar.TabListener(){
+        ActionBar.TabListener tabListener = new ActionBar.TabListener() {
             @Override
             public void onTabReselected(ActionBar.Tab tab,
                                         FragmentTransaction ft) {
                 // TODO Auto-generated method stub
             }
+
             @Override
             public void onTabSelected(ActionBar.Tab tab, FragmentTransaction ft) {
                 Tab.setCurrentItem(tab.getPosition());
             }
+
             @Override
             public void onTabUnselected(ActionBar.Tab tab,
                                         FragmentTransaction ft) {
                 // TODO Auto-generated method stub
-            }};
+            }
+        };
         //Add New Tab
         actionBar.addTab(actionBar.newTab().setText("OAO1").setTabListener(tabListener));
         actionBar.addTab(actionBar.newTab().setText("OAO2").setTabListener(tabListener));
@@ -76,5 +85,24 @@ public class MainActivity extends FragmentActivity {
         } catch (Exception e) {
             Log.e("exception", e.toString());
         }
+    }
+
+    /*
+        Default onBackPressed will not work if nested fragment presents.
+        Only back stack of first level fragment would be popped.
+        Nested fragments lie in back stack of ChildFragmentManager.
+     */
+
+    @Override
+    public void onBackPressed() {
+        if (backButtonHandler.popBackStack(this)) {
+            // back button press handled
+        } else {
+            super.onBackPressed();
+        }
+    }
+
+    public void addToBackStack(FragmentHandler fragmentHandler){
+        backButtonHandler.addToBackStack(fragmentHandler);
     }
 }

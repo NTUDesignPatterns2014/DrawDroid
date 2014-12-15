@@ -24,6 +24,7 @@ import com.ntu.sdp2.painthelper.R;
  */
 public class Account_Info extends Fragment{
 
+    private static final int REAUTH_ACTIVITY_CODE = 100; // this is the
     private static final String TAG = "AccountInfoFragment";
     private Session.StatusCallback callback = new Session.StatusCallback() {
         @Override
@@ -62,6 +63,13 @@ public class Account_Info extends Fragment{
         authButton.setFragment(getParentFragment());
         userInfo = (TextView) view.findViewById(R.id.selection_user_name);
         profilePic = (ProfilePictureView) view.findViewById(R.id.selection_profile_pic);
+
+        //whenever the fragment view is set up and a user session is open, get the user's data.
+        Session session = Session.getActiveSession();
+        if (session != null && session.isOpened()) {
+            // Get the user's data
+            makeMeRequest(session);
+        }
 
         return view;
     }

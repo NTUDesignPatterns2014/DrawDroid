@@ -10,8 +10,9 @@
         android:layout_height="wrap_content"
         android:layout_width="wrap_content"
         android:layout_gravity="center"
+        android:layout_marginTop="60dp"
         android:gravity="center_horizontal"
-        facebook:preset_size="small"
+        facebook:preset_size="large"
         android:visibility="invisible"/>
     <TextView
         android:id="@+id/selection_user_name"
@@ -20,7 +21,7 @@
         android:layout_marginLeft="10dp"
         android:layout_gravity="center"
         android:textColor="#333"
-        android:textSize="18sp"
+        android:textSize="25sp"
         android:visibility="invisible"/>
 
 

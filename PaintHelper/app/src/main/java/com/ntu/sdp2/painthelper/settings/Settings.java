@@ -3,6 +3,7 @@ package com.ntu.sdp2.painthelper.settings;
 import android.app.Activity;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.app.ListFragment;
@@ -10,6 +11,8 @@ import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
+import com.ntu.sdp2.painthelper.BackButtonHandler.Page4Handler;
+import com.ntu.sdp2.painthelper.MainActivity;
 import com.ntu.sdp2.painthelper.R;
 
 /**
@@ -41,10 +44,13 @@ public class Settings extends ListFragment {
         super.onListItemClick(l, v, position, id);
         switch(position){
             case 0:
+                Fragment fragment = new Account_Info();
                 FragmentManager fragmentManager = getFragmentManager();
                 FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-                fragmentTransaction.replace(getId(), new Account_Info(), getString(R.string.account_info_frag_tag));
+                fragmentTransaction.replace(getId(), fragment, getString(R.string.account_info_frag_tag));
                 fragmentTransaction.addToBackStack(null);
+                // add this to BackButtonHandler to make back button work.
+                ((MainActivity)getActivity()).addToBackStack(new Page4Handler(fragment));
                 fragmentTransaction.commit();
                 fragmentManager.executePendingTransactions();
                 //Toast.makeText((Activity)getActivity(), "add!!", Toast.LENGTH_LONG).show();
