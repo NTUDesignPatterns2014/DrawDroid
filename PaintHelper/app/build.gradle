@@ -24,4 +24,5 @@ dependencies {
     //compile 'com.android.support:appcompat-v7:21.0.0'
     compile files('libs/android-support-v4.jar')
     compile project(':facebook')
+    compile files('libs/Parse-1.8.0.jar')
 }
