@@ -43,6 +43,8 @@ android {
 
 dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
-    compile files('libs/android-support-v4.jar')
     compile project(':opencv')
+    compile project(':facebook')
+    compile files('libs/Parse-1.8.0.jar')
+    compile 'com.android.support:support-v4:21.0.0'
 }
