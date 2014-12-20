@@ -1,20 +1,27 @@
 package com.ntu.sdp2.painthelper.DataManagement;
 
+import java.util.List;
+
 /**
  * Created by lou on 2014/12/20.
  */
 public class CloudManagement implements DataManagement  {
-    public PaintImage getImageByCategory(String category){
-
+    CloudManagement manager;
+    public CloudManagement(){
+        manager.getCloudManager();
     }
-    public PaintImage getElementByCategory(String category){
-
+    public void getImageByCategory(String category){
     }
-    public PaintImage getImageById(String id){
-
+    public void getElementByCategory(String category){
+    }
+    public void getImageById(String id){
     }
     public boolean saveImage(PaintImage image){
-
+        return manager.saveImage(image);
     }
 
+
+    public CloudManagement getCloudManager(){
+        return new ParseManager();
+    }
 }

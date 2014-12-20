@@ -12,6 +12,8 @@ import android.util.Log;
 
 import com.ntu.sdp2.painthelper.BackButtonHandler.BackButtonHandler;
 import com.ntu.sdp2.painthelper.BackButtonHandler.FragmentHandler;
+import com.ntu.sdp2.painthelper.DataManagement.CloudManagement;
+import com.ntu.sdp2.painthelper.DataManagement.ParseManager;
 import com.parse.Parse;
 
 import java.security.MessageDigest;
@@ -23,6 +25,7 @@ public class MainActivity extends FragmentActivity {
     TabPagerAdapter TabAdapter;
     ActionBar actionBar;
     BackButtonHandler backButtonHandler = new BackButtonHandler();
+    CloudManagement cloudManager = new CloudManagement().getCloudManager();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -73,7 +76,7 @@ public class MainActivity extends FragmentActivity {
         Parse.enableLocalDatastore(this);
 
         Parse.initialize(this, "DI2qUxaZ2sNxsc7u8D7gnLD13NzVGrCQbbsuNkzn", "AE4g2zci5ke08QFqfqRrQWy0BshRdhZNelNfwyui");
-        
+
         // Generate HashKey
         PackageInfo info;
         try {
