@@ -6,9 +6,9 @@ import java.util.List;
  * Created by lou on 2014/12/20.
  */
 public class CloudManagement implements DataManagement  {
-    CloudManagement manager;
+    //CloudManagement manager;
     public CloudManagement(){
-        manager.getCloudManager();
+//        manager = getCloudManager();
     }
     public void getImageByCategory(String category){
     }
@@ -17,7 +17,7 @@ public class CloudManagement implements DataManagement  {
     public void getImageById(String id){
     }
     public boolean saveImage(PaintImage image){
-        return manager.saveImage(image);
+        return false;
     }
 
 

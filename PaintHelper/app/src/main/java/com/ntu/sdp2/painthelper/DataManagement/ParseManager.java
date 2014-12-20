@@ -3,12 +3,14 @@ package com.ntu.sdp2.painthelper.DataManagement;
 import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.media.ThumbnailUtils;
 import android.util.Log;
 import android.widget.Toast;
 
 import com.parse.FindCallback;
 import com.parse.GetCallback;
+import com.parse.GetDataCallback;
 import com.parse.Parse;
 import com.parse.ParseException;
 import com.parse.ParseFile;
@@ -35,7 +37,7 @@ public class ParseManager extends CloudManagement {
     public static final String TAG = "ParseManager";
 
     private static boolean initialized = false;
-    private static Map<String,ParseObject> categoryMap = new HashMap<String, ParseObject>() ;
+    private static Map<String,ParseObject> categoryMap;
     List<ParseObject> objectList = new ArrayList<ParseObject>();
 
     public final static int THUMB_WIDTH = 100;
@@ -48,17 +50,36 @@ public class ParseManager extends CloudManagement {
      *--------------------------------------------------------------*/
     // constructor
     public ParseManager(){
-
+    /*
+        // This is for development !! Remember to remove this.
+        List<ParseObject> list = new ArrayList<>();
+        ParseObject object = new ParseObject("Category");
+        object.put("Category", "1");
+        list.add(object);
+        object = new ParseObject("Category");
+        object.put("Category", "2");
+        list.add(object);
+        object = new ParseObject("Category");
+        object.put("Category", "3");
+        list.add(object);
+        object = new ParseObject("Category");
+        object.put("Category", "4");
+        list.add(object);
+        ParseObject.saveAllInBackground(list);
+    */
         // Download all categories. Image cannot be uploaded before all category objects have been downloaded.
         if( !initialized ) {
-                ParseQuery<ParseObject> query = new ParseQuery<ParseObject>("Category");
-                query.getFirstInBackground(new GetCallback<ParseObject>() {
-                    @Override
-                    public void done(ParseObject parseObject, ParseException e) {
+            categoryMap = new HashMap<String, ParseObject>() ;
+            ParseQuery<ParseObject> query = new ParseQuery<ParseObject>("Category");
+            query.getFirstInBackground(new GetCallback<ParseObject>() {
+                @Override
+                public void done(ParseObject parseObject, ParseException e) {
+                    if(e != null) {
                         categoryMap.put(parseObject.getString("category"), parseObject);
                         initialized = true;
                     }
-                });
+                }
+            });
         }
     }
 
@@ -71,7 +92,11 @@ public class ParseManager extends CloudManagement {
         query.findInBackground(new FindCallback<ParseObject>() {
             @Override
             public void done(List<ParseObject> parseObjects, ParseException e) {
-                onCategoryImageGet(parseObjects);
+                if(e == null) {
+                    onCategoryImageGet(parseObjects);
+                }else{
+                    onCategoryImageGet(null);
+                }
             }
         });
     }
@@ -82,10 +107,20 @@ public class ParseManager extends CloudManagement {
         ParseQuery<ParseObject> query = new ParseQuery<ParseObject>("Img");
         query.getInBackground(id, new GetCallback<ParseObject>() {
             public void done(ParseObject object, ParseException e) {
+
+                final ParseObject newObject = object;
                 if (e == null) {
-                    onIdImageGet(object);
+                    object.getParseFile("Img").getDataInBackground(new GetDataCallback() {
+                        @Override
+                        public void done(byte[] bytes, ParseException e) {
+                            onIdImageGet(newObject, bytes);
+                        }
+                    });
+
+
                 } else {
                     // TODO:something went wrong
+                    onIdImageGet(null, null);
                 }
             }
         });
@@ -222,11 +257,32 @@ public class ParseManager extends CloudManagement {
         parseObject.put("Category", categoryList);
     }
 
+    // parseObjects is null if get failed
     private void onCategoryImageGet(List<ParseObject> parseObjects){
         // TODO
     }
-    private void onIdImageGet(ParseObject parseObject){
+
+    // parseObject is null if get failed
+    private void onIdImageGet(ParseObject parseObject, byte[] bytes){
+        PaintImage paintImage;
+        paintImage = parseToPaint(parseObject, bytes, "Origin");
 
         // TODO
+    }
+
+    // convert ParseObject to PaintImage
+    private PaintImage parseToPaint(ParseObject parseObject, byte[] bytes, String type){
+        String name = parseObject.getString("Name");
+        String author = parseObject.getParseUser("user").getUsername();
+        String id = parseObject.getObjectId();
+        List<ParseObject> list =  parseObject.getList("Category");
+        List<String> categoryList = new ArrayList<String>();
+        for(ParseObject category : list){
+            categoryList.add(category.getString("Category"));
+        }
+        Bitmap bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
+
+        return new PaintImage(author, name, bitmap, id, categoryList);
+
     }
 }

@@ -2,6 +2,7 @@ package com.ntu.sdp2.painthelper.DataManagement;
 
 import android.graphics.Bitmap;
 
+import java.lang.reflect.Array;
 import java.util.List;
 import java.util.Set;
 
@@ -12,8 +13,17 @@ public class PaintImage {
     private String author;
     private String name;
     private Bitmap image;
-    private Set<String> category;
+    private String id;
+    private List<String> category;
 
+    PaintImage(String author, String name, Bitmap image, String id, List<String> category){
+        this.author = author;
+        this.name = name;
+        this.image = image;
+        this.id = id;
+        this.category = category;
+
+    }
     public String getAuthor(){
         return author;
     }
@@ -26,7 +36,11 @@ public class PaintImage {
         return image;
     }
 
-    public Set<String> getCategory() {
+    public List<String> getCategory() {
         return category;
+    }
+
+    public String getId() {
+        return id;
     }
 }
