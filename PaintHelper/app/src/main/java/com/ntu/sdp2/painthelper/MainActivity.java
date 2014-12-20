@@ -14,6 +14,7 @@ import com.ntu.sdp2.painthelper.BackButtonHandler.BackButtonHandler;
 import com.ntu.sdp2.painthelper.BackButtonHandler.FragmentHandler;
 import com.ntu.sdp2.painthelper.DataManagement.CloudManagement;
 import com.ntu.sdp2.painthelper.DataManagement.LocalDataManagement;
+import com.ntu.sdp2.painthelper.DataManagement.ParseLocalManager;
 import com.ntu.sdp2.painthelper.DataManagement.ParseManager;
 import com.parse.Parse;
 
@@ -78,6 +79,7 @@ public class MainActivity extends FragmentActivity {
 
         Parse.initialize(this, "DI2qUxaZ2sNxsc7u8D7gnLD13NzVGrCQbbsuNkzn", "AE4g2zci5ke08QFqfqRrQWy0BshRdhZNelNfwyui");
         cloudManager = new ParseManager();
+        localManager = new ParseLocalManager();
 
         // Generate HashKey
         PackageInfo info;

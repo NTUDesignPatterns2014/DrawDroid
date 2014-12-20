@@ -38,11 +38,15 @@ public class ParseManager extends CloudManagement {
 
     private static boolean initialized = false;
     private static Map<String,ParseObject> categoryMap;
-    List<ParseObject> objectList = new ArrayList<ParseObject>();
 
     public final static int THUMB_WIDTH = 100;
     public final static int THUMB_HEIGHT = 100;
     public final static int QUERY_LIMIT = 100;
+
+    private boolean categoryDone = true;
+    private List<PaintImage> categoryResult;
+    private int categoryCount = 0;
+
 
 
     /*--------------------------------------------------------------*
@@ -93,9 +97,18 @@ public class ParseManager extends CloudManagement {
             @Override
             public void done(List<ParseObject> parseObjects, ParseException e) {
                 if(e == null) {
-                    onCategoryImageGet(parseObjects);
+                    categoryCount = parseObjects.size();
+                    categoryResult = new ArrayList<PaintImage>();
+                    for(final ParseObject objects:parseObjects) {
+                        objects.getParseFile("Img").getDataInBackground(new GetDataCallback() {
+                            @Override
+                            public void done(byte[] bytes, ParseException e) {
+                                onCategoryImageGet(objects, bytes);
+                            }
+                        });
+                    }
                 }else{
-                    onCategoryImageGet(null);
+                    onCategoryImageGet(null, null);
                 }
             }
         });
@@ -107,7 +120,6 @@ public class ParseManager extends CloudManagement {
         ParseQuery<ParseObject> query = new ParseQuery<ParseObject>("Img");
         query.getInBackground(id, new GetCallback<ParseObject>() {
             public void done(ParseObject object, ParseException e) {
-
                 final ParseObject newObject = object;
                 if (e == null) {
                     object.getParseFile("Img").getDataInBackground(new GetDataCallback() {
@@ -143,13 +155,37 @@ public class ParseManager extends CloudManagement {
 
     @Override
     public void getElementByCategory(String category) {
+        ParseQuery<ParseObject> query = new ParseQuery<ParseObject>("Thumbnails");
+        query.whereEqualTo("Category", category);
+        query.findInBackground(new FindCallback<ParseObject>() {
+            @Override
+            public void done(List<ParseObject> parseObjects, ParseException e) {
+                if(e == null) {
+                    categoryCount = parseObjects.size();
+                    categoryResult = new ArrayList<PaintImage>();
+                    for(final ParseObject objects:parseObjects) {
+                        objects.getParseFile("Img").getDataInBackground(new GetDataCallback() {
+                            @Override
+                            public void done(byte[] bytes, ParseException e) {
+                                onCategoryElementGet(objects, bytes);
+                            }
+                        });
+                    }
+                }else{
+                    onCategoryElementGet(null, null);
+                }
+            }
+        });
 
     }
 
+    public static Map<String, ParseObject> getCategoryMap() {
+        return categoryMap;
+    }
 
     /*--------------------------------------------------------------*
-                            Private Methods
-     *--------------------------------------------------------------*/
+                                Private Methods
+         *--------------------------------------------------------------*/
     // fetch all thumbnails
     private List<ParseObject> getImages(){
         ParseQuery<ParseObject> query = ParseQuery.getQuery("Thumbnails");
@@ -225,8 +261,7 @@ public class ParseManager extends CloudManagement {
 
         // ParseObject for original image
         final ParseObject parseObject_origin = new ParseObject("Img");
-        parseObject_origin.put("Name", imgName);
-        parseObject_origin.put("Img", parseImg_origin);
+        addDetails(parseObject_origin, paintImage);
         parseObject_origin.saveInBackground(new SaveCallback() {
             @Override
             public void done(ParseException e) {
@@ -249,7 +284,7 @@ public class ParseManager extends CloudManagement {
     // each ParseObject has a list of categories it belong to.
     private void addDetails(ParseObject parseObject, PaintImage paintImage){
         parseObject.put("Name", paintImage.getName());
-        parseObject.put("user", ParseUser.getCurrentUser());
+        parseObject.put("user", parseObject.getParseUser("user"));
         ArrayList<ParseObject> categoryList = new ArrayList<>();
         for(String category : paintImage.getCategory()){
             categoryList.add(categoryMap.get(category));
@@ -258,8 +293,23 @@ public class ParseManager extends CloudManagement {
     }
 
     // parseObjects is null if get failed
-    private void onCategoryImageGet(List<ParseObject> parseObjects){
-        // TODO
+    private void onCategoryElementGet(ParseObject parseObject, byte[] bytes){
+        PaintImage paintImage = parseToPaint(parseObject, bytes, "Thumb");
+        categoryResult.add(paintImage);
+        if( categoryCount == categoryResult.size() ){
+            //TODO:call client
+        }
+
+    }
+
+    // parseObjects is null if get failed
+    private void onCategoryImageGet(ParseObject parseObject, byte[] bytes){
+        PaintImage paintImage = parseToPaint(parseObject, bytes, "Thumb");
+        categoryResult.add(paintImage);
+        if( categoryCount == categoryResult.size() ){
+            //TODO:call client
+        }
+
     }
 
     // parseObject is null if get failed
@@ -267,7 +317,7 @@ public class ParseManager extends CloudManagement {
         PaintImage paintImage;
         paintImage = parseToPaint(parseObject, bytes, "Origin");
 
-        // TODO
+        // TODO:call client
     }
 
     // convert ParseObject to PaintImage
@@ -282,7 +332,16 @@ public class ParseManager extends CloudManagement {
         }
         Bitmap bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
 
-        return new PaintImage(author, name, bitmap, id, categoryList);
+        switch (type){
+            case "Origin":
+                return new OriginImage(author, name, bitmap, id, categoryList);
+            case "Thumb":
+                return new ThumbImage(author, name, bitmap, id, categoryList);
+            case "Element":
+                return new PaintElement(author, name, bitmap, id, categoryList);
+            default:
+                return new PaintImage(author, name, bitmap, id, categoryList);
+        }
 
     }
 }
