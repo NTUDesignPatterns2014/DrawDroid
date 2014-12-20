@@ -12,6 +12,7 @@ import android.util.Log;
 
 import com.ntu.sdp2.painthelper.BackButtonHandler.BackButtonHandler;
 import com.ntu.sdp2.painthelper.BackButtonHandler.FragmentHandler;
+import com.parse.Parse;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -66,6 +67,13 @@ public class MainActivity extends FragmentActivity {
         actionBar.addTab(actionBar.newTab().setText("OAO4").setTabListener(tabListener));
 
 
+
+        // Parse Init
+        // Enable Local Datastore.
+        Parse.enableLocalDatastore(this);
+
+        Parse.initialize(this, "DI2qUxaZ2sNxsc7u8D7gnLD13NzVGrCQbbsuNkzn", "AE4g2zci5ke08QFqfqRrQWy0BshRdhZNelNfwyui");
+        
         // Generate HashKey
         PackageInfo info;
         try {
