@@ -3,6 +3,7 @@ package com.ntu.sdp2.painthelper;
 /**
  * Created by JimmyPrime on 2014/10/26.
  */
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
@@ -50,6 +51,10 @@ public class Page_1 extends Fragment {
                 R.drawable.composer_sleep,
                 R.drawable.composer_with};
         final int itemCount = images.length;
+
+        final String message;
+        message="/sdcard/111222.jpg";
+
         for (int i=0; i<itemCount; i++) {
             ImageView item = new ImageView(this.getActivity());
             item.setImageResource(images[i]);
@@ -63,8 +68,18 @@ public class Page_1 extends Fragment {
                         relativeLayout.addView(gridview);
                         relativeLayout.bringChildToFront(gridview);
                     }
+                    if(position==1){
+                        Intent intent = new Intent(getActivity(),TutorialInstantTracking.class);
+
+
+                        intent.putExtra(MainActivity.EXTRA_MESSAGE,message);
+
+                        startActivity(intent);
+
+                    }
                 }
             });
+
         }
 
         return page_1;

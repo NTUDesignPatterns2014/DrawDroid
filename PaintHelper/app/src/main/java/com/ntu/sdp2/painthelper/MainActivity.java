@@ -22,6 +22,7 @@ public class MainActivity extends FragmentActivity {
     TabPagerAdapter TabAdapter;
     ActionBar actionBar;
     BackButtonHandler backButtonHandler = new BackButtonHandler();
+    public final static String EXTRA_MESSAGE = "com.mycompany.myfirstapp.MESSAGE";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

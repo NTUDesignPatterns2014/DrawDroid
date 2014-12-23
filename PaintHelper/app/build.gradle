@@ -28,4 +28,5 @@ dependencies {
     compile 'com.android.support:support-v4:21.0.2'
     compile project(':facebook')
     compile project(':arcmenu')
+    compile project(':metaioSDK')
 }
