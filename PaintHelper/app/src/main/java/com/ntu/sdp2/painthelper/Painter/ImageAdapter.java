@@ -25,8 +25,8 @@ public class ImageAdapter extends BaseAdapter {
         return mThumbIds.length;
     }
 
-    public Object getItem(int position) {
-        ImageView imageView = new ImageView(mContext);
+    public MovableImageView getItem(int position) {
+        MovableImageView imageView = new MovableImageView(mContext);
         imageView.setImageResource(mThumbIds[position]);
         return imageView;
     }
