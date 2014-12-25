@@ -9,21 +9,11 @@ import com.ntu.sdp2.painthelper.DataManagement.Images.PaintImage;
 /**
  * Created by lou on 2014/12/20.
  */
-public class LocalDataManagement implements DataManagement {
-    public LocalDataManagement(){
-    }
-    public void getImageByCategory(String category, ThumbCallBack callBack){
-    }
-    public void getElementByCategory(String category, ElementCallBack callBack){
-    }
-    public void getImageById(String id, OriginCallback callBack){
-    }
-    public boolean saveImage(PaintImage image){
-        return false;
-    }
+public interface LocalDataManagement extends DataManagement {
 
+    public void getImageByCategory(String category, ThumbCallBack callBack);
+    public void getElementByCategory(String category, ElementCallBack callBack);
+    public void getImageById(String id, OriginCallback callBack);
+    public boolean saveImage(PaintImage image);
 
-    public LocalDataManagement getLocalManager(){
-        return new ParseLocalManager();
-    }
 }

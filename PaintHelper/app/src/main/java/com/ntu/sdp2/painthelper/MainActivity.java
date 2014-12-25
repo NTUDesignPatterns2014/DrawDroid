@@ -2,10 +2,12 @@ package com.ntu.sdp2.painthelper;
 
 import android.app.ActionBar;
 import android.app.FragmentTransaction;
+import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.Signature;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v4.app.FragmentActivity;
 import android.util.Base64;
 import android.util.Log;
@@ -13,6 +15,7 @@ import android.util.Log;
 import com.ntu.sdp2.painthelper.BackButtonHandler.BackButtonHandler;
 import com.ntu.sdp2.painthelper.BackButtonHandler.FragmentHandler;
 import com.ntu.sdp2.painthelper.DataManagement.CloudManagement;
+import com.ntu.sdp2.painthelper.DataManagement.DataManagement;
 import com.ntu.sdp2.painthelper.DataManagement.LocalDataManagement;
 import com.ntu.sdp2.painthelper.DataManagement.ParseLocalManager;
 import com.ntu.sdp2.painthelper.DataManagement.ParseManager;
@@ -27,8 +30,8 @@ public class MainActivity extends FragmentActivity {
     TabPagerAdapter TabAdapter;
     ActionBar actionBar;
     BackButtonHandler backButtonHandler = new BackButtonHandler();
-    CloudManagement cloudManager;
-    LocalDataManagement localManager;
+    DataManagement cloudManager;
+    DataManagement localManager;
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -80,8 +83,20 @@ public class MainActivity extends FragmentActivity {
         Parse.enableLocalDatastore(this);
 
         Parse.initialize(this, "DI2qUxaZ2sNxsc7u8D7gnLD13NzVGrCQbbsuNkzn", "AE4g2zci5ke08QFqfqRrQWy0BshRdhZNelNfwyui");
+
+        // initialize data manager
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
+        if(preferences.getBoolean("First", false)){
+            // not just installed
+            localManager = new ParseLocalManager(false);
+        }else{
+            // just installed
+            SharedPreferences.Editor editor = preferences.edit();
+            editor.putBoolean("First", true);
+            localManager = new ParseLocalManager(true);
+        }
         cloudManager = new ParseManager();
-        localManager = new ParseLocalManager();
+
 
         // Generate HashKey
         PackageInfo info;

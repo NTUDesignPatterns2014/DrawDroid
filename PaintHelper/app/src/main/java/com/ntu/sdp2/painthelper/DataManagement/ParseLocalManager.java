@@ -2,6 +2,7 @@ package com.ntu.sdp2.painthelper.DataManagement;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.preference.PreferenceManager;
 
 import com.ntu.sdp2.painthelper.DataManagement.CallBack.ElementCallBack;
 import com.ntu.sdp2.painthelper.DataManagement.CallBack.OriginCallback;
@@ -20,13 +21,14 @@ import com.parse.ParseQuery;
 
 import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 /**
  * Created by lou on 2014/12/20.
  */
-public class ParseLocalManager extends LocalDataManagement {
+public class ParseLocalManager implements LocalDataManagement {
     /*--------------------------------------------------------------*
                             Local Variables
      *--------------------------------------------------------------*/
@@ -43,9 +45,9 @@ public class ParseLocalManager extends LocalDataManagement {
     /*--------------------------------------------------------------*
                                 Public Methods
      *--------------------------------------------------------------*/
-    public ParseLocalManager() {
+    public ParseLocalManager(boolean init) {
 
-        if(!initialized) {
+        if(init) {
             // add local category
             List<ParseObject> list = new ArrayList<>();
             ParseObject object = new ParseObject("Category");
@@ -61,7 +63,20 @@ public class ParseLocalManager extends LocalDataManagement {
             object.put("Category", "4");
             list.add(object);
             ParseObject.pinAllInBackground(list);
-            initialized = true;
+        }
+        if( !initialized ) {
+            categoryMap = new HashMap<String, ParseObject>() ;
+            ParseQuery<ParseObject> query = new ParseQuery<ParseObject>("Category");
+            query.fromLocalDatastore();
+            query.getFirstInBackground(new GetCallback<ParseObject>() {
+                @Override
+                public void done(ParseObject parseObject, ParseException e) {
+                    if(e != null) {
+                        categoryMap.put(parseObject.getString("category"), parseObject);
+                        initialized = true;
+                    }
+                }
+            });
         }
 
     }
@@ -146,6 +161,9 @@ public class ParseLocalManager extends LocalDataManagement {
 
     @Override
     public boolean saveImage(PaintImage paintImage){
+        if(!initialized){
+            return true;
+        }
         ParseObject parseObject = new ParseObject("Img");
         addDetails(parseObject, paintImage);
         // create byte array

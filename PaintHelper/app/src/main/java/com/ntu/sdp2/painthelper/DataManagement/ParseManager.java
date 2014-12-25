@@ -31,7 +31,7 @@ import java.util.Map;
 /**
  * Created by lou on 2014/12/20.
  */
-public class ParseManager extends CloudManagement {
+public class ParseManager implements CloudManagement {
 
     /*--------------------------------------------------------------*
                             Local Variables
