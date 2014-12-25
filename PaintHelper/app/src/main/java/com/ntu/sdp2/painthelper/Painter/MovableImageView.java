@@ -1,7 +1,6 @@
 package com.ntu.sdp2.painthelper.Painter;
 
 import android.content.Context;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.widget.ImageView;
 
@@ -16,23 +15,20 @@ public class MovableImageView extends ImageView {
     @Override
     public boolean onTouchEvent(MotionEvent event) {
         int eventAction = event.getAction();
-        float X = event.getX();
-        float Y = event.getY();
+        float X = event.getRawX();
+        float Y = event.getRawY();
 
         switch (eventAction) {
             case MotionEvent.ACTION_DOWN:
                 atX = this.getX();
                 atY = this.getY();
-                touchX = event.getX();
-                touchY = event.getY();
-                Log.d("density", "" + getResources().getDisplayMetrics().density);
+                startX = X;
+                startY = Y;
                 break;
 
             case MotionEvent.ACTION_MOVE:
-                // this.setX((atX + X - touchX) / getResources().getDisplayMetrics().density);
-                // this.setY((atY + Y - touchY) / getResources().getDisplayMetrics().density);
-                this.setX(X);
-                this.setY(Y);
+                this.setX(atX + X - startX);
+                this.setY(atY + Y - startY);
                 break;
         }
 
@@ -40,6 +36,6 @@ public class MovableImageView extends ImageView {
         return true;
     }
 
-    private float touchX, touchY;
     private float atX, atY;
+    private float startX, startY;
 }
