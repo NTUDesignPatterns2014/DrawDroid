@@ -1,4 +1,4 @@
-package com.ntu.sdp2.painthelper.DataManagement;
+package com.ntu.sdp2.painthelper.DataManagement.Images;
 
 import android.graphics.Bitmap;
 
@@ -10,7 +10,7 @@ import java.util.List;
 public class PaintElement extends PaintImage {
     private int size;
     private Position position;
-    PaintElement(String author, String name, Bitmap image, String id, List<String> category){
+    public PaintElement(String author, String name, Bitmap image, String id, List<String> category){
         super(author, name, image, id, category);
     }
 

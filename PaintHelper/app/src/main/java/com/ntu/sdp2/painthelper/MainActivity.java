@@ -35,6 +35,8 @@ public class MainActivity extends FragmentActivity {
         setContentView(R.layout.activity_main);
         TabAdapter = new TabPagerAdapter(getSupportFragmentManager());
         Tab = (NonSwipeableViewPager) findViewById(R.id.pager);
+        // This make sure all fragment be alive
+        Tab.setOffscreenPageLimit(3);
         Tab.setOnPageChangeListener(
                 new NonSwipeableViewPager.SimpleOnPageChangeListener() {
                     @Override
