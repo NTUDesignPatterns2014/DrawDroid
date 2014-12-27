@@ -121,7 +121,7 @@ public class SketchImage {
     public static SketchImage createFromPhoto(Bitmap bmp) throws IOException {
         // TODO
         SketchImage inst = new SketchImage();
-        inst.mBmp.createScaledBitmap(bmp, WIDTH, HEIGHT, false);
+        inst.mBmp = Bitmap.createScaledBitmap(bmp, WIDTH, HEIGHT, false);
         inst.blackWhiteInv();
         inst.skeletonize();
         inst.mBmpOriginal = inst.mBmp.copy(inst.mBmp.getConfig(), true);

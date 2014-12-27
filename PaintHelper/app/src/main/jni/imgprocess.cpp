@@ -6,8 +6,9 @@
 #include <android/log.h>
 #include <string>
 #include "com_ntu_sdp2_painthelper_capture_NativeEdgeDetector.h"
+#include "com_ntu_sdp2_painthelper_utils_NativeImgProcessor.h"
 
-#define LOGI(...) __android_log_print(ANDROID_LOG_INFO,"houghcircle.cpp",__VA_ARGS__)
+#define LOGI(...) __android_log_print(ANDROID_LOG_INFO,"imgprocess.cpp",__VA_ARGS__)
 
 using namespace cv;
 
@@ -16,7 +17,13 @@ JNIEXPORT void JNICALL Java_com_ntu_sdp2_painthelper_utils_NativeImgProcessor_na
 {
     Mat& img = *(Mat*) imgsrc;
     Mat& imgOut = *(Mat*) imgdst;
-    blur(img, imgOut, Size(kernelSize, kernelSize));
+
+    Mat dst, srcGray;
+    cvtColor(img, srcGray, CV_BGR2GRAY);
+    dst.create(srcGray.size(), srcGray.type());
+
+    blur(srcGray, dst, Size(kernelSize, kernelSize));
+    dst.copyTo(imgOut);
 }
 
 JNIEXPORT void JNICALL Java_com_ntu_sdp2_painthelper_utils_NativeImgProcessor_nativeBilateralFilter
@@ -24,7 +31,13 @@ JNIEXPORT void JNICALL Java_com_ntu_sdp2_painthelper_utils_NativeImgProcessor_na
 {
     Mat& img = *(Mat*) imgsrc;
     Mat& imgOut = *(Mat*) imgdst;
-    bilateralFilter(img, imgOut, diameter, diameter * 2, diameter / 2);
+
+    Mat dst, srcGray;
+    cvtColor(img, srcGray, CV_BGR2GRAY);
+    dst.create(srcGray.size(), srcGray.type());
+
+    bilateralFilter(srcGray, dst, diameter, diameter * 2, diameter / 2);
+    dst.copyTo(imgOut);
 }
 
 JNIEXPORT void JNICALL Java_com_ntu_sdp2_painthelper_utils_NativeImgProcessor_nativeAdaptiveThres
@@ -33,9 +46,14 @@ JNIEXPORT void JNICALL Java_com_ntu_sdp2_painthelper_utils_NativeImgProcessor_na
     Mat& img = *(Mat*) imgsrc;
     Mat& imgOut = *(Mat*) imgdst;
 
+    Mat dst, srcGray;
+    cvtColor(img, srcGray, CV_BGR2GRAY);
+    dst.create(srcGray.size(), srcGray.type());
+
     int method = ((methodIdx == 0) ? ADAPTIVE_THRESH_MEAN_C : ADAPTIVE_THRESH_GAUSSIAN_C);
     int type = ((typeIdx == 0) ? THRESH_BINARY : THRESH_BINARY_INV);
-    adaptiveThreshold(img, imgOut, maxThres, method, type, blockSize, C);
+    adaptiveThreshold(srcGray, dst, maxThres, method, type, blockSize, C);
+    dst.copyTo(imgOut);
 }
 
 JNIEXPORT void JNICALL Java_com_ntu_sdp2_painthelper_utils_NativeImgProcessor_nativeSkeletonize
@@ -44,10 +62,15 @@ JNIEXPORT void JNICALL Java_com_ntu_sdp2_painthelper_utils_NativeImgProcessor_na
     Mat& img = *(Mat*) imgsrc;
     Mat& imgOut = *(Mat*) imgdst;
 
+    Mat dst, srcGray;
+    cvtColor(img, srcGray, CV_BGR2GRAY);
+    dst.create(srcGray.size(), srcGray.type());
+
     AdvMorph m;
-    IplImage iplImg = IplImage(img);
-    IplImage iplImgOut = IplImage(imgOut);
+    IplImage iplImg = IplImage(srcGray);
+    IplImage iplImgOut = IplImage(dst);
     m.Thin(&iplImg, &iplImgOut);
+    dst.copyTo(imgOut);
 }
 
 JNIEXPORT void JNICALL Java_com_ntu_sdp2_painthelper_utils_NativeImgProcessor_nativeDilate
@@ -55,6 +78,7 @@ JNIEXPORT void JNICALL Java_com_ntu_sdp2_painthelper_utils_NativeImgProcessor_na
 {
     Mat& img = *(Mat*) imgsrc;
     Mat& imgOut = *(Mat*) imgdst;
+
     Mat tmp;
     int dilateType;
     switch (kernelIdx) {
@@ -80,5 +104,9 @@ JNIEXPORT void JNICALL Java_com_ntu_sdp2_painthelper_utils_NativeImgProcessor_na
 {
     Mat& img = *(Mat*) imgsrc;
     Mat& imgOut = *(Mat*) imgdst;
-    invert(img, imgOut);
+
+    Mat dst;
+    dst.create(img.size(), img.type());
+    bitwise_not(img, dst);
+    dst.copyTo(imgOut);
 }
