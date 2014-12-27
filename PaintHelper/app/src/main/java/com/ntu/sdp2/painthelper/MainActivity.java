@@ -14,8 +14,10 @@ import android.util.Log;
 
 import com.ntu.sdp2.painthelper.BackButtonHandler.BackButtonHandler;
 import com.ntu.sdp2.painthelper.BackButtonHandler.FragmentHandler;
+import com.ntu.sdp2.painthelper.DataManagement.CallBack.ThumbCallBack;
 import com.ntu.sdp2.painthelper.DataManagement.CloudManagement;
 import com.ntu.sdp2.painthelper.DataManagement.DataManagement;
+import com.ntu.sdp2.painthelper.DataManagement.Images.PaintImage;
 import com.ntu.sdp2.painthelper.DataManagement.LocalDataManagement;
 import com.ntu.sdp2.painthelper.DataManagement.ParseLocalManager;
 import com.ntu.sdp2.painthelper.DataManagement.ParseManager;
@@ -97,7 +99,6 @@ public class MainActivity extends FragmentActivity {
         }
         cloudManager = new ParseManager();
 
-
         // Generate HashKey
         PackageInfo info;
         try {
@@ -136,5 +137,13 @@ public class MainActivity extends FragmentActivity {
 
     public void addToBackStack(FragmentHandler fragmentHandler){
         backButtonHandler.addToBackStack(fragmentHandler);
+    }
+
+    public DataManagement getCloudManager(){
+        return cloudManager;
+    }
+
+    public DataManagement getLocalManager() {
+        return localManager;
     }
 }
