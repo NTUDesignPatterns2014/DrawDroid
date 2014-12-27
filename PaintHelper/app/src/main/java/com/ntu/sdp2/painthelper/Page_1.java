@@ -34,6 +34,9 @@ public class Page_1 extends Fragment {
     Calendar rightNow;
     int counter=0;
     int image_id;
+    ImageView imageView_tosave;
+    String message="/sdcard/111222.jpg";
+
     boolean Sd_write=false;
     /* Checks if external storage is available for read and write */
     public File getAlbumStorageDir(Context context, String albumName) {
@@ -81,7 +84,7 @@ public class Page_1 extends Fragment {
             File image_file=new File(path+"/"+time+".png");
             Log.e(Tag,"image_file :"+image_file.getPath());
 
-            ImageView imageView=(ImageView)getActivity().findViewById(image_id);
+
 
             if(!file.exists()) file.mkdirs();
             else    Log.v(Tag,"dirExisted");
@@ -97,9 +100,9 @@ public class Page_1 extends Fragment {
                     e.printStackTrace();
                 }
             }
-            if(imageView!=null) {
-                imageView.setDrawingCacheEnabled(true);
-                Bitmap tmp = imageView.getDrawingCache();
+            if(imageView_tosave!=null) {
+                imageView_tosave.setDrawingCacheEnabled(true);
+                Bitmap tmp = imageView_tosave.getDrawingCache();
                 FileOutputStream fos = null;
                 try {
                     fos = new FileOutputStream(image_file);
@@ -117,6 +120,7 @@ public class Page_1 extends Fragment {
             {
                 Log.e(Tag,"image_view is null");
             }
+            message=image_file.getPath();
 
         }
 
@@ -143,9 +147,8 @@ public class Page_1 extends Fragment {
                 RelativeLayout relativeLayout = (RelativeLayout) page_1.findViewById(R.id.relativeLayout);
                 relativeLayout.addView(imageView);
                 relativeLayout.removeViewInLayout(gridview);
+                imageView_tosave=imageView;
 
-                image_id=ImageView.generateViewId();
-                imageView.setId(image_id);
             }
         });
         RelativeLayout relativeLayout = (RelativeLayout) page_1.findViewById(R.id.relativeLayout);
@@ -160,8 +163,7 @@ public class Page_1 extends Fragment {
                 R.drawable.composer_with};
         final int itemCount = images.length;
 
-        final String message;
-        message="/sdcard/111222.jpg";
+
 
         for (int i=0; i<itemCount; i++) {
             ImageView item = new ImageView(this.getActivity());
