@@ -1,4 +1,4 @@
-package com.ntu.sdp2.painthelper.DataManagement;
+package com.ntu.sdp2.painthelper.DataManagement.Images;
 
 import android.graphics.Bitmap;
 
@@ -16,7 +16,7 @@ public class PaintImage {
     private String id;
     private List<String> category;
 
-    PaintImage(String author, String name, Bitmap image, String id, List<String> category){
+    public PaintImage(String author, String name, Bitmap image, String id, List<String> category){
         this.author = author;
         this.name = name;
         this.image = image;
@@ -42,5 +42,25 @@ public class PaintImage {
 
     public String getId() {
         return id;
+    }
+
+    public void setAuthor(String author) {
+        this.author = author;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public void setCategory(List<String> category) {
+        this.category = category;
+    }
+
+    public void setImage(Bitmap image) {
+        this.image = image;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 }

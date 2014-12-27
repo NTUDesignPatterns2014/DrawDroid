@@ -2,7 +2,15 @@ package com.ntu.sdp2.painthelper.DataManagement;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.preference.PreferenceManager;
 
+import com.ntu.sdp2.painthelper.DataManagement.CallBack.ElementCallBack;
+import com.ntu.sdp2.painthelper.DataManagement.CallBack.OriginCallback;
+import com.ntu.sdp2.painthelper.DataManagement.CallBack.ThumbCallBack;
+import com.ntu.sdp2.painthelper.DataManagement.Images.OriginImage;
+import com.ntu.sdp2.painthelper.DataManagement.Images.PaintElement;
+import com.ntu.sdp2.painthelper.DataManagement.Images.PaintImage;
+import com.ntu.sdp2.painthelper.DataManagement.Images.ThumbImage;
 import com.parse.FindCallback;
 import com.parse.GetCallback;
 import com.parse.GetDataCallback;
@@ -10,17 +18,17 @@ import com.parse.ParseException;
 import com.parse.ParseFile;
 import com.parse.ParseObject;
 import com.parse.ParseQuery;
-import com.parse.ParseUser;
 
 import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 /**
  * Created by lou on 2014/12/20.
  */
-public class ParseLocalManager extends LocalDataManagement {
+public class ParseLocalManager implements LocalDataManagement {
     /*--------------------------------------------------------------*
                             Local Variables
      *--------------------------------------------------------------*/
@@ -28,18 +36,18 @@ public class ParseLocalManager extends LocalDataManagement {
 
     private static boolean initialized = false;
     private static Map<String,ParseObject> categoryMap;
-    ParseManager manager = new ParseManager();
-    private boolean categoryDone = true;
-    private List<PaintImage> categoryResult;
-    private int categoryCount = 0;
+    //ParseManager manager = new ParseManager();
+    //private boolean categoryDone = true;
+    //private List<PaintImage> categoryResult;
+    //private int categoryCount = 0;
 
 
     /*--------------------------------------------------------------*
                                 Public Methods
      *--------------------------------------------------------------*/
-    public ParseLocalManager() {
+    public ParseLocalManager(boolean init) {
 
-        if(!initialized) {
+        if(init) {
             // add local category
             List<ParseObject> list = new ArrayList<>();
             ParseObject object = new ParseObject("Category");
@@ -55,13 +63,26 @@ public class ParseLocalManager extends LocalDataManagement {
             object.put("Category", "4");
             list.add(object);
             ParseObject.pinAllInBackground(list);
-            initialized = true;
+        }
+        if( !initialized ) {
+            categoryMap = new HashMap<String, ParseObject>() ;
+            ParseQuery<ParseObject> query = new ParseQuery<ParseObject>("Category");
+            query.fromLocalDatastore();
+            query.getFirstInBackground(new GetCallback<ParseObject>() {
+                @Override
+                public void done(ParseObject parseObject, ParseException e) {
+                    if(e != null) {
+                        categoryMap.put(parseObject.getString("category"), parseObject);
+                        initialized = true;
+                    }
+                }
+            });
         }
 
     }
 
     @Override
-    public void getImageByCategory(String category) {
+    public void getImageByCategory(String category, final ThumbCallBack callBack) {
         ParseQuery<ParseObject> query = new ParseQuery<ParseObject>("Thumbnails");
         query.fromLocalDatastore();
         query.whereEqualTo("Category", category);
@@ -69,18 +90,18 @@ public class ParseLocalManager extends LocalDataManagement {
             @Override
             public void done(List<ParseObject> parseObjects, ParseException e) {
                 if(e == null) {
-                    categoryCount = parseObjects.size();
-                    categoryResult = new ArrayList<PaintImage>();
+                    //categoryCount = parseObjects.size();
+                    //categoryResult = new ArrayList<PaintImage>();
                     for(final ParseObject objects:parseObjects) {
                         objects.getParseFile("Img").getDataInBackground(new GetDataCallback() {
                             @Override
                             public void done(byte[] bytes, ParseException e) {
-                                onCategoryImageGet(objects, bytes);
+                                onImageGet(objects, bytes, callBack);
                             }
                         });
                     }
                 }else{
-                    onCategoryImageGet(null, null);
+                    onImageGet(null, null, callBack);
                 }
             }
         });
@@ -88,7 +109,7 @@ public class ParseLocalManager extends LocalDataManagement {
 
     // This method can only be used to get original image but not thumbnail.
     @Override
-    public void getImageById(String id) {
+    public void getImageById(String id, final OriginCallback callBack) {
         ParseQuery<ParseObject> query = new ParseQuery<ParseObject>("Img");
         query.fromLocalDatastore();
         query.getInBackground(id, new GetCallback<ParseObject>() {
@@ -98,21 +119,21 @@ public class ParseLocalManager extends LocalDataManagement {
                     object.getParseFile("Img").getDataInBackground(new GetDataCallback() {
                         @Override
                         public void done(byte[] bytes, ParseException e) {
-                            onIdImageGet(newObject, bytes);
+                            onImageGet(newObject, bytes, callBack);
                         }
                     });
 
 
                 } else {
                     // TODO:something went wrong
-                    onIdImageGet(null, null);
+                    onImageGet(null, null, callBack);
                 }
             }
         });
 
     }
     @Override
-    public void getElementByCategory(String category) {
+    public void getElementByCategory(String category, final ElementCallBack callBack) {
         ParseQuery<ParseObject> query = new ParseQuery<ParseObject>("Thumbnails");
         query.fromLocalDatastore();
         query.whereEqualTo("Category", category);
@@ -120,18 +141,18 @@ public class ParseLocalManager extends LocalDataManagement {
             @Override
             public void done(List<ParseObject> parseObjects, ParseException e) {
                 if(e == null) {
-                    categoryCount = parseObjects.size();
-                    categoryResult = new ArrayList<PaintImage>();
+                    //categoryCount = parseObjects.size();
+                    //categoryResult = new ArrayList<PaintImage>();
                     for(final ParseObject objects:parseObjects) {
                         objects.getParseFile("Img").getDataInBackground(new GetDataCallback() {
                             @Override
                             public void done(byte[] bytes, ParseException e) {
-                                onCategoryElementGet(objects, bytes);
+                                onImageGet(objects, bytes, callBack);
                             }
                         });
                     }
                 }else{
-                    onCategoryElementGet(null, null);
+                    onImageGet(null, null, callBack);
                 }
             }
         });
@@ -140,6 +161,9 @@ public class ParseLocalManager extends LocalDataManagement {
 
     @Override
     public boolean saveImage(PaintImage paintImage){
+        if(!initialized){
+            return true;
+        }
         ParseObject parseObject = new ParseObject("Img");
         addDetails(parseObject, paintImage);
         // create byte array
@@ -158,31 +182,29 @@ public class ParseLocalManager extends LocalDataManagement {
     /*--------------------------------------------------------------*
                                 Private Methods
      *--------------------------------------------------------------*/
-
-    private void onCategoryElementGet(ParseObject parseObject, byte[] bytes){
-        PaintImage paintImage = parseToPaint(parseObject, bytes, "Thumb");
-        categoryResult.add(paintImage);
-        if( categoryCount == categoryResult.size() ){
-            //TODO:call client
+    private void onImageGet(ParseObject parseObject, byte[] bytes, OriginCallback callBack){
+        if(parseObject != null) {
+            PaintImage paintImage;
+            paintImage = parseToPaint(parseObject, bytes, "Origin");
+            callBack.done(paintImage);
         }
-
     }
-
-    private void onCategoryImageGet(ParseObject parseObject, byte[] bytes){
-        PaintImage paintImage = parseToPaint(parseObject, bytes, "Thumb");
-        categoryResult.add(paintImage);
-        if( categoryCount == categoryResult.size() ){
-            //TODO:call client
+    private void onImageGet(ParseObject parseObject, byte[] bytes, ElementCallBack callBack){
+        if(parseObject != null) {
+            PaintImage paintImage;
+            paintImage = parseToPaint(parseObject, bytes, "Element");
+            callBack.done(paintImage);
         }
-
+    }
+    private void onImageGet(ParseObject parseObject, byte[] bytes, ThumbCallBack callBack){
+        if(parseObject != null) {
+            PaintImage paintImage;
+            paintImage = parseToPaint(parseObject, bytes, "Thumb");
+            callBack.done(paintImage);
+        }
     }
 
-    private void onIdImageGet(ParseObject parseObject, byte[] bytes){
-        PaintImage paintImage;
-        paintImage = parseToPaint(parseObject, bytes, "Origin");
-        //TODO: call client
 
-    }
     // convert ParseObject to PaintImage
     private PaintImage parseToPaint(ParseObject parseObject, byte[] bytes, String type){
         String name = parseObject.getString("Name");

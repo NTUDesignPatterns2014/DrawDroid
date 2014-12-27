@@ -38,6 +38,9 @@ import android.widget.ImageView;
 import com.ntu.sdp2.painthelper.settings.Myadapter;
 
 
+import com.ntu.sdp2.painthelper.DataManagement.CallBack.ThumbCallBack;
+import com.ntu.sdp2.painthelper.DataManagement.Images.PaintImage;
+
 public class Page_2 extends Fragment {
     private DrawerLayout mDrawerLayout;
     private ListView mDrawerList;
@@ -54,6 +57,7 @@ public class Page_2 extends Fragment {
 
         return page_2;
     }
+
 
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
@@ -218,6 +222,15 @@ public class Page_2 extends Fragment {
                 }
             }
         }
+
+    public void func(){
+        ((MainActivity)getActivity()).getCloudManager().getImageByCategory("1", new ThumbCallBack() {
+            @Override
+            public void done(PaintImage paintImage) {
+
+            }
+        });
+
     }
 }
 
