@@ -72,6 +72,6 @@ public class MainActivity extends FragmentActivity {
 
 
     static {
-        System.loadLibrary("edge_detection");
+        System.loadLibrary("imgprocess");
     }
 }

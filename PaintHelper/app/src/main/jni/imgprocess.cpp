@@ -39,7 +39,7 @@ JNIEXPORT void JNICALL Java_com_ntu_sdp2_painthelper_utils_NativeImgProcessor_na
 }
 
 JNIEXPORT void JNICALL Java_com_ntu_sdp2_painthelper_utils_NativeImgProcessor_nativeSkeletonize
-  (JNIEnv *env, jobject clazz, jlong imgsrc, jlong imgdst);
+  (JNIEnv *env, jobject clazz, jlong imgsrc, jlong imgdst)
 {
     Mat& img = *(Mat*) imgsrc;
     Mat& imgOut = *(Mat*) imgdst;
@@ -51,7 +51,7 @@ JNIEXPORT void JNICALL Java_com_ntu_sdp2_painthelper_utils_NativeImgProcessor_na
 }
 
 JNIEXPORT void JNICALL Java_com_ntu_sdp2_painthelper_utils_NativeImgProcessor_nativeDilate
-  (JNIEnv *env, jobject clazz, jlong imgsrc, jlong imgdst, jint iteration, jint kernelIdx, jint kernelN);
+  (JNIEnv *env, jobject clazz, jlong imgsrc, jlong imgdst, jint iteration, jint kernelIdx, jint kernelN)
 {
     Mat& img = *(Mat*) imgsrc;
     Mat& imgOut = *(Mat*) imgdst;
@@ -76,7 +76,7 @@ JNIEXPORT void JNICALL Java_com_ntu_sdp2_painthelper_utils_NativeImgProcessor_na
 }
 
 JNIEXPORT void JNICALL Java_com_ntu_sdp2_painthelper_utils_NativeImgProcessor_nativeInvert
-  (JNIEnv *env, jobject clazz, jlong imgsrc, jlong imgdst);
+  (JNIEnv *env, jobject clazz, jlong imgsrc, jlong imgdst)
 {
     Mat& img = *(Mat*) imgsrc;
     Mat& imgOut = *(Mat*) imgdst;

@@ -1,7 +1,6 @@
 package com.ntu.sdp2.painthelper.utils;
 
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 
 import java.io.IOException;
 
@@ -119,14 +118,10 @@ public class SketchImage {
     }
 
 
-    public static SketchImage createFromPhoto(String path) throws IOException {
+    public static SketchImage createFromPhoto(Bitmap bmp) throws IOException {
         // TODO
         SketchImage inst = new SketchImage();
-        Bitmap tmpBmp = BitmapFactory.decodeFile(path);
-        if (tmpBmp == null) {
-            throw new IOException("Get bitmap from file:" + path + " failed.");
-        }
-        inst.mBmp.createScaledBitmap(tmpBmp, WIDTH, HEIGHT, false);
+        inst.mBmp.createScaledBitmap(bmp, WIDTH, HEIGHT, false);
         inst.blackWhiteInv();
         inst.skeletonize();
         inst.mBmpOriginal = inst.mBmp.copy(inst.mBmp.getConfig(), true);
@@ -135,14 +130,10 @@ public class SketchImage {
         return inst;
     }
 
-    public static SketchImage createFromSketch(String path) throws IOException {
+    public static SketchImage createFromSketch(Bitmap bmp) throws IOException {
         // TODO
         SketchImage inst = new SketchImage();
-        inst.mBmp = BitmapFactory.decodeFile(path);
-        if (inst.mBmp == null) {
-            throw new IOException("Get bitmap from file:" + path + " failed.");
-        }
-        inst.resize(WIDTH, HEIGHT);
+        inst.mBmp = Bitmap.createScaledBitmap(bmp, WIDTH, HEIGHT, false);
         inst.mBmpOriginal = inst.mBmp.copy(inst.mBmp.getConfig(), true);
         inst.mWidth = WIDTH;
         inst.mHeight = HEIGHT;
