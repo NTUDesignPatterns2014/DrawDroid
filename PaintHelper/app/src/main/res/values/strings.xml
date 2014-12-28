@@ -4,5 +4,7 @@
     <string name="app_name">PaintHelper</string>
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
+    <string name="app_id">1405501183074777</string>
+    <string name="account_info_frag_tag">info_tag</string>
 
 </resources>

@@ -44,6 +44,14 @@ android {
 dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
     compile project(':opencv')
-    compile files('libs/Parse-1.8.0.jar')
-    compile 'com.android.support:support-v4:21.0.0'
+
+    //compile fileTree(include: ['*.jar'], dir: 'libs')
+    //compile 'com.android.support:appcompat-v7:21.0.0'
+    //below statement should not be used or get multiple dex definition
+    //In new version of sdk, annotation.jar is included in support library already
+    //compile files('libs/android-support-v4.jar')
+    compile 'com.android.support:support-v4:21.0.2'
+    compile project(':facebook')
+    compile 'com.parse.bolts:bolts-android:1.+'
+    compile fileTree(include: 'Parse-*.jar', dir: 'libs')
 }
