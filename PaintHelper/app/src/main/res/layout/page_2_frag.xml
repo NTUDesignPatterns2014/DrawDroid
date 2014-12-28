@@ -2,11 +2,83 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:gravity="center"
+    android:gravity="top|center"
     android:orientation="vertical" >
-    <TextView
-        android:id="@+id/textView"
-        android:layout_width="wrap_content"
+
+    <TableLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TableRow>
+
+            <ImageView
+                android:id="@+id/img1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:scaleType="fitXY"
+                android:src="@drawable/empty"
+                android:adjustViewBounds="true"
+                android:maxWidth="400px"
+                android:minHeight="400px" />
+
+            <ImageView
+                android:id="@+id/img2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:scaleType="fitXY"
+                android:adjustViewBounds="true"
+                android:maxWidth="400px"
+                android:minHeight="400px"
+                android:src="@drawable/empty"/>
+        </TableRow>
+        <TableRow>
+            <ImageView
+                android:id="@+id/img3"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:scaleType="fitXY"
+                android:adjustViewBounds="true"
+                android:maxWidth="400px"
+                android:minHeight="400px"
+                android:src="@drawable/test1"/>
+
+
+            <ImageView
+                android:id="@+id/img4"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:scaleType="fitXY"
+                android:adjustViewBounds="true"
+                android:maxWidth="400px"
+                android:minHeight="400px"
+                android:src="@drawable/test1"/>
+
+        </TableRow>
+
+
+    </TableLayout>
+    <Button
+        android:id="@+id/btn1"
         android:layout_height="wrap_content"
-        android:textSize="50sp"/>
+        android:layout_width="match_parent"
+        android:text="StartProc"
+        />
+    <Button
+        android:id="@+id/btn2"
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:text="StartProc2"
+        />
+    <Button
+        android:id="@+id/btn3"
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:text="StartProc3"
+        />
+    <Button
+        android:id="@+id/btn4"
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:text="StartProc4"
+        />
 </LinearLayout>
