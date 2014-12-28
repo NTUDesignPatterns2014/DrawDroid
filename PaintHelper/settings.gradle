@@ -1,2 +1,4 @@
-include ':app', ':facebook'
 include ':arcmenu'
+include ':app'
+include ':opencv'
+include ':facebook'

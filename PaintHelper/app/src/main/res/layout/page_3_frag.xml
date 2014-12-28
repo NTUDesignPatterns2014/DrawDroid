@@ -4,9 +4,16 @@
     android:layout_height="match_parent"
     android:gravity="center"
     android:orientation="vertical" >
-    <TextView
-        android:id="@+id/textView"
-        android:layout_width="wrap_content"
+    <Button
+        android:id="@+id/btn_capture"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textSize="50sp"/>
+        android:text="Capture"
+    />
+    <ImageView
+        android:id="@+id/imgview_capture"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scaleType="fitCenter"
+        />
 </LinearLayout>

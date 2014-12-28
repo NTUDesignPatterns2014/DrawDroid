@@ -1,1 +1,17 @@
 /build
+
+# modify Android.mk.template to get your Android.mk
+Android.mk
+
+
+# Android NDK
+*.o
+*.o.d
+*_g
+*.a
+*.so
+*.pinfo
+*.gcno
+*.bar
+gdbserver
+gdb.setup
