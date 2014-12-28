@@ -23,6 +23,7 @@ import android.widget.Button;
 import android.widget.ImageView;
 
 import com.ntu.sdp2.painthelper.capture.NativeEdgeDetector;
+import com.ntu.sdp2.painthelper.utils.SketchImage;
 
 import org.opencv.android.OpenCVLoader;
 
@@ -80,15 +81,19 @@ public class Page_3 extends Fragment {
             mImgCapturedUri = Uri.fromFile(new File(externalCacheDir, "image.jpg"));
 
             Bitmap bmp;
-            Bitmap bmpEdge;
+            SketchImage sImg = null;
 
             bmp = BitmapFactory.decodeFile(mImgCapturedUri.getPath());
             mImgView.setImageBitmap(bmp);
-            bmpEdge = detectEdge(bmp);
-            mBmpEdge = bmpEdge;
+            try {
+                sImg = SketchImage.createFromPhoto(bmp);
+            } catch (IOException e) {
+                e.printStackTrace();
+                return;
+            }
 
-            BitmapDrawable result = new BitmapDrawable(getResources(), scaleBitmap(bmpEdge));
-            //BitmapDrawable drawable = new BitmapDrawable(getResources(), bmpEdge);
+            sImg.invert();
+            BitmapDrawable result = new BitmapDrawable(getResources(), scaleBitmap(sImg.getBitmap()));
 
             //mImgView.setImageBitmap(bmpEdge);
             mImgView.setImageDrawable(result);
