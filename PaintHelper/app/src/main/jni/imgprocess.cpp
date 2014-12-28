@@ -79,7 +79,7 @@ JNIEXPORT void JNICALL Java_com_ntu_sdp2_painthelper_utils_NativeImgProcessor_na
     Mat& img = *(Mat*) imgsrc;
     Mat& imgOut = *(Mat*) imgdst;
 
-    Mat tmp;
+    Mat tmp, dst;
     int dilateType;
     switch (kernelIdx) {
 	case 0: dilateType = MORPH_RECT; break;
@@ -92,11 +92,13 @@ JNIEXPORT void JNICALL Java_com_ntu_sdp2_painthelper_utils_NativeImgProcessor_na
             Size(2 * kernelN + 1, 2 * kernelN + 1),
             Point(kernelN, kernelN));
 
+    img.copyTo(dst);
     img.copyTo(tmp);
     for (int i = 0; i < iteration; i++) {
-        dilate(tmp, imgOut, kernel);
-        imgOut.copyTo(tmp);
+        dilate(tmp, dst, kernel);
+        dst.copyTo(tmp);
     }
+    dst.copyTo(imgOut);
 }
 
 JNIEXPORT void JNICALL Java_com_ntu_sdp2_painthelper_utils_NativeImgProcessor_nativeInvert

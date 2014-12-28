@@ -32,12 +32,20 @@ public class SketchImage {
 
     public void resize(int width, int height) {
         // TODO
-        if (width < getWidth() || height < getHeight()) {
+
+        if (width < mBmpOriginal.getWidth() || height < mBmpOriginal.getHeight()) {
+            mBmp = Bitmap.createScaledBitmap(mBmpOriginal, mBmpOriginal.getWidth(), mBmpOriginal.getHeight(), false);
+
             //  dilate
             // TODO: check how much is necessary
-            dilate(3);
+            //dilate(1);
+            mBmp = Bitmap.createScaledBitmap(mBmp, width, height, false);
         }
-        mBmp = Bitmap.createScaledBitmap(mBmp, width, height, false);
+        else {
+            mBmp = Bitmap.createScaledBitmap(mBmpOriginal, width, height, false);
+        }
+
+        invert();
 
         // black white
         blackWhiteInv();
@@ -57,6 +65,7 @@ public class SketchImage {
             return;
         }
         mDilateLevel = dilateLv;
+        invert();
         blackWhiteInv();
         skeletonize();
         dilate(mDilateLevel);
@@ -96,8 +105,8 @@ public class SketchImage {
         processor.dilate(mBmp, iteration);
     }
 
+
     private void blackWhiteInv() {
-        blur();
         adaptiveThreshold();
     }
 
@@ -122,6 +131,7 @@ public class SketchImage {
         // TODO
         SketchImage inst = new SketchImage();
         inst.mBmp = Bitmap.createScaledBitmap(bmp, WIDTH, HEIGHT, false);
+        inst.blur();
         inst.blackWhiteInv();
         inst.skeletonize();
         inst.mBmpOriginal = inst.mBmp.copy(inst.mBmp.getConfig(), true);
