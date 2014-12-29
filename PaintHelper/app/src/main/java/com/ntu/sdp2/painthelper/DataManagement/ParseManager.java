@@ -96,7 +96,8 @@ public class ParseManager implements CloudManagement {
                     }
                     if (e == null) {
                         for (ParseObject object : parseObjects) {
-                            categoryMap.put(object.getString("category"), object);
+                            categoryMap.put(object.getString("Category"), object);
+                            Log.d(TAG, object.getString("Category"));
                         }
                         initialized = true;
                     }else{
