@@ -21,7 +21,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.Toast;
 
+import com.ntu.sdp2.painthelper.DataManagement.DataManagement;
+import com.ntu.sdp2.painthelper.DataManagement.Images.PaintImage;
 import com.ntu.sdp2.painthelper.capture.NativeEdgeDetector;
 import com.ntu.sdp2.painthelper.utils.SketchImage;
 
@@ -31,15 +34,15 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.ArrayList;
 
 public class Page_3 extends Fragment {
     private static final String TAG = "Page_3";
 
     private ImageView mImgView;
     private Button mBtnCapture;
-    private boolean mCaptured;
-    private Bitmap mBmpOri;
-    private Bitmap mBmpEdge;
+    private Button mBtnUpload;
+    private SketchImage mImage;
     private Uri mImgCapturedUri;
 
     @Override
@@ -60,11 +63,18 @@ public class Page_3 extends Fragment {
                              Bundle savedInstanceState) {
         View page_3 = inflater.inflate(R.layout.page_3_frag, container, false);
         mBtnCapture = (Button) page_3.findViewById(R.id.btn_capture);
+        mBtnUpload = (Button) page_3.findViewById(R.id.btn_upload);
         mImgView = (ImageView) page_3.findViewById(R.id.imgview_capture);
         mBtnCapture.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 startCamera();
+            }
+        });
+        mBtnUpload.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                upload();
             }
         });
         return page_3;
@@ -81,24 +91,26 @@ public class Page_3 extends Fragment {
             mImgCapturedUri = Uri.fromFile(new File(externalCacheDir, "image.jpg"));
 
             Bitmap bmp;
-            SketchImage sImg = null;
+            mImage = null;
 
             bmp = BitmapFactory.decodeFile(mImgCapturedUri.getPath());
             mImgView.setImageBitmap(bmp);
             try {
-                sImg = SketchImage.createFromPhoto(bmp);
+                mImage = SketchImage.createFromPhoto(bmp);
             } catch (IOException e) {
                 e.printStackTrace();
                 return;
             }
 
-            sImg.invert();
-            BitmapDrawable result = new BitmapDrawable(getResources(), scaleBitmap(sImg.getBitmap()));
+            mImage.invert();
+            BitmapDrawable result = new BitmapDrawable(getResources(), scaleBitmap(mImage.getBitmap()));
 
             //mImgView.setImageBitmap(bmpEdge);
             mImgView.setImageDrawable(result);
         }
         else if (requestCode == WRITE_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
+            // This part of code is useless shit currently.
+
             // The document selected by the user won't be returned in the intent.
             // Instead, a URI to that document will be contained in the return intent
             // provided to this method as a parameter.
@@ -107,9 +119,9 @@ public class Page_3 extends Fragment {
             if (data != null) {
                 uri = data.getData();
                 Log.i(TAG, "Uri: " + uri.toString());
-                if (mBmpEdge != null) {
+                /*f (mBmpEdge != null) {
                     writeFileContent(uri, mBmpOri);
-                }
+                }*/
             }
         }
         super.onActivityResult(requestCode, resultCode, data);
@@ -130,6 +142,37 @@ public class Page_3 extends Fragment {
         return detector.detectEdge(bmp);
     }
 
+    private void upload() {
+        boolean canUpload = true;
+        Bitmap bmp = null;
+        PaintImage paintImage = null;
+        if (mImage == null) {
+            canUpload = false;
+            toast("Please take a picture of your painting first.");
+            return;
+        }
+
+        bmp = mImage.getBitmapTransparent();
+        if (bmp == null) {
+            toast("Please take a picture of your painting first.");
+            return;
+        }
+
+        paintImage = new PaintImage(null, null, null, null, null);
+        ArrayList<String> catagories = new ArrayList<String>();
+        catagories.add("Vehicle");
+        paintImage.setCategory(catagories);
+        paintImage.setImage(mImage.getBitmapTransparent());
+        paintImage.setName("Test Image By Tang");
+        DataManagement parseManager = ((MainActivity) getActivity()).getCloudManager();
+        if (parseManager.saveImage(paintImage)) {
+            Log.i(TAG, "Page_3 upload failed: saveImage return true");
+            toast("Login Facebook first!");
+        }
+        else {
+            Log.i(TAG, "Page_3 upload running.");
+        }
+    }
 
     private void writeFileContent(Uri uri, Bitmap bmp)
     {
@@ -229,4 +272,9 @@ public class Page_3 extends Fragment {
         }
     };
     */
+
+    void toast(String text) {
+        Toast.makeText(getActivity(), text, Toast.LENGTH_SHORT).show();
+    }
+
 }

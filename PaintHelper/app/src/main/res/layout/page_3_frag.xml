@@ -4,12 +4,25 @@
     android:layout_height="match_parent"
     android:gravity="center"
     android:orientation="vertical" >
-    <Button
-        android:id="@+id/btn_capture"
+    <TableLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Capture"
-    />
+        android:stretchColumns="0,1">
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <Button
+                android:id="@+id/btn_capture"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Capture" />
+            <Button
+                android:id="@+id/btn_upload"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Upload" />
+        </TableRow>
+    </TableLayout>
     <ImageView
         android:id="@+id/imgview_capture"
         android:layout_width="match_parent"
