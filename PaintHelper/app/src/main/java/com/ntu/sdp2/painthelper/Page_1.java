@@ -34,7 +34,6 @@ public class Page_1 extends Fragment {
     Calendar rightNow;
     int counter=0;
     int image_id;
-    ImageView imageView_tosave;
     String message="/sdcard/111222.jpg";
 
     boolean Sd_write=false;
@@ -64,7 +63,7 @@ public class Page_1 extends Fragment {
         return false;
     }
 
-    public void save_image(){
+    public void save_image(Bitmap bit){
         String path="111";
         String Tag="save_image";
         Log.v(Tag,path);
@@ -100,9 +99,9 @@ public class Page_1 extends Fragment {
                     e.printStackTrace();
                 }
             }
-            if(imageView_tosave!=null) {
-                imageView_tosave.setDrawingCacheEnabled(true);
-                Bitmap tmp = imageView_tosave.getDrawingCache();
+            if(bit!=null) {
+
+                Bitmap tmp = bit;
                 FileOutputStream fos = null;
                 try {
                     fos = new FileOutputStream(image_file);
@@ -147,7 +146,7 @@ public class Page_1 extends Fragment {
                 RelativeLayout relativeLayout = (RelativeLayout) page_1.findViewById(R.id.relativeLayout);
                 relativeLayout.addView(imageView);
                 relativeLayout.removeViewInLayout(gridview);
-                imageView_tosave=imageView;
+
 
             }
         });
@@ -179,6 +178,12 @@ public class Page_1 extends Fragment {
                         relativeLayout.bringChildToFront(gridview);
                     }
                     if(position==1){
+                        Bitmap bit=null;
+                        /*
+                        Need to set image_to_paint
+                         */
+                        save_image(bit);
+
                         Intent intent = new Intent(getActivity(),TutorialInstantTracking.class);
 
 
@@ -186,10 +191,6 @@ public class Page_1 extends Fragment {
 
                         startActivity(intent);
 
-                    }
-                    if(position==2)
-                    {
-                        save_image();
                     }
                 }
             });
