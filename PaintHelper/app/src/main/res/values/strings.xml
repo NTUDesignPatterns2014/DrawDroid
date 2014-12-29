@@ -7,4 +7,16 @@
     <string name="app_id">1405501183074777</string>
     <string name="account_info_frag_tag">info_tag</string>
 
+    <string-array name="catagories">
+        <item>Local</item>
+        <item>Animal</item>
+        <item>Botany</item>
+        <item>People</item>
+        <item>Food</item>
+        <item>Building</item>
+        <item>Vehicle</item>
+        <item>Groceries</item>
+    </string-array>
+
+
 </resources>

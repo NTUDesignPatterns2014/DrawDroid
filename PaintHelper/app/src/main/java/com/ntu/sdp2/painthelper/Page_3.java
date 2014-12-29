@@ -14,15 +14,19 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.ParcelFileDescriptor;
 import android.provider.MediaStore;
+import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.Toast;
 
-import com.ntu.sdp2.painthelper.capture.NativeEdgeDetector;
+import com.ntu.sdp2.painthelper.capture.UploadDialogFragment;
+import com.ntu.sdp2.painthelper.utils.SketchImage;
 
 import org.opencv.android.OpenCVLoader;
 
@@ -33,24 +37,40 @@ import java.io.IOException;
 
 public class Page_3 extends Fragment {
     private static final String TAG = "Page_3";
+    public static final int UPLOAD_DIALOG_REQUEST_CODE = 888;
 
     private ImageView mImgView;
     private Button mBtnCapture;
-    private boolean mCaptured;
-    private Bitmap mBmpOri;
-    private Bitmap mBmpEdge;
+    private Button mBtnUpload;
+    private Button mBtnLoadTestImg;
+    private SketchImage mImage;
     private Uri mImgCapturedUri;
+    private int mStackLevel = 0;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View page_3 = inflater.inflate(R.layout.page_3_frag, container, false);
         mBtnCapture = (Button) page_3.findViewById(R.id.btn_capture);
+        mBtnUpload = (Button) page_3.findViewById(R.id.btn_upload);
+        mBtnLoadTestImg = (Button) page_3.findViewById(R.id.btn_testimage);
         mImgView = (ImageView) page_3.findViewById(R.id.imgview_capture);
         mBtnCapture.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 startCamera();
+            }
+        });
+        mBtnUpload.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showDialog();
+            }
+        });
+        mBtnLoadTestImg.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                loadTestImage();
             }
         });
         return page_3;
@@ -67,20 +87,25 @@ public class Page_3 extends Fragment {
             mImgCapturedUri = Uri.fromFile(new File(externalCacheDir, "image.jpg"));
 
             Bitmap bmp;
-            Bitmap bmpEdge;
+            mImage = null;
 
             bmp = BitmapFactory.decodeFile(mImgCapturedUri.getPath());
             mImgView.setImageBitmap(bmp);
-            bmpEdge = detectEdge(bmp);
-            mBmpEdge = bmpEdge;
+            try {
+                mImage = SketchImage.createFromPhoto(bmp);
+            } catch (IOException e) {
+                e.printStackTrace();
+                return;
+            }
 
-            BitmapDrawable result = new BitmapDrawable(getResources(), scaleBitmap(bmpEdge));
-            //BitmapDrawable drawable = new BitmapDrawable(getResources(), bmpEdge);
+            BitmapDrawable result = new BitmapDrawable(getResources(), scaleBitmap(mImage.getBitmapTransparent()));
 
             //mImgView.setImageBitmap(bmpEdge);
             mImgView.setImageDrawable(result);
         }
         else if (requestCode == WRITE_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
+            // This part of code is useless shit currently.
+
             // The document selected by the user won't be returned in the intent.
             // Instead, a URI to that document will be contained in the return intent
             // provided to this method as a parameter.
@@ -89,9 +114,9 @@ public class Page_3 extends Fragment {
             if (data != null) {
                 uri = data.getData();
                 Log.i(TAG, "Uri: " + uri.toString());
-                if (mBmpEdge != null) {
+                /*f (mBmpEdge != null) {
                     writeFileContent(uri, mBmpOri);
-                }
+                }*/
             }
         }
         super.onActivityResult(requestCode, resultCode, data);
@@ -107,9 +132,21 @@ public class Page_3 extends Fragment {
     }
 
 
-    private Bitmap detectEdge(Bitmap bmp) {
-        NativeEdgeDetector detector = new NativeEdgeDetector();
-        return detector.detectEdge(bmp);
+    private void loadTestImage() {
+        Bitmap bmp;
+        mImage = null;
+
+        bmp = BitmapFactory.decodeResource(getResources(), R.drawable.captureview_test);
+        mImgView.setImageBitmap(bmp);
+        try {
+            mImage = SketchImage.createFromPhoto(bmp);
+        } catch (IOException e) {
+            toast("Load failed");
+            e.printStackTrace();
+            return;
+        }
+        BitmapDrawable result = new BitmapDrawable(getResources(), scaleBitmap(mImage.getBitmapTransparent()));
+        mImgView.setImageDrawable(result);
     }
 
 
@@ -190,6 +227,29 @@ public class Page_3 extends Fragment {
     }
 
 
+    public void showDialog() {
+        mStackLevel++;
+
+        // DialogFragment.show() will take care of adding the fragment
+        // in a transaction.  We also want to remove any currently showing
+        // dialog, so make our own transaction and take care of that here.
+        FragmentTransaction ft = getFragmentManager().beginTransaction();
+        Fragment prev = getFragmentManager().findFragmentByTag("dialog");
+        if (prev != null) {
+            ft.remove(prev);
+        }
+        ft.addToBackStack(null);
+
+        // Create and show the dialog.
+        DialogFragment newFragment = UploadDialogFragment.newInstance(mImage.getBitmapTransparent());
+        newFragment.setTargetFragment(this, UPLOAD_DIALOG_REQUEST_CODE);
+        newFragment.show(ft, "dialog");
+    }
+
+
+    void toast(String text) {
+        Toast.makeText(getActivity(), text, Toast.LENGTH_SHORT).show();
+    }
 
     /* Below is for OpenCV */
     /*
@@ -211,4 +271,6 @@ public class Page_3 extends Fragment {
         }
     };
     */
+
+
 }

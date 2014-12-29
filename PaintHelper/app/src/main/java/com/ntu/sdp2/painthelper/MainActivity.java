@@ -18,7 +18,6 @@ import com.ntu.sdp2.painthelper.BackButtonHandler.FragmentHandler;
 import com.ntu.sdp2.painthelper.DataManagement.DataManagement;
 import com.ntu.sdp2.painthelper.DataManagement.ParseLocalManager;
 import com.ntu.sdp2.painthelper.DataManagement.ParseManager;
-import com.parse.Parse;
 
 import org.opencv.android.OpenCVLoader;
 
@@ -92,13 +91,6 @@ public class MainActivity extends FragmentActivity {
         actionBar.addTab(actionBar.newTab().setText("OAO2").setTabListener(tabListener));
         actionBar.addTab(actionBar.newTab().setText("OAO3").setTabListener(tabListener));
         actionBar.addTab(actionBar.newTab().setText("OAO4").setTabListener(tabListener));
-
-
-        // Parse Init
-        // Enable Local Datastore.
-        Parse.enableLocalDatastore(this);
-
-        Parse.initialize(this, "DI2qUxaZ2sNxsc7u8D7gnLD13NzVGrCQbbsuNkzn", "AE4g2zci5ke08QFqfqRrQWy0BshRdhZNelNfwyui");
 
         // initialize data manager
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);

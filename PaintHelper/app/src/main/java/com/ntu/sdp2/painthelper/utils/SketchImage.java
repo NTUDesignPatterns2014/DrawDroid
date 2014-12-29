@@ -1,6 +1,7 @@
 package com.ntu.sdp2.painthelper.utils;
 
 import android.graphics.Bitmap;
+import android.graphics.Color;
 
 import java.io.IOException;
 
@@ -21,13 +22,20 @@ public class SketchImage {
     private int mWidth = 0;
     private int mHeight = 0;
 
-    public Bitmap getBitmap() {
+    public final Bitmap getBitmap() {
         return mBmp;
     }
     public int getWidth() {
         return mWidth;
     }
     public int getHeight() { return mHeight; }
+
+    public final Bitmap getBitmapTransparent() {
+        invert();
+        Bitmap bmp = changeWhiteToTrans(mBmp);
+        invert();
+        return bmp;
+    }
 
 
     public void resize(int width, int height) {
@@ -99,6 +107,39 @@ public class SketchImage {
         processor.invert(mBmp);
     }
 
+    private static void changeColor(Bitmap bmp, int clrSrc, int clrDst) {
+        if(bmp == null) {
+            return;
+        }
+        // Source image size
+        int width = bmp.getWidth();
+        int height = bmp.getHeight();
+        int[] pixels = new int[width * height];
+        //get pixels
+        bmp.getPixels(pixels, 0, width, 0, 0, width, height);
+
+        for(int x = 0; x < pixels.length; ++x) {
+            pixels[x] = (pixels[x] == clrSrc) ? clrDst : pixels[x];
+        }
+        // create result bitmap output
+        Bitmap result = Bitmap.createBitmap(width, height, bmp.getConfig());
+        //set pixels
+        result.setPixels(pixels, 0, width, 0, 0, width, height);
+    }
+
+
+    private static Bitmap changeWhiteToTrans(Bitmap bmp) {
+        Bitmap bmpOut = bmp.copy(bmp.getConfig(), true);
+        changeColor(bmpOut, Color.WHITE, Color.TRANSPARENT);
+        return bmpOut;
+    }
+
+    private static Bitmap changeTransToWhite(Bitmap bmp) {
+        Bitmap bmpOut = bmp.copy(bmp.getConfig(), true);
+        changeColor(bmp, Color.TRANSPARENT, Color.WHITE);
+        return bmpOut;
+    }
+
 
     private void dilate(int iteration) {
         NativeImgProcessor processor = new NativeImgProcessor();
@@ -143,7 +184,8 @@ public class SketchImage {
     public static SketchImage createFromSketch(Bitmap bmp) throws IOException {
         // TODO
         SketchImage inst = new SketchImage();
-        inst.mBmp = Bitmap.createScaledBitmap(bmp, WIDTH, HEIGHT, false);
+        inst.mBmp = changeTransToWhite(Bitmap.createScaledBitmap(bmp, WIDTH, HEIGHT, false));
+        inst.invert();
         inst.mBmpOriginal = inst.mBmp.copy(inst.mBmp.getConfig(), true);
         inst.mWidth = WIDTH;
         inst.mHeight = HEIGHT;
