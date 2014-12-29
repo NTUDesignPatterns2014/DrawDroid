@@ -112,15 +112,19 @@ public class ParseManager implements CloudManagement {
         return initialized;
     }
 
+    // empty category string means all objects
     @Override
     public void getImageByCategory(String category, final ThumbCallBack callBack) {
         ParseQuery<ParseObject> query = new ParseQuery<ParseObject>("Thumbnails");
-        query.whereEqualTo("Category", category);
+        if( !category.equals("") ){
+            query.whereEqualTo("Category", category);
+        }
+
         query.findInBackground(new FindCallback<ParseObject>() {
             @Override
             public void done(List<ParseObject> parseObjects, ParseException e) {
-                if(e == null) {
-                    for(final ParseObject objects:parseObjects) {
+                if (e == null) {
+                    for (final ParseObject objects : parseObjects) {
                         objects.getParseFile("Img").getDataInBackground(new GetDataCallback() {
                             @Override
                             public void done(byte[] bytes, ParseException e) {
@@ -128,11 +132,12 @@ public class ParseManager implements CloudManagement {
                             }
                         });
                     }
-                }else{
+                } else {
                     onImageGet(null, null, callBack);
                 }
             }
         });
+
     }
 
     // This method can only be used to get original image but not thumbnail.

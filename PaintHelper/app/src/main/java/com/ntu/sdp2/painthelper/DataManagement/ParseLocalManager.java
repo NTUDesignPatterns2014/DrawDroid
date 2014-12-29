@@ -85,7 +85,9 @@ public class ParseLocalManager implements LocalDataManagement {
     public void getImageByCategory(String category, final ThumbCallBack callBack) {
         ParseQuery<ParseObject> query = new ParseQuery<ParseObject>("Thumbnails");
         query.fromLocalDatastore();
-        query.whereEqualTo("Category", category);
+        if(!category.equals("")) {
+            query.whereEqualTo("Category", category);
+        }
         query.findInBackground(new FindCallback<ParseObject>() {
             @Override
             public void done(List<ParseObject> parseObjects, ParseException e) {
