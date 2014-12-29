@@ -14,7 +14,9 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.ParcelFileDescriptor;
 import android.provider.MediaStore;
+import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -23,9 +25,7 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.Toast;
 
-import com.ntu.sdp2.painthelper.DataManagement.DataManagement;
-import com.ntu.sdp2.painthelper.DataManagement.Images.PaintImage;
-import com.ntu.sdp2.painthelper.capture.NativeEdgeDetector;
+import com.ntu.sdp2.painthelper.capture.UploadDialogFragment;
 import com.ntu.sdp2.painthelper.utils.SketchImage;
 
 import org.opencv.android.OpenCVLoader;
@@ -34,10 +34,10 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.util.ArrayList;
 
 public class Page_3 extends Fragment {
     private static final String TAG = "Page_3";
+    public static final int UPLOAD_DIALOG_REQUEST_CODE = 888;
 
     private ImageView mImgView;
     private Button mBtnCapture;
@@ -45,6 +45,7 @@ public class Page_3 extends Fragment {
     private Button mBtnLoadTestImg;
     private SketchImage mImage;
     private Uri mImgCapturedUri;
+    private int mStackLevel = 0;
 
     @Override
     public void onResume() {
@@ -76,7 +77,7 @@ public class Page_3 extends Fragment {
         mBtnUpload.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                upload();
+                showDialog();
             }
         });
         mBtnLoadTestImg.setOnClickListener(new View.OnClickListener() {
@@ -110,8 +111,7 @@ public class Page_3 extends Fragment {
                 return;
             }
 
-            mImage.invert();
-            BitmapDrawable result = new BitmapDrawable(getResources(), scaleBitmap(mImage.getBitmap()));
+            BitmapDrawable result = new BitmapDrawable(getResources(), scaleBitmap(mImage.getBitmapTransparent()));
 
             //mImgView.setImageBitmap(bmpEdge);
             mImgView.setImageDrawable(result);
@@ -145,43 +145,6 @@ public class Page_3 extends Fragment {
     }
 
 
-    private Bitmap detectEdge(Bitmap bmp) {
-        NativeEdgeDetector detector = new NativeEdgeDetector();
-        return detector.detectEdge(bmp);
-    }
-
-    private void upload() {
-        boolean canUpload = true;
-        Bitmap bmp = null;
-        PaintImage paintImage = null;
-        if (mImage == null) {
-            canUpload = false;
-            toast("Please take a picture of your painting first.");
-            return;
-        }
-
-        bmp = mImage.getBitmapTransparent();
-        if (bmp == null) {
-            toast("Please take a picture of your painting first.");
-            return;
-        }
-
-        paintImage = new PaintImage(null, null, null, null, null);
-        ArrayList<String> catagories = new ArrayList<String>();
-        catagories.add("Vehicle");
-        paintImage.setCategory(catagories);
-        paintImage.setImage(mImage.getBitmapTransparent());
-        paintImage.setName("Test Image By Tang");
-        DataManagement parseManager = ((MainActivity) getActivity()).getCloudManager();
-        if (parseManager.saveImage(paintImage)) {
-            Log.i(TAG, "Page_3 upload failed: saveImage return true");
-            toast("Login Facebook first!");
-        }
-        else {
-            Log.i(TAG, "Page_3 upload running.");
-        }
-    }
-
     private void loadTestImage() {
         Bitmap bmp;
         mImage = null;
@@ -195,8 +158,7 @@ public class Page_3 extends Fragment {
             e.printStackTrace();
             return;
         }
-        mImage.invert();
-        BitmapDrawable result = new BitmapDrawable(getResources(), scaleBitmap(mImage.getBitmap()));
+        BitmapDrawable result = new BitmapDrawable(getResources(), scaleBitmap(mImage.getBitmapTransparent()));
         mImgView.setImageDrawable(result);
     }
 
@@ -278,6 +240,29 @@ public class Page_3 extends Fragment {
     }
 
 
+    public void showDialog() {
+        mStackLevel++;
+
+        // DialogFragment.show() will take care of adding the fragment
+        // in a transaction.  We also want to remove any currently showing
+        // dialog, so make our own transaction and take care of that here.
+        FragmentTransaction ft = getFragmentManager().beginTransaction();
+        Fragment prev = getFragmentManager().findFragmentByTag("dialog");
+        if (prev != null) {
+            ft.remove(prev);
+        }
+        ft.addToBackStack(null);
+
+        // Create and show the dialog.
+        DialogFragment newFragment = UploadDialogFragment.newInstance(mImage.getBitmapTransparent());
+        newFragment.setTargetFragment(this, UPLOAD_DIALOG_REQUEST_CODE);
+        newFragment.show(ft, "dialog");
+    }
+
+
+    void toast(String text) {
+        Toast.makeText(getActivity(), text, Toast.LENGTH_SHORT).show();
+    }
 
     /* Below is for OpenCV */
     /*
@@ -300,8 +285,5 @@ public class Page_3 extends Fragment {
     };
     */
 
-    void toast(String text) {
-        Toast.makeText(getActivity(), text, Toast.LENGTH_SHORT).show();
-    }
 
 }
