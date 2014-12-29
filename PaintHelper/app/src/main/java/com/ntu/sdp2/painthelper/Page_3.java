@@ -42,6 +42,7 @@ public class Page_3 extends Fragment {
     private ImageView mImgView;
     private Button mBtnCapture;
     private Button mBtnUpload;
+    private Button mBtnLoadTestImg;
     private SketchImage mImage;
     private Uri mImgCapturedUri;
 
@@ -64,6 +65,7 @@ public class Page_3 extends Fragment {
         View page_3 = inflater.inflate(R.layout.page_3_frag, container, false);
         mBtnCapture = (Button) page_3.findViewById(R.id.btn_capture);
         mBtnUpload = (Button) page_3.findViewById(R.id.btn_upload);
+        mBtnLoadTestImg = (Button) page_3.findViewById(R.id.btn_testimage);
         mImgView = (ImageView) page_3.findViewById(R.id.imgview_capture);
         mBtnCapture.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -75,6 +77,12 @@ public class Page_3 extends Fragment {
             @Override
             public void onClick(View v) {
                 upload();
+            }
+        });
+        mBtnLoadTestImg.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                loadTestImage();
             }
         });
         return page_3;
@@ -173,6 +181,25 @@ public class Page_3 extends Fragment {
             Log.i(TAG, "Page_3 upload running.");
         }
     }
+
+    private void loadTestImage() {
+        Bitmap bmp;
+        mImage = null;
+
+        bmp = BitmapFactory.decodeResource(getResources(), R.drawable.captureview_test);
+        mImgView.setImageBitmap(bmp);
+        try {
+            mImage = SketchImage.createFromPhoto(bmp);
+        } catch (IOException e) {
+            toast("Load failed");
+            e.printStackTrace();
+            return;
+        }
+        mImage.invert();
+        BitmapDrawable result = new BitmapDrawable(getResources(), scaleBitmap(mImage.getBitmap()));
+        mImgView.setImageDrawable(result);
+    }
+
 
     private void writeFileContent(Uri uri, Bitmap bmp)
     {
