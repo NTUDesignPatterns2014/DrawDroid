@@ -60,16 +60,25 @@ public class ParseManager implements CloudManagement {
         // This is for development !! Remember to remove this.
         List<ParseObject> list = new ArrayList<>();
         ParseObject object = new ParseObject("Category");
-        object.put("Category", "1");
+        object.put("Category", "Animal");
         list.add(object);
         object = new ParseObject("Category");
-        object.put("Category", "2");
+        object.put("Category", "Botany");
         list.add(object);
         object = new ParseObject("Category");
-        object.put("Category", "3");
+        object.put("Category", "People");
         list.add(object);
         object = new ParseObject("Category");
-        object.put("Category", "4");
+        object.put("Category", "Food");
+        list.add(object);
+        object = new ParseObject("Category");
+        object.put("Category", "Building");
+        list.add(object);
+        object = new ParseObject("Category");
+        object.put("Category", "Vehicle");
+        list.add(object);
+        object = new ParseObject("Category");
+        object.put("Category", "Groceries");
         list.add(object);
         ParseObject.saveAllInBackground(list);
     */
@@ -77,29 +86,45 @@ public class ParseManager implements CloudManagement {
         if( !initialized ) {
             categoryMap = new HashMap<String, ParseObject>() ;
             ParseQuery<ParseObject> query = new ParseQuery<ParseObject>("Category");
-            query.getFirstInBackground(new GetCallback<ParseObject>() {
+            query.findInBackground(new FindCallback<ParseObject>() {
                 @Override
-                public void done(ParseObject parseObject, ParseException e) {
-                    if(e != null) {
-                        categoryMap.put(parseObject.getString("category"), parseObject);
+                public void done(List<ParseObject> parseObjects, ParseException e) {
+                    Log.d(TAG, "DONE!!!");
+                    if(parseObjects.size()==0){
+                        Log.d(TAG,"NO OBJECTS!!");
+                        return;
+                    }
+                    if (e == null) {
+                        for (ParseObject object : parseObjects) {
+                            categoryMap.put(object.getString("Category"), object);
+                            Log.d(TAG, object.getString("Category"));
+                        }
                         initialized = true;
+                    }else{
+                        //Log.d(TAG,Integer.toString(e.getCode()));
                     }
                 }
             });
         }
     }
 
+    public static boolean isInitialized() {
+        return initialized;
+    }
 
-
+    // empty category string means all objects
     @Override
     public void getImageByCategory(String category, final ThumbCallBack callBack) {
         ParseQuery<ParseObject> query = new ParseQuery<ParseObject>("Thumbnails");
-        query.whereEqualTo("Category", category);
+        if( !category.equals("") ){
+            query.whereEqualTo("Category", category);
+        }
+
         query.findInBackground(new FindCallback<ParseObject>() {
             @Override
             public void done(List<ParseObject> parseObjects, ParseException e) {
-                if(e == null) {
-                    for(final ParseObject objects:parseObjects) {
+                if (e == null) {
+                    for (final ParseObject objects : parseObjects) {
                         objects.getParseFile("Img").getDataInBackground(new GetDataCallback() {
                             @Override
                             public void done(byte[] bytes, ParseException e) {
@@ -107,11 +132,12 @@ public class ParseManager implements CloudManagement {
                             }
                         });
                     }
-                }else{
+                } else {
                     onImageGet(null, null, callBack);
                 }
             }
         });
+
     }
 
     // This method can only be used to get original image but not thumbnail.
@@ -284,7 +310,7 @@ public class ParseManager implements CloudManagement {
     // each ParseObject has a list of categories it belong to.
     private void addDetails(ParseObject parseObject, PaintImage paintImage){
         parseObject.put("Name", paintImage.getName());
-        parseObject.put("user", parseObject.getParseUser("user"));
+        parseObject.put("user", ParseUser.getCurrentUser());
         ArrayList<ParseObject> categoryList = new ArrayList<>();
         for(String category : paintImage.getCategory()){
             categoryList.add(categoryMap.get(category));

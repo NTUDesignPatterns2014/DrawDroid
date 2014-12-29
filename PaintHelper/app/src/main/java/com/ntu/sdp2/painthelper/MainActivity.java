@@ -22,6 +22,7 @@ import com.ntu.sdp2.painthelper.DataManagement.LocalDataManagement;
 import com.ntu.sdp2.painthelper.DataManagement.ParseLocalManager;
 import com.ntu.sdp2.painthelper.DataManagement.ParseManager;
 import com.parse.Parse;
+import com.parse.ParseFacebookUtils;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -85,7 +86,7 @@ public class MainActivity extends FragmentActivity {
         Parse.enableLocalDatastore(this);
 
         Parse.initialize(this, "DI2qUxaZ2sNxsc7u8D7gnLD13NzVGrCQbbsuNkzn", "AE4g2zci5ke08QFqfqRrQWy0BshRdhZNelNfwyui");
-
+        ParseFacebookUtils.initialize("1405501183074777");
         // initialize data manager
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
         if(preferences.getBoolean("First", false)){
