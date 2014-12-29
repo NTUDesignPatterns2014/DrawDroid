@@ -117,7 +117,7 @@ public class ParseManager implements CloudManagement {
     public void getImageByCategory(String category, final ThumbCallBack callBack) {
         ParseQuery<ParseObject> query = new ParseQuery<ParseObject>("Thumbnails");
         if( !category.equals("") ){
-            query.whereEqualTo("Category", category);
+            query.whereEqualTo("Category", categoryMap.get(category));
         }
 
         query.findInBackground(new FindCallback<ParseObject>() {
@@ -146,6 +146,7 @@ public class ParseManager implements CloudManagement {
         ParseQuery<ParseObject> query = new ParseQuery<ParseObject>("Img");
         query.getInBackground(id, new GetCallback<ParseObject>() {
             public void done(ParseObject object, ParseException e) {
+                Log.i(TAG, "IdImageDone");
                 final ParseObject newObject = object;
                 if (e == null) {
                     object.getParseFile("Img").getDataInBackground(new GetDataCallback() {
@@ -322,8 +323,10 @@ public class ParseManager implements CloudManagement {
         if(parseObject != null) {
             PaintImage paintImage;
             paintImage = parseToPaint(parseObject, bytes, "Origin");
+            Log.i(TAG, "onIdImageGet");
             callBack.done(paintImage);
         }
+        Log.i(TAG, "onIdImageNOTGet");
     }
     private void onImageGet(ParseObject parseObject, byte[] bytes, ElementCallBack callBack){
         if(parseObject != null) {
@@ -336,14 +339,16 @@ public class ParseManager implements CloudManagement {
         if(parseObject != null) {
             PaintImage paintImage;
             paintImage = parseToPaint(parseObject, bytes, "Thumb");
+            Log.i(TAG, "onImageGet");
             callBack.done(paintImage);
         }
+        Log.i(TAG, "onImageNOTGet");
     }
     // convert ParseObject to PaintImage
     private PaintImage parseToPaint(ParseObject parseObject, byte[] bytes, String type){
         String name = parseObject.getString("Name");
-        String author = parseObject.getParseUser("user").getUsername();
-        String id = parseObject.getObjectId();
+        //String author = parseObject.getParseUser("user").getUsername();
+        String id = parseObject.getString("ImgID");
         List<ParseObject> list =  parseObject.getList("Category");
         List<String> categoryList = new ArrayList<String>();
         for(ParseObject category : list){
@@ -353,13 +358,13 @@ public class ParseManager implements CloudManagement {
 
         switch (type){
             case "Origin":
-                return new OriginImage(author, name, bitmap, id, categoryList);
+                return new OriginImage("author", name, bitmap, id, categoryList);
             case "Thumb":
-                return new ThumbImage(author, name, bitmap, id, categoryList);
+                return new ThumbImage("author", name, bitmap, id, categoryList);
             case "Element":
-                return new PaintElement(author, name, bitmap, id, categoryList);
+                return new PaintElement("author", name, bitmap, id, categoryList);
             default:
-                return new PaintImage(author, name, bitmap, id, categoryList);
+                return new PaintImage("author", name, bitmap, id, categoryList);
         }
 
     }

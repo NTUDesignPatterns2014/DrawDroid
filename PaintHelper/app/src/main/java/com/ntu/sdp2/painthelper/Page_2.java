@@ -16,6 +16,7 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -43,6 +44,7 @@ import android.widget.BaseAdapter;
 import android.widget.GridView;
 import android.widget.ImageView;
 
+import com.ntu.sdp2.painthelper.DataManagement.CallBack.OriginCallback;
 import com.ntu.sdp2.painthelper.settings.Myadapter;
 
 
@@ -114,91 +116,64 @@ public class Page_2 extends Fragment {
      */
     public static class PlanetFragment extends Fragment {
         public static final String ARG_SORT_NUMBER = "sort_number";
-        private Button Button01 = null;
-        private Button Button02 = null;
         private int i;
         private String categroy;
-        List<Bitmap> gridviewitems;
-        private Bitmap bp=null;
-
+        private String imageid;
+        private PaintImage picture;
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
                                  Bundle savedInstanceState) {
             View rootView = inflater.inflate(R.layout.fragment_sort, container, false);
-            Button01 = (Button) rootView.findViewById(R.id.Button01);
-            Button02 = (Button) rootView.findViewById(R.id.Button02);
-            Button01.setOnClickListener(new Button01listener());
-            Button02.setOnClickListener(new Button02listener());
             final GridView gridview = (GridView)rootView.findViewById(R.id.gridView);
-            final Myadapter adapter= new Myadapter(this.getActivity(),gridviewitems);
+            final Myadapter adapter= new Myadapter(this.getActivity());
             gridview.setAdapter(adapter);
             gridview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                 //@Override
                 public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                    ImageView imageView = (ImageView) adapter.getItem(position);
-                    Fragment fragment = new ImageFragment();
-                    Bitmap bitmap = ((BitmapDrawable)imageView.getDrawable()).getBitmap();
-                    ((ImageFragment)fragment).setImage(bitmap);
+                    imageid = (String) adapter.getPiantImageID(position);
 
-                    FragmentManager fragmentManager = getFragmentManager();
-                    FragmentTransaction transaction = fragmentManager.beginTransaction();
-                    transaction.replace(R.id.content_frame, fragment);
-                    transaction.addToBackStack("msg_fragment");
-                    transaction.commit();
+                    ((MainActivity)getActivity()).getCloudManager().getImageById(imageid,new OriginCallback() {
+                        @Override
+                        public void done(PaintImage paintImage) {
+                            Log.i("Gallery", "OriginDone");
+                            picture = paintImage;
+                            Fragment fragment = new ImageFragment();
+                            //Bitmap bitmap = ((BitmapDrawable)imageView.getDrawable()).getBitmap();
+                            ((ImageFragment)fragment).setImage(picture);
+
+                            FragmentManager fragmentManager = getFragmentManager();
+                            FragmentTransaction transaction = fragmentManager.beginTransaction();
+                            transaction.replace(R.id.content_frame, fragment);
+                            transaction.addToBackStack("msg_fragment");
+                            transaction.commit();
+                        }
+                    });
+
                 }
             });
 
             i = getArguments().getInt(ARG_SORT_NUMBER);
             categroy = getResources().getStringArray(R.array.sort_array)[i];
-                ((MainActivity)getActivity()).getCloudManager().getImageByCategory(categroy,new ThumbCallBack() {
-                    @Override
-                    public void done(PaintImage paintImage) {
-                        //TODO
-                    }
-                });
+            Log.i("Gallery", "getImageByCategory");
+            ((MainActivity)getActivity()).getCloudManager().getImageByCategory(categroy,adapter);
 
             return rootView;
         }
 
-        class Button01listener implements View.OnClickListener{
-
-            @Override
-            public void onClick(View v) {
-                ((MainActivity)getActivity()).getCloudManager().getImageByCategory(categroy,new ThumbCallBack() {
-                    @Override
-                    public void done(PaintImage paintImage) {
-                        //TODO
-                    }
-                });
-            }
-        }
-        class Button02listener implements View.OnClickListener{
-
-            @Override
-            public void onClick(View v) {
-                ((MainActivity)getActivity()).getCloudManager().getImageByCategory(categroy,new ThumbCallBack() {
-                    @Override
-                    public void done(PaintImage paintImage) {
-                        //TODO
-                    }
-                });
-            }
-        }
-
 
         public static class ImageFragment extends Fragment{
-            public static final String ARG_IMAGE = "image";
             private ImageView image;
-            private Bitmap mybitmap;
-            public void setImage(Bitmap bitmap){
-                mybitmap = bitmap;
+            private PaintImage mpaintImage;
+
+            public void setImage(PaintImage paintImage){
+                mpaintImage = paintImage;
             }
 
             public View onCreateView(LayoutInflater inflater, ViewGroup container,
                                      Bundle savedInstanceState){
                 View rootView = inflater.inflate(R.layout.image, container, false);
                 image = (ImageView) rootView.findViewById(R.id.image);
-                image.setImageBitmap(mybitmap);
+                image.setImageBitmap(mpaintImage.getImage());
                 image.setOnClickListener(new imagelistener());
                 setHasOptionsMenu(true);
                 return rootView;
@@ -213,12 +188,21 @@ public class Page_2 extends Fragment {
             @Override
             public boolean onOptionsItemSelected(MenuItem item) {
                 if(item.getItemId() == 1){
-                    //TODO
+                    ((MainActivity)getActivity()).getCloudManager().saveImage(mpaintImage);
                 }
                 if(item.getItemId() == 2){
                     AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
                     builder.setTitle("detail");
-                    //builder.setMessage(Message);
+                    String author=mpaintImage.getAuthor();
+                    String name=mpaintImage.getName();
+                    String id=mpaintImage.getId();
+                    List<String> category=mpaintImage.getCategory();
+                    String msg = "";
+                    msg += "Author:"+author+"\n"+"Name:"+name+"\n"+"ID:"+id+"\n"+"Category:";
+                    for (String cat : category) {
+                        msg += (cat + " ");
+                    }
+                    builder.setMessage(msg);
                     builder.setPositiveButton("Exit",new DialogInterface.OnClickListener(){
                         public void onClick(DialogInterface dialog,int which){
                             dialog.dismiss();
