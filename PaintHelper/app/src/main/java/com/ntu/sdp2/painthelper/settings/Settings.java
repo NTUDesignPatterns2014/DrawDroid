@@ -1,6 +1,7 @@
 package com.ntu.sdp2.painthelper.settings;
 
 import android.app.Activity;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
@@ -10,16 +11,24 @@ import android.support.v4.app.ListFragment;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import com.ntu.sdp2.painthelper.BackButtonHandler.Page4Handler;
+import com.ntu.sdp2.painthelper.DataManagement.CloudManagement;
+import com.ntu.sdp2.painthelper.DataManagement.Images.PaintImage;
+import com.ntu.sdp2.painthelper.DataManagement.ParseManager;
 import com.ntu.sdp2.painthelper.MainActivity;
 import com.ntu.sdp2.painthelper.R;
+import com.parse.ParseUser;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by lou on 2014/12/12.
  */
 public class Settings extends ListFragment {
-    static final String[] itemList = {"Account", "Default Tab", "About"};
+    static final String[] itemList = {"Account", "Default Tab", "About", "saveImageTest"};
     //static Account_Info account_info = new Account_Info();
 
 
@@ -54,6 +63,25 @@ public class Settings extends ListFragment {
                 fragmentTransaction.commit();
                 fragmentManager.executePendingTransactions();
                 //Toast.makeText((Activity)getActivity(), "add!!", Toast.LENGTH_LONG).show();
+                break;
+
+            // THIS IS FOR DEBUGGGGGG!!
+            case 3:
+                CloudManagement cloudManager = (CloudManagement)((MainActivity)getActivity()).getCloudManager();
+                ParseUser user = ParseUser.getCurrentUser();
+                if(user == null)break;
+                if(!((ParseManager)cloudManager).isInitialized()){
+                    Toast.makeText(getActivity(), "init not finish", Toast.LENGTH_SHORT).show();
+                    break;
+                }
+                List<String> list = new ArrayList<>();
+                list.add("Food");
+                Bitmap.Config conf = Bitmap.Config.ARGB_8888; // see other conf types
+                Bitmap bmp = Bitmap.createBitmap(800, 600, conf); // this creates a MUTABLE bitmap
+                PaintImage paintImage = new PaintImage(user.getUsername(),"Test" , bmp, new String(), list );
+                if(cloudManager.saveImage(paintImage)){
+                    Toast.makeText(getActivity(), "not loggin!!", Toast.LENGTH_SHORT).show();
+                }
 
         }
 

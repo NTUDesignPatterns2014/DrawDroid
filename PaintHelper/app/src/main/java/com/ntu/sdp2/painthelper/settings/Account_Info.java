@@ -18,6 +18,10 @@ import com.facebook.model.GraphUser;
 import com.facebook.widget.LoginButton;
 import com.facebook.widget.ProfilePictureView;
 import com.ntu.sdp2.painthelper.R;
+import com.parse.ParseFacebookUtils;
+import com.parse.ParseUser;
+
+import java.util.Date;
 
 /**
  * Created by lou on 2014/12/11.
@@ -93,6 +97,7 @@ public class Account_Info extends Fragment{
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         uiHelper.onActivityResult(requestCode, resultCode, data);
+
         Log.d(TAG, "onActivityResult!");
     }
 
@@ -143,8 +148,18 @@ public class Account_Info extends Fragment{
                                 // Set the id for the ProfilePictureView
                                 // view that in turn displays the profile picture.
                                 profilePic.setProfileId(user.getId());
-                                // Set the Textview's text to the user's name.
+                                // Set the TextView's text to the user's name.
                                 userInfo.setText(user.getName());
+
+                                // add parseUser
+                                if(ParseUser.getCurrentUser()==null){
+                                    try {
+                                        Date date = new Date();
+                                        ParseFacebookUtils.logInInBackground(user.getId(), session.getAccessToken(), new Date(date.getYear(), date.getMonth()+3, date.getDay()));
+                                    }catch (Exception e){
+                                        // TODO: ParseUser.become exception
+                                    }
+                                }
                             }
                         }
                         if (response.getError() != null) {

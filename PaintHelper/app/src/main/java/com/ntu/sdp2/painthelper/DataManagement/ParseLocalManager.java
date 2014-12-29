@@ -71,7 +71,7 @@ public class ParseLocalManager implements LocalDataManagement {
             query.getFirstInBackground(new GetCallback<ParseObject>() {
                 @Override
                 public void done(ParseObject parseObject, ParseException e) {
-                    if(e != null) {
+                    if(e == null) {
                         categoryMap.put(parseObject.getString("category"), parseObject);
                         initialized = true;
                     }

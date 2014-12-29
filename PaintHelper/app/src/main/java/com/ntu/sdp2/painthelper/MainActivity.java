@@ -18,7 +18,6 @@ import com.ntu.sdp2.painthelper.BackButtonHandler.FragmentHandler;
 import com.ntu.sdp2.painthelper.DataManagement.DataManagement;
 import com.ntu.sdp2.painthelper.DataManagement.ParseLocalManager;
 import com.ntu.sdp2.painthelper.DataManagement.ParseManager;
-
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
