@@ -42,19 +42,6 @@ public class Page_3 extends Fragment {
     private Uri mImgCapturedUri;
 
     @Override
-    public void onResume() {
-        super.onResume();
-        if (!OpenCVLoader.initDebug()) {
-            // Handle initialization error
-            Log.e(TAG, "init failed");
-        }
-        /*if (!mCaptured) {
-            startCamera();
-            mCaptured = true;
-        }*/
-    }
-
-    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View page_3 = inflater.inflate(R.layout.page_3_frag, container, false);

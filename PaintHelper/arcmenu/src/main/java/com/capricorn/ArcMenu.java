@@ -36,9 +36,9 @@ import android.widget.RelativeLayout;
 /**
  * A custom view that looks like the menu in <a href="https://path.com">Path
  * 2.0</a> (for iOS).
- * 
+ *
  * @author Capricorn
- * 
+ *
  */
 public class ArcMenu extends RelativeLayout {
     private ArcLayout mArcLayout;

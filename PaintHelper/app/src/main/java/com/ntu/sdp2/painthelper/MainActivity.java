@@ -20,6 +20,8 @@ import com.ntu.sdp2.painthelper.DataManagement.ParseLocalManager;
 import com.ntu.sdp2.painthelper.DataManagement.ParseManager;
 import com.parse.Parse;
 
+import org.opencv.android.OpenCVLoader;
+
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
@@ -30,6 +32,21 @@ public class MainActivity extends FragmentActivity {
     BackButtonHandler backButtonHandler = new BackButtonHandler();
     DataManagement cloudManager;
     DataManagement localManager;
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (!OpenCVLoader.initDebug()) {
+            // Handle initialization error
+            Log.e("Main", "init failed");
+        }
+
+        Log.i("Main", "OpenCV load ");
+        /*if (!mCaptured) {
+            startCamera();
+            mCaptured = true;
+        }*/
+    }
 
     protected void onCreate(Bundle savedInstanceState) {
         Log.i("MainActivity", "onCreate = " + this.toString());

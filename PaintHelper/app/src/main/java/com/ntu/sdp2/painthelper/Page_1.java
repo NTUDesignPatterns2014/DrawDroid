@@ -37,8 +37,7 @@ public class Page_1 extends Fragment {
 
         gridview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
-                //Toast.makeText(page_1.getContext(), "" + position, Toast.LENGTH_SHORT).show();
-                MovableImageView imageView = (MovableImageView) imageAdapter.getItem(position);
+                MovableImageView imageView = imageAdapter.getItem(position);
                 RelativeLayout relativeLayout = (RelativeLayout) page_1.findViewById(R.id.relativeLayout);
                 relativeLayout.addView(imageView);
                 relativeLayout.removeViewInLayout(gridview);
@@ -51,27 +50,38 @@ public class Page_1 extends Fragment {
         int[] images = {
                 R.drawable.composer_camera,
                 R.drawable.composer_music,
-                R.drawable.composer_place,
-                R.drawable.composer_sleep,
                 R.drawable.composer_with};
         final int itemCount = images.length;
         for (int i=0; i<itemCount; i++) {
-            ImageView item = new ImageView(this.getActivity());
+            final ImageView item = new ImageView(this.getActivity());
             item.setImageResource(images[i]);
             final int position = i;
             cornerButton.addItem(item, new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    //Toast.makeText(page_1.getContext(), "" + position, Toast.LENGTH_SHORT).show();
                     if (position == 0) {
                         RelativeLayout relativeLayout = (RelativeLayout) page_1.findViewById(R.id.relativeLayout);
                         relativeLayout.addView(gridview);
                         relativeLayout.bringChildToFront(gridview);
                     }
+                    else if (position == 1) {
+                        /*
+                        public Bitmap takeScreenshot() {
+                            View rootView = findViewById(android.R.id.content).getRootView();
+                            rootView.setDrawingCacheEnabled(true);
+                            return rootView.getDrawingCache();
+                        }
+                         */
+                        cornerButton.setVisibility(View.INVISIBLE);
+                        page_1.setDrawingCacheEnabled(true);
+                        MovableImageView imageView = new MovableImageView(page_1.getContext());
+                        imageView.setImageBitmap(page_1.getDrawingCache());
+                        RelativeLayout relativeLayout = (RelativeLayout) page_1.findViewById(R.id.relativeLayout);
+                        relativeLayout.addView(imageView);
+                    }
                 }
             });
         }
-
         return page_1;
     }
 }

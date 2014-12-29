@@ -1,25 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content" >
+<merge xmlns:android="http://schemas.android.com/apk/res/android" >
 
     <com.capricorn.ArcLayout
         xmlns:custom="http://schemas.android.com/apk/res-auto"
         android:id="@+id/item_layout"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentRight="true"
-        custom:fromDegrees="0.0"
-        custom:toDegrees="120.0"
-        custom:childSize="25dp" />
+        android:layout_centerInParent="true"
+        custom:childSize="44px"
+        custom:fromDegrees="270.0"
+        custom:toDegrees="360.0" />
 
     <FrameLayout
         android:id="@+id/control_layout"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentRight="true"
+        android:layout_centerInParent="true"
         android:background="@drawable/composer_button" >
 
         <ImageView
@@ -27,7 +23,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
+            android:duplicateParentState="true"
             android:src="@drawable/composer_icn_plus" />
     </FrameLayout>
 
-</RelativeLayout>
+</merge>
