@@ -4,9 +4,12 @@ package com.ntu.sdp2.painthelper;
  * Created by JimmyPrime on 2014/10/26.
  */
 
+import android.app.AlertDialog;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
+import android.os.Message;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
@@ -15,6 +18,9 @@ import android.support.v4.widget.DrawerLayout;
 import android.util.DisplayMetrics;
 import android.view.Display;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -22,6 +28,8 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
@@ -40,6 +48,8 @@ import com.ntu.sdp2.painthelper.settings.Myadapter;
 
 import com.ntu.sdp2.painthelper.DataManagement.CallBack.ThumbCallBack;
 import com.ntu.sdp2.painthelper.DataManagement.Images.PaintImage;
+
+import java.util.List;
 
 public class Page_2 extends Fragment {
     private DrawerLayout mDrawerLayout;
@@ -106,10 +116,10 @@ public class Page_2 extends Fragment {
         public static final String ARG_SORT_NUMBER = "sort_number";
         private Button Button01 = null;
         private Button Button02 = null;
+        private int i;
+        private String categroy;
+        List<Bitmap> gridviewitems;
         private Bitmap bp=null;
-        private float scaleWidth;
-        private float scaleHeight;
-        private boolean num=false;
 
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -120,7 +130,7 @@ public class Page_2 extends Fragment {
             Button01.setOnClickListener(new Button01listener());
             Button02.setOnClickListener(new Button02listener());
             final GridView gridview = (GridView)rootView.findViewById(R.id.gridView);
-            final Myadapter adapter= new Myadapter(this.getActivity());
+            final Myadapter adapter= new Myadapter(this.getActivity(),gridviewitems);
             gridview.setAdapter(adapter);
             gridview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                 //@Override
@@ -135,64 +145,43 @@ public class Page_2 extends Fragment {
                     transaction.replace(R.id.content_frame, fragment);
                     transaction.addToBackStack("msg_fragment");
                     transaction.commit();
-
                 }
             });
 
-            //DisplayMetrics dm = new DisplayMetrics();
-            //getActivity().getWindowManager().getDefaultDisplay().getMetrics(dm);
-            //bp=BitmapFactory.decodeResource(getResources(),R.drawable.people);
-            //int width=bp.getWidth();
-            //int height=bp.getHeight();
-            //int w=dm.widthPixels;
-            //int h=dm.heightPixels;
-            //scaleWidth=((float)w)/width;
-            //scaleHeight=((float)h)/height;
-
-            int i = getArguments().getInt(ARG_SORT_NUMBER);
-            if(i == 0){
-            //TODO
-            }
-            if(i == 1){
-                //TODO
-            }
-            if(i == 2){
-//TODO
-            }
-            if(i == 3){
-//TODO
-            }
-            if(i == 4){
-//TODO
-            }
-            if(i == 5){
-//TODO
-            }
-            if(i == 6){
-//TODO
-            }
-            if(i == 7){
-//TODO
-            }
-
+            i = getArguments().getInt(ARG_SORT_NUMBER);
+            categroy = getResources().getStringArray(R.array.sort_array)[i];
+                ((MainActivity)getActivity()).getCloudManager().getImageByCategory(categroy,new ThumbCallBack() {
+                    @Override
+                    public void done(PaintImage paintImage) {
+                        //TODO
+                    }
+                });
 
             return rootView;
         }
-
-
 
         class Button01listener implements View.OnClickListener{
 
             @Override
             public void onClick(View v) {
-            //TODO
+                ((MainActivity)getActivity()).getCloudManager().getImageByCategory(categroy,new ThumbCallBack() {
+                    @Override
+                    public void done(PaintImage paintImage) {
+                        //TODO
+                    }
+                });
             }
         }
         class Button02listener implements View.OnClickListener{
 
             @Override
             public void onClick(View v) {
-            //TODO
+                ((MainActivity)getActivity()).getCloudManager().getImageByCategory(categroy,new ThumbCallBack() {
+                    @Override
+                    public void done(PaintImage paintImage) {
+                        //TODO
+                    }
+                });
             }
         }
 
@@ -211,7 +200,34 @@ public class Page_2 extends Fragment {
                 image = (ImageView) rootView.findViewById(R.id.image);
                 image.setImageBitmap(mybitmap);
                 image.setOnClickListener(new imagelistener());
+                setHasOptionsMenu(true);
                 return rootView;
+            }
+
+            public void onCreateOptionsMenu(Menu menu,MenuInflater inflater){
+                menu.add(0,1,1,"save");
+                menu.add(0,2,2,"detail");
+                super.onCreateOptionsMenu(menu,inflater);
+            }
+
+            @Override
+            public boolean onOptionsItemSelected(MenuItem item) {
+                if(item.getItemId() == 1){
+                    //TODO
+                }
+                if(item.getItemId() == 2){
+                    AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+                    builder.setTitle("detail");
+                    //builder.setMessage(Message);
+                    builder.setPositiveButton("Exit",new DialogInterface.OnClickListener(){
+                        public void onClick(DialogInterface dialog,int which){
+                            dialog.dismiss();
+                        }
+                    });
+                    builder.show();
+
+                }
+                return super.onOptionsItemSelected(item);
             }
 
             class imagelistener implements View.OnClickListener{
@@ -223,34 +239,16 @@ public class Page_2 extends Fragment {
             }
         }
 
-    public void func(){
-        ((MainActivity)getActivity()).getCloudManager().getImageByCategory("1", new ThumbCallBack() {
-            @Override
-            public void done(PaintImage paintImage) {
+    //public void func(){
+       // ((MainActivity)getActivity()).getCloudManager().getImageByCategory("1", new ThumbCallBack() {
+        //    @Override
+         //   public void done(PaintImage paintImage) {
 
-            }
-        });
+        //    }
+       // });
 
     }
 }
 
 
 
-
-
-
-
-        /**
-         *String planet = getResources().getStringArray(R.array.planets_array)[i];
-          *int imageId = getResources().getIdentifier(planet.toLowerCase(Locale.getDefault()),
-          *"drawable", getActivity().getPackageName());
-          *((ImageView) rootView.findViewById(R.id.image1)).setImageResource(imageId);
-          *((ImageView) rootView.findViewById(R.id.image2)).setImageResource(imageId);
-          *((ImageView) rootView.findViewById(R.id.image3)).setImageResource(imageId);
-          *((ImageView) rootView.findViewById(R.id.image4)).setImageResource(imageId);
-          *((ImageView) rootView.findViewById(R.id.image5)).setImageResource(imageId);
-          *((ImageView) rootView.findViewById(R.id.image6)).setImageResource(imageId);
-          *((ImageView) rootView.findViewById(R.id.image7)).setImageResource(imageId);
-          *((ImageView) rootView.findViewById(R.id.image8)).setImageResource(imageId);
-          *((ImageView) rootView.findViewById(R.id.image9)).setImageResource(imageId);
-         */

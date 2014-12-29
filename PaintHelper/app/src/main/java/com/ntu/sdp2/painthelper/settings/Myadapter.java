@@ -5,6 +5,7 @@ package com.ntu.sdp2.painthelper.settings;
  */
 
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
@@ -16,26 +17,24 @@ import android.os.Bundle;
 
 import com.ntu.sdp2.painthelper.R;
 
+import java.util.List;
+
 public class Myadapter extends BaseAdapter {
     private Context context;
-    private Integer[] imgs = {R.drawable.ic_launcher, R.drawable.animal, R.drawable.botany,
-            R.drawable.people, R.drawable.food, R.drawable.building,
-            R.drawable.vehicle, R.drawable.groceries, R.drawable.people,
-    R.drawable.ic_launcher,R.drawable.animal,R.drawable.botany,
-    R.drawable.people,R.drawable.food,R.drawable.building,
-    R.drawable.vehicle,R.drawable.groceries,R.drawable.people,
-            R.drawable.ic_launcher, R.drawable.animal, R.drawable.botany,
-            R.drawable.people};
- public Myadapter(Context context){
+    private List<Bitmap> image;
+    private Integer[] imgs = {R.drawable.ic_launcher, R.drawable.animal, R.drawable.botany,R.drawable.people};
+
+ public Myadapter(Context context,List<Bitmap> image){
          this.context=context;
+         this.image=image;
         }
 public int getCount(){
-        return imgs.length;
+        return image.size();
         }
 
 public Object getItem(int position){
         ImageView imageView=new ImageView(context);
-        imageView.setImageResource(imgs[position]);
+        imageView.setImageResource(image[position]);
         return imageView;
         }
 
@@ -55,7 +54,7 @@ public View getView(int position,View convertView,ViewGroup parent){
         imageView=(ImageView)convertView;
         }
 
-        imageView.setImageResource(imgs[position]);
+        imageView.setImageBitmap(image[position]);
         return imageView;
         }
         }
