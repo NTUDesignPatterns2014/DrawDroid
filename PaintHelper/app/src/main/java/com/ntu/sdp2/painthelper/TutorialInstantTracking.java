@@ -8,6 +8,8 @@ import android.view.View;
 
 import com.metaio.sdk.ARViewActivity;
 import com.metaio.sdk.MetaioDebug;
+import com.metaio.sdk.jni.Camera;
+import com.metaio.sdk.jni.CameraVector;
 import com.metaio.sdk.jni.IGeometry;
 import com.metaio.sdk.jni.IMetaioSDKCallback;
 import com.metaio.sdk.jni.Vector3d;
@@ -198,7 +200,33 @@ public class TutorialInstantTracking extends ARViewActivity
 		metaioSDK.startInstantTracking("INSTANT_2D_GRAVITY_SLAM_EXTRAPOLATED", "", mPreview);
 		mPreview = !mPreview;
 	}
+    public void onConvertButtonClick(View v)
+    {
+        final CameraVector cameras = metaioSDK.getCameraList();
+        if (!cameras.isEmpty())
+        {
+            com.metaio.sdk.jni.Camera camera = cameras.get(0);
 
+            // Try to choose the camera with desired facing
+            for (int i = 0; i < cameras.size(); i++)
+            {
+                // TODO: Use Camera.FACE_BACK for back facing camera
+                if (cameras.get(i).getFacing() == Camera.FACE_FRONT)
+                {
+                    camera = cameras.get(i);
+                    break;
+                }
+            }
+
+            metaioSDK.startCamera(camera);
+        }
+        else
+        {
+            MetaioDebug.log(Log.WARN, "No camera found on the device!");
+        }
+
+
+    }
 	@Override
 	protected void loadContents()
 	{
