@@ -116,6 +116,16 @@ public class Settings extends ListFragment {
                             })
                             .setNegativeButton("No", null)
                             .show();
+                }else{
+                    List<String> list = new ArrayList<>();
+                    list.add("Food");
+                    Bitmap.Config conf = Bitmap.Config.ARGB_8888; // see other conf types
+                    Bitmap bmp = BitmapFactory.decodeResource(getActivity().getResources(), R.drawable.img);
+
+                    PaintImage paintImage = new PaintImage(user.getUsername(),"Test" , bmp, new String(), list , user);
+                    if(cloudManager.saveImage(paintImage)){
+                        Toast.makeText(getActivity(), "not loggin!!", Toast.LENGTH_SHORT).show();
+                    }
                 }
 
                 break;
