@@ -45,9 +45,7 @@ public class ParseManager implements CloudManagement {
     public final static int THUMB_HEIGHT = 100;
     public final static int QUERY_LIMIT = 100;
 
-    private boolean categoryDone = true;
-    private List<PaintImage> categoryResult;
-    private int categoryCount = 0;
+
 
 
 
@@ -89,7 +87,7 @@ public class ParseManager implements CloudManagement {
             query.findInBackground(new FindCallback<ParseObject>() {
                 @Override
                 public void done(List<ParseObject> parseObjects, ParseException e) {
-                    Log.d(TAG, "DONE!!!");
+                    Log.d(TAG, "Initialize Done!!!");
                     if(parseObjects.size()==0){
                         Log.d(TAG,"NO OBJECTS!!");
                         return;
@@ -187,8 +185,6 @@ public class ParseManager implements CloudManagement {
             @Override
             public void done(List<ParseObject> parseObjects, ParseException e) {
                 if(e == null) {
-                    categoryCount = parseObjects.size();
-                    categoryResult = new ArrayList<PaintImage>();
                     for(final ParseObject objects:parseObjects) {
                         objects.getParseFile("Img").getDataInBackground(new GetDataCallback() {
                             @Override
@@ -213,6 +209,7 @@ public class ParseManager implements CloudManagement {
                                 Private Methods
      *--------------------------------------------------------------*/
     // fetch all thumbnails
+    // This is a old version function
     private List<ParseObject> getImages(){
         ParseQuery<ParseObject> query = ParseQuery.getQuery("Thumbnails");
         query.setLimit(QUERY_LIMIT);
@@ -235,7 +232,7 @@ public class ParseManager implements CloudManagement {
     /**
      * function to upload an image
      * return: 0: success; -1:need login
-     *
+     * user should check this before calling this function
      */
     private int uploadImage(PaintImage paintImage){
 
@@ -288,6 +285,7 @@ public class ParseManager implements CloudManagement {
         // ParseObject for original image
         final ParseObject parseObject_origin = new ParseObject("Img");
         addDetails(parseObject_origin, paintImage);
+        parseObject_origin.put("Img", parseImg_origin);
         parseObject_origin.saveInBackground(new SaveCallback() {
             @Override
             public void done(ParseException e) {
@@ -295,7 +293,7 @@ public class ParseManager implements CloudManagement {
                     // success!
                     Log.i(TAG, "Img upload success");
                     id.myStr = parseObject_origin.getObjectId();
-                    parseThumb.put("ImgID", id.myStr);
+                    parseThumb.put("ImgId", id.myStr);
                     parseThumb.saveInBackground();
                 } else {
                     // failed!!
@@ -308,9 +306,14 @@ public class ParseManager implements CloudManagement {
     }
 
     // each ParseObject has a list of categories it belong to.
+    // this function should be called when user has logged in.
     private void addDetails(ParseObject parseObject, PaintImage paintImage){
         parseObject.put("Name", paintImage.getName());
-        parseObject.put("user", ParseUser.getCurrentUser());
+        if( ParseUser.getCurrentUser() != null ) {
+            parseObject.put("user", ParseUser.getCurrentUser());
+        }else{
+            Log.i(TAG, "addDetails has no user logged in!!");
+        }
         ArrayList<ParseObject> categoryList = new ArrayList<>();
         for(String category : paintImage.getCategory()){
             categoryList.add(categoryMap.get(category));
@@ -342,8 +345,9 @@ public class ParseManager implements CloudManagement {
     // convert ParseObject to PaintImage
     private PaintImage parseToPaint(ParseObject parseObject, byte[] bytes, String type){
         String name = parseObject.getString("Name");
-        String author = parseObject.getParseUser("user").getUsername();
-        String id = parseObject.getObjectId();
+        //String author = parseObject.getParseUser("user").getUsername();
+        String author = "Temp Author";
+        String id = parseObject.getString("ImgId");
         List<ParseObject> list =  parseObject.getList("Category");
         List<String> categoryList = new ArrayList<String>();
         for(ParseObject category : list){

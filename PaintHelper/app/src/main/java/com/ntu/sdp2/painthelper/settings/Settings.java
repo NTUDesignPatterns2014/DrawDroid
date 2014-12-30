@@ -2,6 +2,7 @@ package com.ntu.sdp2.painthelper.settings;
 
 import android.app.Activity;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
@@ -77,7 +78,8 @@ public class Settings extends ListFragment {
                 List<String> list = new ArrayList<>();
                 list.add("Food");
                 Bitmap.Config conf = Bitmap.Config.ARGB_8888; // see other conf types
-                Bitmap bmp = Bitmap.createBitmap(800, 600, conf); // this creates a MUTABLE bitmap
+                Bitmap bmp = BitmapFactory.decodeResource(getActivity().getResources(), R.drawable.img);
+
                 PaintImage paintImage = new PaintImage(user.getUsername(),"Test" , bmp, new String(), list );
                 if(cloudManager.saveImage(paintImage)){
                     Toast.makeText(getActivity(), "not loggin!!", Toast.LENGTH_SHORT).show();
