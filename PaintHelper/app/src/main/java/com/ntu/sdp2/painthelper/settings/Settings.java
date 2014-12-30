@@ -1,6 +1,8 @@
 package com.ntu.sdp2.painthelper.settings;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
@@ -22,6 +24,9 @@ import com.ntu.sdp2.painthelper.DataManagement.Images.PaintImage;
 import com.ntu.sdp2.painthelper.DataManagement.ParseManager;
 import com.ntu.sdp2.painthelper.MainActivity;
 import com.ntu.sdp2.painthelper.R;
+import com.parse.LogInCallback;
+import com.parse.ParseException;
+import com.parse.ParseFacebookUtils;
 import com.parse.ParseUser;
 
 import java.util.ArrayList;
@@ -73,16 +78,44 @@ public class Settings extends ListFragment {
             case 3:
                 CloudManagement cloudManager = (CloudManagement)((MainActivity)getActivity()).getCloudManager();
                 ParseUser user = ParseUser.getCurrentUser();
-                if(user == null)break;
-                List<String> list = new ArrayList<>();
-                list.add("Food");
-                Bitmap.Config conf = Bitmap.Config.ARGB_8888; // see other conf types
-                Bitmap bmp = BitmapFactory.decodeResource(getActivity().getResources(), R.drawable.img);
+                if(user == null){
+                    Log.i(TAG, "Not Logged in, Prompt for login");
+                    String message = "Need Login to continue. \nLog In?";
+                    final CloudManagement cloudManagement = cloudManager;
+                    new AlertDialog.Builder(getActivity())
+                            .setIcon(android.R.drawable.ic_dialog_alert)
+                            .setTitle("Log In")
+                            .setMessage(message)
+                            .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
 
-                PaintImage paintImage = new PaintImage(user.getUsername(),"Test" , bmp, new String(), list , user);
-                if(cloudManager.saveImage(paintImage)){
-                    Toast.makeText(getActivity(), "not loggin!!", Toast.LENGTH_SHORT).show();
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    ParseFacebookUtils.logIn(getActivity(), new LogInCallback() {
+                                        @Override
+                                        public void done(ParseUser parseUser, ParseException e) {
+                                            if(parseUser == null){
+                                                Log.i(TAG, "Log in unsuccessful");
+                                            }else{
+                                                List<String> list = new ArrayList<>();
+                                                list.add("Food");
+                                                Bitmap.Config conf = Bitmap.Config.ARGB_8888; // see other conf types
+                                                Bitmap bmp = BitmapFactory.decodeResource(getActivity().getResources(), R.drawable.img);
+
+                                                PaintImage paintImage = new PaintImage(parseUser.getUsername(),"Test" , bmp, new String(), list , parseUser);
+                                                if(cloudManagement.saveImage(paintImage)){
+                                                    Toast.makeText(getActivity(), "not loggin!!", Toast.LENGTH_SHORT).show();
+                                                }
+                                            }
+                                        }
+                                    });
+                                    Log.i(TAG, "User Logged out");
+                                }
+
+                            })
+                            .setNegativeButton("No", null)
+                            .show();
                 }
+
                 break;
             case 4:
                 CloudManagement cloudManager2  = (CloudManagement)((MainActivity)getActivity()).getCloudManager();
