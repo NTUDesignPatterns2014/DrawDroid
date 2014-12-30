@@ -187,6 +187,8 @@ public class Account_Info extends Fragment{
                             profilePic.setProfileId(user.getId());
                             // Set the TextView's text to the user's name.
                             userInfo.setText(user.getName());
+                            ParseUser.getCurrentUser().setUsername(user.getName());
+                            ParseUser.getCurrentUser().saveEventually();
                         }else if (response.getError() != null) {
                             if ((response.getError().getCategory() ==
                                     FacebookRequestError.Category.AUTHENTICATION_RETRY) ||

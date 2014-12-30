@@ -18,6 +18,7 @@ import android.widget.ListView;
 import android.widget.Toast;
 
 import com.ntu.sdp2.painthelper.BackButtonHandler.Page4Handler;
+import com.ntu.sdp2.painthelper.DataManagement.CallBack.LogInCallBack;
 import com.ntu.sdp2.painthelper.DataManagement.CallBack.ThumbCallBack;
 import com.ntu.sdp2.painthelper.DataManagement.CloudManagement;
 import com.ntu.sdp2.painthelper.DataManagement.Images.PaintImage;
@@ -90,12 +91,13 @@ public class Settings extends ListFragment {
 
                                 @Override
                                 public void onClick(DialogInterface dialog, int which) {
-                                    ParseFacebookUtils.logIn(getActivity(), new LogInCallback() {
+                                    ParseManager.logIn(getActivity(), new LogInCallBack() {
                                         @Override
-                                        public void done(ParseUser parseUser, ParseException e) {
+                                        public void done(ParseUser parseUser) {
                                             if(parseUser == null){
                                                 Log.i(TAG, "Log in unsuccessful");
                                             }else{
+                                                Log.i(TAG, "Log in successful");
                                                 List<String> list = new ArrayList<>();
                                                 list.add("Food");
                                                 Bitmap.Config conf = Bitmap.Config.ARGB_8888; // see other conf types

@@ -1,11 +1,19 @@
 package com.ntu.sdp2.painthelper.DataManagement;
 
+import android.app.Activity;
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.media.ThumbnailUtils;
 import android.util.Log;
 
+import com.facebook.FacebookRequestError;
+import com.facebook.Request;
+import com.facebook.Response;
+import com.facebook.model.GraphUser;
+import com.ntu.sdp2.painthelper.DataManagement.CallBack.CallBack;
 import com.ntu.sdp2.painthelper.DataManagement.CallBack.ElementCallBack;
+import com.ntu.sdp2.painthelper.DataManagement.CallBack.LogInCallBack;
 import com.ntu.sdp2.painthelper.DataManagement.CallBack.OriginCallback;
 import com.ntu.sdp2.painthelper.DataManagement.CallBack.ThumbCallBack;
 import com.ntu.sdp2.painthelper.DataManagement.Images.OriginImage;
@@ -15,7 +23,9 @@ import com.ntu.sdp2.painthelper.DataManagement.Images.ThumbImage;
 import com.parse.FindCallback;
 import com.parse.GetCallback;
 import com.parse.GetDataCallback;
+import com.parse.LogInCallback;
 import com.parse.ParseException;
+import com.parse.ParseFacebookUtils;
 import com.parse.ParseFile;
 import com.parse.ParseObject;
 import com.parse.ParseQuery;
@@ -139,6 +149,42 @@ public class ParseManager implements CloudManagement {
             }
         });
 
+    }
+
+    static public void logIn(Activity activity, final LogInCallBack callBack){
+        ParseFacebookUtils.logIn(activity, new LogInCallback() {
+            @Override
+            public void done(ParseUser parseUser, ParseException e) {
+                Request request = Request.newMeRequest(ParseFacebookUtils.getSession(),
+                        new Request.GraphUserCallback() {
+                            @Override
+                            public void onCompleted(GraphUser user, Response response) {
+                                // If the response is successful
+                                if (user != null) {
+                                    ParseUser.getCurrentUser().setUsername(user.getName());
+                                    ParseUser.getCurrentUser().saveEventually();
+                                    callBack.done(ParseUser.getCurrentUser());
+                                }else if (response.getError() != null) {
+                                    if ((response.getError().getCategory() ==
+                                            FacebookRequestError.Category.AUTHENTICATION_RETRY) ||
+                                            (response.getError().getCategory() ==
+                                                    FacebookRequestError.Category.AUTHENTICATION_REOPEN_SESSION))
+                                    {
+                                        Log.d(TAG,
+                                                "The facebook session was invalidated.");
+                                    } else {
+                                        Log.d(TAG,
+                                                "Some other error: "
+                                                        + response.getError()
+                                                        .getErrorMessage());
+                                    }
+                                }
+                            }
+                        });
+                request.executeAsync();
+            }
+
+        });
     }
 
 
@@ -279,8 +325,8 @@ public class ParseManager implements CloudManagement {
     // convert ParseObject to PaintImage
     private PaintImage parseToPaint(ParseObject parseObject, byte[] bytes, String type){
         String name = parseObject.getString("Name");
-        //String author = parseObject.getParseUser("user").getUsername();
-        String author = "Temp Author";
+        String author = parseObject.getParseUser("user").getUsername();
+        //String author = "Temp Author";
         ParseUser user = parseObject.getParseUser("user");
         String id = parseObject.getString("ImgId");
         List<String> categoryList = parseObject.getList("Category");

@@ -168,9 +168,9 @@ public class ParseLocalManager implements LocalDataManagement {
     // convert ParseObject to PaintImage
     private PaintImage parseToPaint(ParseObject parseObject, byte[] bytes, String type){
         String name = parseObject.getString("Name");
-        //String author = parseObject.getParseUser("user").getUsername();
+        String author = parseObject.getParseUser("user").getUsername();
         ParseUser user = parseObject.getParseUser("user");
-        String author = "Temp Local Author";
+       // String author = "Temp Local Author";
         String id = parseObject.getObjectId();
         List<String> categoryList = parseObject.getList("Category");
         Bitmap bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
