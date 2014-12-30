@@ -1,5 +1,7 @@
 package com.ntu.sdp2.painthelper.settings;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Typeface;
 import android.os.Bundle;
@@ -84,10 +86,10 @@ public class Account_Info extends Fragment{
                         public void done(ParseUser parseUser, ParseException e) {
                             user = parseUser;
                             if(parseUser == null){
-                                Log.i(TAG,"User cancels login or login failed");
+                                Log.i(TAG, "User cancels login or login failed");
                                 setUi(LOG_OUT);
                             }else{
-                                Log.i(TAG,"User Logged in");
+                                Log.i(TAG, "User Logged in");
                                 setUi(LOG_IN);
 
                             }
@@ -95,10 +97,26 @@ public class Account_Info extends Fragment{
                     });
                 }else{
                     // Log out
-                    user = null;
-                    ParseUser.logOut();
-                    setUi(LOG_OUT);
-                    Log.i(TAG, "User Logged out");
+                    String message = "Currently logged in as: \n" + userInfo.getText() + "\nLog out?";
+                    new AlertDialog.Builder(getActivity())
+                            .setIcon(android.R.drawable.ic_dialog_alert)
+                            .setTitle("Log out")
+                            .setMessage(message)
+                            .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    user = null;
+                                    ParseUser.logOut();
+                                    setUi(LOG_OUT);
+                                    Log.i(TAG, "User Logged out");
+                                }
+
+                            })
+                            .setNegativeButton("No", null)
+                            .show();
+
+
                 }
             }
         });
