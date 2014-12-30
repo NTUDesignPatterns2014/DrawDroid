@@ -99,6 +99,7 @@ public class ParseManager implements CloudManagement {
         ParseQuery<ParseObject> query = new ParseQuery<ParseObject>("Img");
         query.getInBackground(id, new GetCallback<ParseObject>() {
             public void done(ParseObject object, ParseException e) {
+                Log.i(TAG, "IdImageDone");
                 final ParseObject newObject = object;
                 if (e == null) {
                     object.getParseFile("Img").getDataInBackground(new GetDataCallback() {
@@ -305,8 +306,10 @@ public class ParseManager implements CloudManagement {
         if(parseObject != null) {
             PaintImage paintImage;
             paintImage = parseToPaint(parseObject, bytes, "Origin");
+            Log.i(TAG, "onIdImageGet");
             callBack.done(paintImage);
         }
+        Log.i(TAG, "onIdImageNOTGet");
     }
     private void onImageGet(ParseObject parseObject, byte[] bytes, ElementCallBack callBack){
         if(parseObject != null) {
@@ -319,18 +322,20 @@ public class ParseManager implements CloudManagement {
         if(parseObject != null) {
             PaintImage paintImage;
             paintImage = parseToPaint(parseObject, bytes, "Thumb");
+            Log.i(TAG, "onImageGet");
             callBack.done(paintImage);
         }
+        Log.i(TAG, "onImageNOTGet");
     }
     // convert ParseObject to PaintImage
     private PaintImage parseToPaint(ParseObject parseObject, byte[] bytes, String type){
         String name = parseObject.getString("Name");
+
         String author = parseObject.getParseUser("user").getUsername();
         //String author = "Temp Author";
         ParseUser user = parseObject.getParseUser("user");
         String id = parseObject.getString("ImgId");
         List<String> categoryList = parseObject.getList("Category");
-
         Bitmap bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
 
         switch (type){
@@ -342,6 +347,7 @@ public class ParseManager implements CloudManagement {
                 return new PaintElement(author, name, bitmap, id, categoryList, user);
             default:
                 return new PaintImage(author, name, bitmap, id, categoryList, user);
+
         }
 
     }
