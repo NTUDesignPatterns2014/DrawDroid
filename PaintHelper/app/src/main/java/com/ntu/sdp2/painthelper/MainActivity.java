@@ -81,23 +81,9 @@ public class MainActivity extends FragmentActivity {
 
 
 
-        // Parse Init
-        // Enable Local Datastore.
-        Parse.enableLocalDatastore(this);
 
-        Parse.initialize(this, "DI2qUxaZ2sNxsc7u8D7gnLD13NzVGrCQbbsuNkzn", "AE4g2zci5ke08QFqfqRrQWy0BshRdhZNelNfwyui");
-        ParseFacebookUtils.initialize("1405501183074777");
         // initialize data manager
-        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
-        if(preferences.getBoolean("First", false)){
-            // not just installed
-            localManager = new ParseLocalManager(false);
-        }else{
-            // just installed
-            SharedPreferences.Editor editor = preferences.edit();
-            editor.putBoolean("First", true);
-            localManager = new ParseLocalManager(true);
-        }
+        localManager = new ParseLocalManager();
         cloudManager = new ParseManager();
 
         // Generate HashKey
