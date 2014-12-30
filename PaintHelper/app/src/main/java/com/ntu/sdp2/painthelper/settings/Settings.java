@@ -74,10 +74,6 @@ public class Settings extends ListFragment {
                 CloudManagement cloudManager = (CloudManagement)((MainActivity)getActivity()).getCloudManager();
                 ParseUser user = ParseUser.getCurrentUser();
                 if(user == null)break;
-                if(!ParseManager.isInitialized()){
-                    Toast.makeText(getActivity(), "init not finish", Toast.LENGTH_SHORT).show();
-                    break;
-                }
                 List<String> list = new ArrayList<>();
                 list.add("Food");
                 Bitmap.Config conf = Bitmap.Config.ARGB_8888; // see other conf types

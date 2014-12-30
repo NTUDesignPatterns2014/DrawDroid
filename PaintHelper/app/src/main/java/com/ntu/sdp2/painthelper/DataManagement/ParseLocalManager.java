@@ -18,6 +18,7 @@ import com.parse.ParseException;
 import com.parse.ParseFile;
 import com.parse.ParseObject;
 import com.parse.ParseQuery;
+import com.parse.ParseUser;
 
 import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
@@ -34,51 +35,11 @@ public class ParseLocalManager implements LocalDataManagement {
      *--------------------------------------------------------------*/
     public static final String TAG = "ParseLocalManager";
 
-    private static boolean initialized = false;
-    private static Map<String,ParseObject> categoryMap;
-    //ParseManager manager = new ParseManager();
-    //private boolean categoryDone = true;
-    //private List<PaintImage> categoryResult;
-    //private int categoryCount = 0;
-
 
     /*--------------------------------------------------------------*
                                 Public Methods
      *--------------------------------------------------------------*/
-    public ParseLocalManager(boolean init) {
-
-        if(init) {
-            // add local category
-            List<ParseObject> list = new ArrayList<>();
-            ParseObject object = new ParseObject("Category");
-            object.put("Category", "1");
-            list.add(object);
-            object = new ParseObject("Category");
-            object.put("Category", "2");
-            list.add(object);
-            object = new ParseObject("Category");
-            object.put("Category", "3");
-            list.add(object);
-            object = new ParseObject("Category");
-            object.put("Category", "4");
-            list.add(object);
-            ParseObject.pinAllInBackground(list);
-        }
-        if( !initialized ) {
-            categoryMap = new HashMap<String, ParseObject>() ;
-            ParseQuery<ParseObject> query = new ParseQuery<ParseObject>("Category");
-            query.fromLocalDatastore();
-            query.getFirstInBackground(new GetCallback<ParseObject>() {
-                @Override
-                public void done(ParseObject parseObject, ParseException e) {
-                    if(e == null) {
-                        categoryMap.put(parseObject.getString("category"), parseObject);
-                        initialized = true;
-                    }
-                }
-            });
-        }
-
+    public ParseLocalManager() {
     }
 
     @Override
@@ -163,9 +124,6 @@ public class ParseLocalManager implements LocalDataManagement {
 
     @Override
     public boolean saveImage(PaintImage paintImage){
-        if(!initialized){
-            return true;
-        }
         ParseObject parseObject = new ParseObject("Img");
         addDetails(parseObject, paintImage);
         // create byte array
@@ -210,24 +168,22 @@ public class ParseLocalManager implements LocalDataManagement {
     // convert ParseObject to PaintImage
     private PaintImage parseToPaint(ParseObject parseObject, byte[] bytes, String type){
         String name = parseObject.getString("Name");
-        String author = parseObject.getParseUser("user").getUsername();
+        //String author = parseObject.getParseUser("user").getUsername();
+        ParseUser user = parseObject.getParseUser("user");
+        String author = "Temp Local Author";
         String id = parseObject.getObjectId();
-        List<ParseObject> list =  parseObject.getList("Category");
-        List<String> categoryList = new ArrayList<String>();
-        for(ParseObject category : list){
-            categoryList.add(category.getString("Category"));
-        }
+        List<String> categoryList = parseObject.getList("Category");
         Bitmap bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
 
         switch (type){
             case "Origin":
-                return new OriginImage(author, name, bitmap, id, categoryList);
+                return new OriginImage(author, name, bitmap, id, categoryList, user);
             case "Thumb":
-                return new ThumbImage(author, name, bitmap, id, categoryList);
+                return new ThumbImage(author, name, bitmap, id, categoryList, user);
             case "Element":
-                return new PaintElement(author, name, bitmap, id, categoryList);
+                return new PaintElement(author, name, bitmap, id, categoryList, user);
             default:
-                return new PaintImage(author, name, bitmap, id, categoryList);
+                return new PaintImage(author, name, bitmap, id, categoryList, user);
         }
 
     }
@@ -235,12 +191,8 @@ public class ParseLocalManager implements LocalDataManagement {
     // Add paintImage info to parseObject
     private void addDetails(ParseObject parseObject, PaintImage paintImage){
         parseObject.put("Name", paintImage.getName());
-        parseObject.put("user", parseObject.getParseUser("user"));
-        ArrayList<ParseObject> categoryList = new ArrayList<>();
-        for(String category : paintImage.getCategory()){
-            categoryList.add(categoryMap.get(category));
-        }
-        parseObject.put("Category", categoryList);
+        parseObject.put("user", paintImage.getParseUser());
+        parseObject.put("Category", paintImage.getCategory());
         parseObject.setObjectId(paintImage.getId());
     }
 

@@ -38,8 +38,6 @@ public class ParseManager implements CloudManagement {
      *--------------------------------------------------------------*/
     public static final String TAG = "ParseManager";
 
-    private static boolean initialized = false;
-    private static Map<String,ParseObject> categoryMap;
 
     public final static int THUMB_WIDTH = 100;
     public final static int THUMB_HEIGHT = 100;
@@ -54,61 +52,8 @@ public class ParseManager implements CloudManagement {
      *--------------------------------------------------------------*/
     // constructor
     public ParseManager(){
-    /*
-        // This is for development !! Remember to remove this.
-        List<ParseObject> list = new ArrayList<>();
-        ParseObject object = new ParseObject("Category");
-        object.put("Category", "Animal");
-        list.add(object);
-        object = new ParseObject("Category");
-        object.put("Category", "Botany");
-        list.add(object);
-        object = new ParseObject("Category");
-        object.put("Category", "People");
-        list.add(object);
-        object = new ParseObject("Category");
-        object.put("Category", "Food");
-        list.add(object);
-        object = new ParseObject("Category");
-        object.put("Category", "Building");
-        list.add(object);
-        object = new ParseObject("Category");
-        object.put("Category", "Vehicle");
-        list.add(object);
-        object = new ParseObject("Category");
-        object.put("Category", "Groceries");
-        list.add(object);
-        ParseObject.saveAllInBackground(list);
-    */
-        // Download all categories. Image cannot be uploaded before all category objects have been downloaded.
-        if( !initialized ) {
-            categoryMap = new HashMap<String, ParseObject>() ;
-            ParseQuery<ParseObject> query = new ParseQuery<ParseObject>("Category");
-            query.findInBackground(new FindCallback<ParseObject>() {
-                @Override
-                public void done(List<ParseObject> parseObjects, ParseException e) {
-                    Log.d(TAG, "Initialize Done!!!");
-                    if(parseObjects.size()==0){
-                        Log.d(TAG,"NO OBJECTS!!");
-                        return;
-                    }
-                    if (e == null) {
-                        for (ParseObject object : parseObjects) {
-                            categoryMap.put(object.getString("Category"), object);
-                            Log.d(TAG, object.getString("Category"));
-                        }
-                        initialized = true;
-                    }else{
-                        //Log.d(TAG,Integer.toString(e.getCode()));
-                    }
-                }
-            });
-        }
     }
 
-    public static boolean isInitialized() {
-        return initialized;
-    }
 
     // empty category string means all objects
     @Override
@@ -165,14 +110,9 @@ public class ParseManager implements CloudManagement {
 
     @Override
     public boolean saveImage(PaintImage image) {
-        if(!initialized){
-            Log.i(TAG, "Cannot save Image before Manager has initialized!");
+        if( uploadImage(image) != 0){
+            Log.i(TAG, "Not Logged in !");
             return true;
-        }else{
-            if( uploadImage(image) != 0){
-                Log.i(TAG, "Not Logged in !");
-                return true;
-            }
         }
         return false;
     }
@@ -201,9 +141,6 @@ public class ParseManager implements CloudManagement {
 
     }
 
-    public static Map<String, ParseObject> getCategoryMap() {
-        return categoryMap;
-    }
 
     /*--------------------------------------------------------------*
                                 Private Methods
@@ -344,24 +281,21 @@ public class ParseManager implements CloudManagement {
         String name = parseObject.getString("Name");
         //String author = parseObject.getParseUser("user").getUsername();
         String author = "Temp Author";
+        ParseUser user = parseObject.getParseUser("user");
         String id = parseObject.getString("ImgId");
-        //List<ParseObject> list =  parseObject.getList("Category");
         List<String> categoryList = parseObject.getList("Category");
-        //for(ParseObject category : list){
-        //    categoryList.add(category.getString("Category"));
-        //}
 
         Bitmap bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
 
         switch (type){
             case "Origin":
-                return new OriginImage(author, name, bitmap, id, categoryList);
+                return new OriginImage(author, name, bitmap, id, categoryList, user);
             case "Thumb":
-                return new ThumbImage(author, name, bitmap, id, categoryList);
+                return new ThumbImage(author, name, bitmap, id, categoryList, user);
             case "Element":
-                return new PaintElement(author, name, bitmap, id, categoryList);
+                return new PaintElement(author, name, bitmap, id, categoryList, user);
             default:
-                return new PaintImage(author, name, bitmap, id, categoryList);
+                return new PaintImage(author, name, bitmap, id, categoryList, user);
         }
 
     }
