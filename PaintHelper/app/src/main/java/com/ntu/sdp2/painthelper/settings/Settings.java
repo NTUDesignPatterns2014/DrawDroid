@@ -9,12 +9,14 @@ import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.app.ListFragment;
+import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.Toast;
 
 import com.ntu.sdp2.painthelper.BackButtonHandler.Page4Handler;
+import com.ntu.sdp2.painthelper.DataManagement.CallBack.ThumbCallBack;
 import com.ntu.sdp2.painthelper.DataManagement.CloudManagement;
 import com.ntu.sdp2.painthelper.DataManagement.Images.PaintImage;
 import com.ntu.sdp2.painthelper.DataManagement.ParseManager;
@@ -29,7 +31,8 @@ import java.util.List;
  * Created by lou on 2014/12/12.
  */
 public class Settings extends ListFragment {
-    static final String[] itemList = {"Account", "Default Tab", "About", "saveImageTest"};
+    static final String[] itemList = {"Account", "Default Tab", "About", "saveImageTest", "queryTest"};
+    final String TAG = "Settings";
     //static Account_Info account_info = new Account_Info();
 
 
@@ -71,7 +74,7 @@ public class Settings extends ListFragment {
                 CloudManagement cloudManager = (CloudManagement)((MainActivity)getActivity()).getCloudManager();
                 ParseUser user = ParseUser.getCurrentUser();
                 if(user == null)break;
-                if(!((ParseManager)cloudManager).isInitialized()){
+                if(!ParseManager.isInitialized()){
                     Toast.makeText(getActivity(), "init not finish", Toast.LENGTH_SHORT).show();
                     break;
                 }
@@ -84,6 +87,17 @@ public class Settings extends ListFragment {
                 if(cloudManager.saveImage(paintImage)){
                     Toast.makeText(getActivity(), "not loggin!!", Toast.LENGTH_SHORT).show();
                 }
+                break;
+            case 4:
+                CloudManagement cloudManager2  = (CloudManagement)((MainActivity)getActivity()).getCloudManager();
+                cloudManager2.getImageByCategory("Food", new ThumbCallBack() {
+                    @Override
+                    public void done(PaintImage paintImage) {
+                        Toast.makeText(getActivity(), "imageGet!", Toast.LENGTH_SHORT).show();
+                        Log.d(TAG, "imageGet" );
+                    }
+                });
+                break;
 
         }
 

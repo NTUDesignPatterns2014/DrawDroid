@@ -314,11 +314,8 @@ public class ParseManager implements CloudManagement {
         }else{
             Log.i(TAG, "addDetails has no user logged in!!");
         }
-        ArrayList<ParseObject> categoryList = new ArrayList<>();
-        for(String category : paintImage.getCategory()){
-            categoryList.add(categoryMap.get(category));
-        }
-        parseObject.put("Category", categoryList);
+
+        parseObject.put("Category", paintImage.getCategory());
     }
 
     private void onImageGet(ParseObject parseObject, byte[] bytes, OriginCallback callBack){
@@ -348,11 +345,12 @@ public class ParseManager implements CloudManagement {
         //String author = parseObject.getParseUser("user").getUsername();
         String author = "Temp Author";
         String id = parseObject.getString("ImgId");
-        List<ParseObject> list =  parseObject.getList("Category");
-        List<String> categoryList = new ArrayList<String>();
-        for(ParseObject category : list){
-            categoryList.add(category.getString("Category"));
-        }
+        //List<ParseObject> list =  parseObject.getList("Category");
+        List<String> categoryList = parseObject.getList("Category");
+        //for(ParseObject category : list){
+        //    categoryList.add(category.getString("Category"));
+        //}
+
         Bitmap bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
 
         switch (type){
