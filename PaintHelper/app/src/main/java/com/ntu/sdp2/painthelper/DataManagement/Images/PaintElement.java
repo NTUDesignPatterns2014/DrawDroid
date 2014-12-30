@@ -2,6 +2,8 @@ package com.ntu.sdp2.painthelper.DataManagement.Images;
 
 import android.graphics.Bitmap;
 
+import com.parse.ParseUser;
+
 import java.util.List;
 
 /**
@@ -10,8 +12,8 @@ import java.util.List;
 public class PaintElement extends PaintImage {
     private int size;
     private Position position;
-    public PaintElement(String author, String name, Bitmap image, String id, List<String> category){
-        super(author, name, image, id, category);
+    public PaintElement(String author, String name, Bitmap image, String id, List<String> category, ParseUser user){
+        super(author, name, image, id, category, user);
     }
 
 }

@@ -74,17 +74,9 @@ public class MainActivity extends FragmentActivity {
         actionBar.addTab(actionBar.newTab().setText("OAO3").setTabListener(tabListener));
         actionBar.addTab(actionBar.newTab().setText("OAO4").setTabListener(tabListener));
 
+
         // initialize data manager
-        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
-        if(preferences.getBoolean("First", false)){
-            // not just installed
-            localManager = new ParseLocalManager(false);
-        }else{
-            // just installed
-            SharedPreferences.Editor editor = preferences.edit();
-            editor.putBoolean("First", true);
-            localManager = new ParseLocalManager(true);
-        }
+        localManager = new ParseLocalManager();
         cloudManager = new ParseManager();
 
         // Generate HashKey
