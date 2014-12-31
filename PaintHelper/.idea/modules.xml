@@ -6,8 +6,8 @@
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
       <module fileurl="file://$PROJECT_DIR$/arcmenu/arcmenu.iml" filepath="$PROJECT_DIR$/arcmenu/arcmenu.iml" />
       <module fileurl="file://$PROJECT_DIR$/facebook/facebook.iml" filepath="$PROJECT_DIR$/facebook/facebook.iml" />
-      <module fileurl="file://$PROJECT_DIR$/opencv/opencv.iml" filepath="$PROJECT_DIR$/opencv/opencv.iml" />
       <module fileurl="file://$PROJECT_DIR$/metaioSDK/metaioSDK.iml" filepath="$PROJECT_DIR$/metaioSDK/metaioSDK.iml" />
+      <module fileurl="file://$PROJECT_DIR$/opencv/opencv.iml" filepath="$PROJECT_DIR$/opencv/opencv.iml" />
     </modules>
   </component>
 </project>

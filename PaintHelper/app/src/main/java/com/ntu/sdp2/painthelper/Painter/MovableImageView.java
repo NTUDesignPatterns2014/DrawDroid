@@ -1,8 +1,13 @@
 package com.ntu.sdp2.painthelper.Painter;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.widget.ImageView;
+import com.ntu.sdp2.painthelper.utils.SketchImage;
+import java.io.IOException;
 
 /**
  * Created by JimmyPrime on 2014/12/23.
@@ -10,6 +15,21 @@ import android.widget.ImageView;
 public class MovableImageView extends ImageView {
     public MovableImageView(Context context) {
         super(context);
+    }
+
+    public void genSketchImage() {
+        Bitmap bitmap = ((BitmapDrawable)this.getDrawable()).getBitmap();
+        try {
+            sketchImage = SketchImage.createFromPhoto(bitmap);
+        } catch (IOException e) {
+            Log.d("Sketch Image", "Create Fail");
+            sketchImage = new SketchImage();
+        }
+    }
+
+    public void setLineWidth(int width) {
+        sketchImage.setLineWidth(width);
+        this.setImageBitmap(sketchImage.getBitmapTransparent());
     }
 
     @Override
@@ -38,4 +58,6 @@ public class MovableImageView extends ImageView {
 
     private float atX, atY;
     private float startX, startY;
+
+    private SketchImage sketchImage;
 }

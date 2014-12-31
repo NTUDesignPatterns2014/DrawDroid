@@ -3,9 +3,6 @@ package com.ntu.sdp2.painthelper;
 /**
  * Created by JimmyPrime on 2014/10/26.
  */
-import android.content.ClipData;
-import android.content.ClipDescription;
-import android.graphics.drawable.Drawable;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -13,13 +10,10 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.support.v4.app.Fragment;
 import android.util.Log;
-import android.view.DragEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.FrameLayout;
-import android.widget.GridLayout;
 import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
@@ -130,11 +124,6 @@ public class Page_1 extends Fragment {
 
     }
 
-
-
-
-
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -147,11 +136,12 @@ public class Page_1 extends Fragment {
         gridview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
                 MovableImageView imageView = imageAdapter.getItem(position);
+                imageView.genSketchImage();
+                imageView.setLineWidth(3);
+
                 RelativeLayout relativeLayout = (RelativeLayout) page_1.findViewById(R.id.relativeLayout);
                 relativeLayout.addView(imageView);
                 relativeLayout.removeViewInLayout(gridview);
-
-
             }
         });
         RelativeLayout relativeLayout = (RelativeLayout) page_1.findViewById(R.id.relativeLayout);
@@ -163,8 +153,6 @@ public class Page_1 extends Fragment {
                 R.drawable.composer_music,
                 R.drawable.composer_with};
         final int itemCount = images.length;
-
-
 
         for (int i=0; i<itemCount; i++) {
             final ImageView item = new ImageView(this.getActivity());
@@ -179,13 +167,6 @@ public class Page_1 extends Fragment {
                         relativeLayout.bringChildToFront(gridview);
                     }
                     else if (position == 1) {
-                        /*
-                        public Bitmap takeScreenshot() {
-                            View rootView = findViewById(android.R.id.content).getRootView();
-                            rootView.setDrawingCacheEnabled(true);
-                            return rootView.getDrawingCache();
-                        }
-                         */
                         cornerButton.setVisibility(View.INVISIBLE);
                         page_1.setDrawingCacheEnabled(true);
                         //MovableImageView imageView = new MovableImageView(page_1.getContext());
@@ -218,6 +199,4 @@ public class Page_1 extends Fragment {
         }
         return page_1;
     }
-
-
 }
