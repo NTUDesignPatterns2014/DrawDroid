@@ -6,7 +6,11 @@ package com.ntu.sdp2.painthelper;
 import android.content.ClipData;
 import android.content.ClipDescription;
 import android.graphics.drawable.Drawable;
+import android.content.Context;
+import android.content.Intent;
+import android.graphics.Bitmap;
 import android.os.Bundle;
+import android.os.Environment;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.DragEvent;
@@ -25,7 +29,112 @@ import com.capricorn.ArcMenu;
 import com.ntu.sdp2.painthelper.Painter.ImageAdapter;
 import com.ntu.sdp2.painthelper.Painter.MovableImageView;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.util.Calendar;
+
 public class Page_1 extends Fragment {
+    Calendar rightNow;
+    int counter=0;
+    int image_id;
+    String message="/sdcard/111222.jpg";
+
+    boolean Sd_write=false;
+    /* Checks if external storage is available for read and write */
+    public File getAlbumStorageDir(Context context, String albumName) {
+        // Get the directory for the app's private pictures directory.
+        File file = new File(context.getExternalFilesDir(
+                Environment.DIRECTORY_PICTURES), albumName);
+
+        return file;
+    }
+    public boolean isExternalStorageWritable() {
+        String state = Environment.getExternalStorageState();
+        if (Environment.MEDIA_MOUNTED.equals(state)) {
+            return true;
+        }
+        return false;
+    }
+
+    /* Checks if external storage is available to at least read */
+    public boolean isExternalStorageReadable() {
+        String state = Environment.getExternalStorageState();
+        if (Environment.MEDIA_MOUNTED.equals(state) ||
+                Environment.MEDIA_MOUNTED_READ_ONLY.equals(state)) {
+            return true;
+        }
+        return false;
+    }
+
+    public void save_image(Bitmap bit){
+        String path="111";
+        String Tag="save_image";
+        Log.v(Tag,path);
+        rightNow= Calendar.getInstance();
+        String time=Integer.toString(rightNow.get(Calendar.MONTH))+Integer.toString(rightNow.get(Calendar.DATE))+Integer.toString(rightNow.get(Calendar.HOUR))+Integer.toString(rightNow.get(Calendar.SECOND))+counter;
+        Toast.makeText(getActivity(),time,Toast.LENGTH_LONG).show();
+        counter++;
+        path=Environment.getExternalStorageDirectory().getPath();
+        Log.v(Tag,path);
+        if(Sd_write)
+        {
+
+            File file=getAlbumStorageDir(getActivity().getApplicationContext(),"saved_img");
+
+
+            path=file.getPath();
+            File image_file=new File(path+"/"+time+".png");
+            Log.e(Tag,"image_file :"+image_file.getPath());
+
+
+
+            if(!file.exists()) file.mkdirs();
+            else    Log.v(Tag,"dirExisted");
+            if(!image_file.exists())
+            {
+                try
+                {
+                    image_file.createNewFile();
+
+                }
+                catch (IOException e)
+                {
+                    e.printStackTrace();
+                }
+            }
+            if(bit!=null) {
+
+                Bitmap tmp = bit;
+                FileOutputStream fos = null;
+                try {
+                    fos = new FileOutputStream(image_file);
+                    tmp.compress(Bitmap.CompressFormat.PNG, 100, fos);
+                    fos.close();
+                } catch (FileNotFoundException g) {
+                    Log.e(Tag, "FileOouputStream Error");
+                } catch (IOException m) {
+                    Log.e(Tag, "IOException");
+                }
+
+
+            }
+            else
+            {
+                Log.e(Tag,"image_view is null");
+            }
+            message=image_file.getPath();
+
+        }
+
+    }
+
+
+
+
+
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -41,6 +150,8 @@ public class Page_1 extends Fragment {
                 RelativeLayout relativeLayout = (RelativeLayout) page_1.findViewById(R.id.relativeLayout);
                 relativeLayout.addView(imageView);
                 relativeLayout.removeViewInLayout(gridview);
+
+
             }
         });
         RelativeLayout relativeLayout = (RelativeLayout) page_1.findViewById(R.id.relativeLayout);
@@ -52,6 +163,9 @@ public class Page_1 extends Fragment {
                 R.drawable.composer_music,
                 R.drawable.composer_with};
         final int itemCount = images.length;
+
+
+
         for (int i=0; i<itemCount; i++) {
             final ImageView item = new ImageView(this.getActivity());
             item.setImageResource(images[i]);
@@ -74,14 +188,36 @@ public class Page_1 extends Fragment {
                          */
                         cornerButton.setVisibility(View.INVISIBLE);
                         page_1.setDrawingCacheEnabled(true);
-                        MovableImageView imageView = new MovableImageView(page_1.getContext());
-                        imageView.setImageBitmap(page_1.getDrawingCache());
-                        RelativeLayout relativeLayout = (RelativeLayout) page_1.findViewById(R.id.relativeLayout);
-                        relativeLayout.addView(imageView);
+                        //MovableImageView imageView = new MovableImageView(page_1.getContext());
+                        //imageView.setImageBitmap(page_1.getDrawingCache());
+                        //RelativeLayout relativeLayout = (RelativeLayout) page_1.findViewById(R.id.relativeLayout);
+                        //relativeLayout.addView(imageView);/
+                        
+                        save_image(page_1.getDrawingCache());
+
+                        Intent intent = new Intent(getActivity(),TutorialInstantTracking.class);
+
+                        intent.putExtra(MainActivity.EXTRA_MESSAGE,message);
+
+                        startActivity(intent);
                     }
                 }
             });
+
+        }
+        if(isExternalStorageWritable())
+        {
+
+            Toast.makeText(getActivity(),"SDCard_Ready!",Toast.LENGTH_LONG).show();
+            Sd_write=true;
+        }
+        else
+        {
+            Toast.makeText(getActivity(),"SDCard_Removed!",Toast.LENGTH_LONG).show();
+            Sd_write=false;
         }
         return page_1;
     }
+
+
 }

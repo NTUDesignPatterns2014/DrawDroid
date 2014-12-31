@@ -31,6 +31,7 @@ public class MainActivity extends FragmentActivity {
     BackButtonHandler backButtonHandler = new BackButtonHandler();
     DataManagement cloudManager;
     DataManagement localManager;
+    public final static String EXTRA_MESSAGE = "com.mycompany.myfirstapp.MESSAGE";
 
     @Override
     public void onResume() {

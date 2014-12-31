@@ -90,6 +90,12 @@
     <orderEntry type="module" module-name="facebook" exported="" />
     <orderEntry type="module" module-name="arcmenu" exported="" />
     <orderEntry type="module" module-name="opencv" exported="" />
+    <orderEntry type="library" exported="" name="support-annotations-21.0.2" level="project" />
+    <orderEntry type="library" exported="" name="support-v4-21.0.2" level="project" />
+    <orderEntry type="library" exported="" name="bolts-android-1.1.2" level="project" />
+    <orderEntry type="module" module-name="metaioSDK" exported="" />
+    <orderEntry type="module" module-name="arcmenu" exported="" />
+    <orderEntry type="module" module-name="facebook" exported="" />
   </component>
 </module>
 

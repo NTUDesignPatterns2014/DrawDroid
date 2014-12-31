@@ -1,3 +1,5 @@
+
+include ':metaioSDK'
 include ':arcmenu'
 include ':app'
 include ':opencv'

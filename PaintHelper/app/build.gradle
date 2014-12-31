@@ -6,7 +6,7 @@ android {
 
     defaultConfig {
         applicationId "com.ntu.sdp2.painthelper"
-        minSdkVersion 15
+        minSdkVersion 17
         targetSdkVersion 21
         versionCode 1
         versionName "1.0"
@@ -55,4 +55,5 @@ dependencies {
     compile project(':arcmenu')
     compile 'com.parse.bolts:bolts-android:1.+'
     compile fileTree(include: 'Parse-*.jar', dir: 'libs')
+    compile project(':metaioSDK')
 }
