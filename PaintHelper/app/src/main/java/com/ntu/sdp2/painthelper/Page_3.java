@@ -27,6 +27,7 @@ import android.widget.Toast;
 
 import com.ntu.sdp2.painthelper.capture.UploadDialogFragment;
 import com.ntu.sdp2.painthelper.utils.SketchImage;
+import com.parse.ParseFacebookUtils;
 
 import org.opencv.android.OpenCVLoader;
 
@@ -92,6 +93,9 @@ public class Page_3 extends Fragment {
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data)
     {
+        // for parse login
+        ParseFacebookUtils.finishAuthentication(requestCode, resultCode, data);
+
         Log.i(TAG, "onActivityResult called, request = " + requestCode);
         if (requestCode == 0) {
             // from my camera startCamera~

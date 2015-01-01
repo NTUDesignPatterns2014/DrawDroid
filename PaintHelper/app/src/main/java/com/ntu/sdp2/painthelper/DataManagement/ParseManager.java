@@ -328,7 +328,11 @@ public class ParseManager implements CloudManagement {
     private PaintImage parseToPaint(ParseObject parseObject, byte[] bytes, String type){
         Log.i(TAG, "parseToPaint, parseObject:" + parseObject.toString() + parseObject.keySet().toString());
         String name = parseObject.getString("Name");
-
+        try {
+            parseObject.getParseUser("user").fetchIfNeeded();
+        }catch (Exception e){
+            Log.i(TAG, "fetch userinfo failed!");
+        }
         String author = parseObject.getParseUser("user").getUsername();
         //String author = "Temp Author";
         ParseUser user = parseObject.getParseUser("user");

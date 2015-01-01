@@ -8,10 +8,10 @@
         <option name="gradleHome" value="D:\dev\android-studio\gradle\gradle-2.2.1" />
         <option name="modules">
           <set>
-            <option value="$PROJECT_DIR$" />
-            <option value="$PROJECT_DIR$/app" />
-            <option value="$PROJECT_DIR$/facebook" />
-            <option value="$PROJECT_DIR$/opencv" />
+            <option value="$USER_HOME$/Dropbox/NTU/Lou/SoftwareDesignPattern/Project/App/team2/PaintHelper" />
+            <option value="$USER_HOME$/Dropbox/NTU/Lou/SoftwareDesignPattern/Project/App/team2/PaintHelper/app" />
+            <option value="$USER_HOME$/Dropbox/NTU/Lou/SoftwareDesignPattern/Project/App/team2/PaintHelper/facebook" />
+            <option value="$USER_HOME$/Dropbox/NTU/Lou/SoftwareDesignPattern/Project/App/team2/PaintHelper/opencv" />
           </set>
         </option>
       </GradleProjectSettings>

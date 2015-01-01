@@ -15,3 +15,6 @@ Android.mk
 *.bar
 gdbserver
 gdb.setup
+
+#gradle file for ubuntu
+build.gradle
