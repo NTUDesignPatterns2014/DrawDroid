@@ -158,7 +158,7 @@ public class UploadDialogFragment extends DialogFragment {
 
     private void upload(Bitmap img, String name, String catagory) {
         PaintImage paintImage = null;
-        paintImage = new PaintImage(null, null, null, null, null);
+        paintImage = new PaintImage(null, null, null, null, null, null);
         paintImage.setName(name);
         paintImage.setImage(img);
         ArrayList<String> catagories = new ArrayList<String>();
