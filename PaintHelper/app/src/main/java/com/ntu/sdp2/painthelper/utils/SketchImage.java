@@ -107,9 +107,9 @@ public class SketchImage {
         processor.invert(mBmp);
     }
 
-    private static void changeColor(Bitmap bmp, int clrSrc, int clrDst) {
+    private static Bitmap changeColor(Bitmap bmp, int clrSrc, int clrDst) {
         if(bmp == null) {
-            return;
+            return null;
         }
         // Source image size
         int width = bmp.getWidth();
@@ -125,18 +125,17 @@ public class SketchImage {
         Bitmap result = Bitmap.createBitmap(width, height, bmp.getConfig());
         //set pixels
         result.setPixels(pixels, 0, width, 0, 0, width, height);
+        return result;
     }
 
 
     private static Bitmap changeWhiteToTrans(Bitmap bmp) {
-        Bitmap bmpOut = bmp.copy(bmp.getConfig(), true);
-        changeColor(bmpOut, Color.WHITE, Color.TRANSPARENT);
+        Bitmap bmpOut = changeColor(bmp, Color.WHITE, Color.TRANSPARENT);
         return bmpOut;
     }
 
     private static Bitmap changeTransToWhite(Bitmap bmp) {
-        Bitmap bmpOut = bmp.copy(bmp.getConfig(), true);
-        changeColor(bmp, Color.TRANSPARENT, Color.WHITE);
+        Bitmap bmpOut = changeColor(bmp, Color.TRANSPARENT, Color.WHITE);
         return bmpOut;
     }
 

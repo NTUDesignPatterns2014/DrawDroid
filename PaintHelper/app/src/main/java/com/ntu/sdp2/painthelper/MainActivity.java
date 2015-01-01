@@ -162,6 +162,7 @@ public class MainActivity extends FragmentActivity {
 
 
     static {
+        System.loadLibrary("opencv_java");
         System.loadLibrary("imgprocess");
     }
 

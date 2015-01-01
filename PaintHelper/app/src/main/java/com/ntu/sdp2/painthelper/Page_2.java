@@ -40,7 +40,6 @@ public class Page_2 extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View page_2 = inflater.inflate(R.layout.page_2_frag, container, false);
-        //((TextView)page_2.findViewById(R.id.textView)).setText("Page 2");
         mTitles = getResources().getStringArray(R.array.catagories);
         mDrawerLayout = (DrawerLayout) page_2.findViewById(R.id.drawer_layout);
         mDrawerList = (ListView) page_2.findViewById(R.id.left_drawer);
@@ -133,7 +132,7 @@ public class Page_2 extends Fragment {
             i = getArguments().getInt(ARG_SORT_NUMBER);
             categroy = getResources().getStringArray(R.array.catagories)[i];
             Log.i("Gallery", "getImageByCategory");
-            //((MainActivity)getActivity()).getCloudManager().getImageByCategory(categroy,adapter);
+            ((MainActivity)getActivity()).getCloudManager().getImageByCategory(categroy,adapter);
 
             return rootView;
         }
