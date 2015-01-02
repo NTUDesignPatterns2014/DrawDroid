@@ -27,9 +27,8 @@ public class Myadapter extends BaseAdapter implements ThumbCallBack
     private Context context;
     private List<Bitmap> image= new ArrayList<>();
     private List<PaintImage> paint = new ArrayList<>();
-    //private Integer[] imgs = {R.drawable.ic_launcher, R.drawable.animal, R.drawable.botany,R.drawable.people};
 
- public Myadapter(Context context){
+public Myadapter(Context context){
          this.context=context;
         }
 public int getCount(){

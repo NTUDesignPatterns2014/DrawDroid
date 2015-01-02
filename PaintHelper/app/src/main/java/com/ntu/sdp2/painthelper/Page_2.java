@@ -47,7 +47,6 @@ public class Page_2 extends Fragment {
         return page_2;
     }
 
-
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
@@ -107,7 +106,7 @@ public class Page_2 extends Fragment {
             gridview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                 //@Override
                 public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                    imageid = (String) adapter.getPiantImageID(position);
+                    imageid = adapter.getPiantImageID(position);
 
                     ((MainActivity)getActivity()).getCloudManager().getImageById(imageid,new OriginCallback() {
                         @Override
@@ -115,7 +114,6 @@ public class Page_2 extends Fragment {
                             Log.i("Gallery", "OriginDone");
                             picture = paintImage;
                             Fragment fragment = new ImageFragment();
-                            //Bitmap bitmap = ((BitmapDrawable)imageView.getDrawable()).getBitmap();
                             ((ImageFragment)fragment).setImage(picture);
 
                             FragmentManager fragmentManager = getFragmentManager();
@@ -136,7 +134,6 @@ public class Page_2 extends Fragment {
 
             return rootView;
         }
-
 
         public static class ImageFragment extends Fragment{
             private ImageView image;
@@ -199,15 +196,6 @@ public class Page_2 extends Fragment {
                 }
             }
         }
-
-    //public void func(){
-       // ((MainActivity)getActivity()).getCloudManager().getImageByCategory("1", new ThumbCallBack() {
-        //    @Override
-         //   public void done(PaintImage paintImage) {
-
-        //    }
-       // });
-
     }
 }
 
