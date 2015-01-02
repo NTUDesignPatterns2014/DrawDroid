@@ -94,7 +94,7 @@ public class Page_3 extends Fragment {
     public void onActivityResult(int requestCode, int resultCode, Intent data)
     {
         // for parse login
-        ParseFacebookUtils.finishAuthentication(requestCode, resultCode, data);
+        //ParseFacebookUtils.finishAuthentication(requestCode, resultCode, data);
 
         Log.i(TAG, "onActivityResult called, request = " + requestCode);
         if (requestCode == 0) {

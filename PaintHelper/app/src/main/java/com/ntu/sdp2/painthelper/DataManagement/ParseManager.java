@@ -148,16 +148,26 @@ public class ParseManager implements CloudManagement {
 
     }
 
-    static public void logIn(Activity activity, final LogInCallBack callBack){
+    static public void logIn(final Activity activity, final LogInCallBack callBack){
         ParseFacebookUtils.logIn(activity, new LogInCallback() {
             @Override
             public void done(ParseUser parseUser, ParseException e) {
                 Request request = Request.newMeRequest(ParseFacebookUtils.getSession(),
                         new Request.GraphUserCallback() {
                             @Override
-                            public void onCompleted(GraphUser user, Response response) {
+                            public void onCompleted(final GraphUser user, Response response) {
                                 // If the response is successful
                                 if (user != null) {
+                                    if(ParseUser.getCurrentUser() == null){
+                                        ParseFacebookUtils.logIn(activity, new LogInCallback() {
+                                            @Override
+                                            public void done(ParseUser parseUser, ParseException e) {
+                                                ParseUser.getCurrentUser().setUsername(user.getName());
+                                                ParseUser.getCurrentUser().saveEventually();
+                                                callBack.done(ParseUser.getCurrentUser());
+                                            }
+                                        });
+                                    }
                                     ParseUser.getCurrentUser().setUsername(user.getName());
                                     ParseUser.getCurrentUser().saveEventually();
                                     callBack.done(ParseUser.getCurrentUser());

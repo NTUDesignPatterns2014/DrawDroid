@@ -13,15 +13,23 @@ import android.support.v4.app.FragmentActivity;
 import android.util.Base64;
 import android.util.Log;
 
+import com.facebook.android.Facebook;
 import com.ntu.sdp2.painthelper.BackButtonHandler.BackButtonHandler;
 import com.ntu.sdp2.painthelper.BackButtonHandler.FragmentHandler;
 import com.ntu.sdp2.painthelper.DataManagement.DataManagement;
 import com.ntu.sdp2.painthelper.DataManagement.ParseLocalManager;
 import com.ntu.sdp2.painthelper.DataManagement.ParseManager;
+import com.parse.LogInCallback;
+import com.parse.ParseException;
+import com.parse.ParseFacebookUtils;
+import com.parse.ParseUser;
+import com.facebook.android.Facebook;
+
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
 public class MainActivity extends FragmentActivity {
+    private static final String TAG = "MainActivity";
     NonSwipeableViewPager Tab;
     TabPagerAdapter TabAdapter;
     ActionBar actionBar;
@@ -111,7 +119,10 @@ public class MainActivity extends FragmentActivity {
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data)
     {
+        Log.d(TAG, "onActivityResult");
+        ParseFacebookUtils.finishAuthentication(requestCode, resultCode, data);
         super.onActivityResult(requestCode, resultCode, data);
+
     }
 
 

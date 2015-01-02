@@ -3,6 +3,7 @@ package com.ntu.sdp2.painthelper.DataManagement;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.preference.PreferenceManager;
+import android.util.Log;
 
 import com.ntu.sdp2.painthelper.DataManagement.CallBack.ElementCallBack;
 import com.ntu.sdp2.painthelper.DataManagement.CallBack.OriginCallback;
@@ -169,9 +170,14 @@ public class ParseLocalManager implements LocalDataManagement {
     private PaintImage parseToPaint(ParseObject parseObject, byte[] bytes, String type){
         String name = parseObject.getString("Name");
         String author = parseObject.getParseUser("user").getUsername();
+        try {
+            parseObject.getParseUser("user").fetchIfNeeded();
+        }catch (Exception e){
+            Log.i(TAG, "fetch userinfo failed!");
+        }
         ParseUser user = parseObject.getParseUser("user");
        // String author = "Temp Local Author";
-        String id = parseObject.getObjectId();
+        String id = parseObject.getString("ImgId");
         List<String> categoryList = parseObject.getList("Category");
         Bitmap bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
 
