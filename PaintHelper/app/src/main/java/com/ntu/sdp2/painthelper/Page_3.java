@@ -105,7 +105,7 @@ public class Page_3 extends Fragment {
 
         Log.i(TAG, "onActivityResult called, request = " + requestCode);
         // for parse login
-        ParseFacebookUtils.finishAuthentication(requestCode, resultCode, data);
+        //ParseFacebookUtils.finishAuthentication(requestCode, resultCode, data);
 
         if (requestCode == 0) {
             // from my camera startCamera~

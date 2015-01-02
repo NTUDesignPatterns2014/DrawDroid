@@ -107,8 +107,9 @@ public class Account_Info extends Fragment{
                                 @Override
                                 public void onClick(DialogInterface dialog, int which) {
                                     user = null;
-                                    ParseUser.logOut();
                                     setUi(LOG_OUT);
+                                    ParseFacebookUtils.getSession().closeAndClearTokenInformation();
+                                    ParseUser.logOut();
                                     Log.i(TAG, "User Logged out");
                                 }
 
@@ -125,6 +126,7 @@ public class Account_Info extends Fragment{
         Session session = ParseFacebookUtils.getSession();
         if (session != null && session.isOpened()) {
             // Get the user's data
+            Log.d(TAG, "MeReq in onCreateView");
             makeMeRequest();
         }
 
@@ -141,6 +143,7 @@ public class Account_Info extends Fragment{
         Session session = ParseFacebookUtils.getSession();
         if (session != null && session.isOpened()) {
             // Get the user's data
+            Log.d(TAG, "MeReq in onResume");
             makeMeRequest();
         }
 
@@ -149,7 +152,7 @@ public class Account_Info extends Fragment{
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        ParseFacebookUtils.finishAuthentication(requestCode, resultCode, data);
+        //ParseFacebookUtils.finishAuthentication(requestCode, resultCode, data);
     }
 
     @Override
@@ -187,6 +190,22 @@ public class Account_Info extends Fragment{
                             profilePic.setProfileId(user.getId());
                             // Set the TextView's text to the user's name.
                             userInfo.setText(user.getName());
+                            ParseUser parseUser = ParseUser.getCurrentUser();
+                            if(parseUser == null){
+                                Log.d(TAG, "Try to login in MeReq");
+                                ParseFacebookUtils.logIn(getActivity(), new LogInCallback() {
+                                    @Override
+                                    public void done(ParseUser parseUser, ParseException e) {
+                                        setUi(LOG_IN);
+                                    }
+                                });
+                                return;
+                            }
+                            try {
+                                ParseUser.getCurrentUser().fetchIfNeeded();
+                            }catch (Exception e){
+                                Log.e(TAG, "fetch user info failed!!");
+                            }
                             ParseUser.getCurrentUser().setUsername(user.getName());
                             ParseUser.getCurrentUser().saveEventually();
                         }else if (response.getError() != null) {
@@ -232,6 +251,7 @@ public class Account_Info extends Fragment{
             authButton.setText("Log Out");
             profilePic.setVisibility(View.VISIBLE);
             userInfo.setVisibility(View.VISIBLE);
+            Log.d(TAG, "MeReq in setUi");
             makeMeRequest();
         }else if(isLogIn == LOG_OUT){
             authButton.setText("Log in with Facebook");
