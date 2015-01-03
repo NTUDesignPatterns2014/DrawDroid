@@ -112,11 +112,7 @@ public class Page_3 extends Fragment {
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data)
     {
-
         Log.i(TAG, "onActivityResult called, request = " + requestCode);
-        // for parse login
-        //ParseFacebookUtils.finishAuthentication(requestCode, resultCode, data);
-
         if (requestCode == 0) {
             // from my camera startCamera~
             performCrop(mImgCapturedUri, mCroppedUri);
@@ -132,34 +128,10 @@ public class Page_3 extends Fragment {
             if (data != null) {
                 uri = data.getData();
                 Log.i(TAG, "Uri: " + uri.toString());
-                /*f (mBmpEdge != null) {
-                    writeFileContent(uri, mBmpOri);
-                }*/
             }
         }
         else if (requestCode == CROP_REQUEST_CODE ) {
-            Bitmap bmp;
-            mImage = null;
-            bmp = BitmapFactory.decodeFile(mImgCapturedUri.getPath());
-
-            if (resultCode == Activity.RESULT_OK) {
-                toast("Cropped, show Image:" + mCroppedUri.toString());
-            }
-            else {
-                toast("Crop failed, do myLowClassCrop");
-                bmp = myLowClassCrop(bmp);
-            }
-
-            mImgView.setImageBitmap(bmp);
-            try {
-                mImage = SketchImage.createFromPhoto(bmp);
-            } catch (IOException e) {
-                e.printStackTrace();
-                return;
-            }
-
-            BitmapDrawable result = new BitmapDrawable(getResources(), scaleBitmap(mImage.getBitmapTransparent()));
-            mImgView.setImageDrawable(result);
+            onCropResult(resultCode);
         }
         super.onActivityResult(requestCode, resultCode, data);
     }
@@ -358,6 +330,34 @@ public class Page_3 extends Fragment {
         }
     }
 
+
+
+    private void onCropResult(int resultCode) {
+        Bitmap bmp;
+        mImage = null;
+        bmp = BitmapFactory.decodeFile(mImgCapturedUri.getPath());
+
+        if (resultCode == Activity.RESULT_OK) {
+            Log.i(TAG, "Crop OK");
+            toast("Cropped, show Image:" + mCroppedUri.toString());
+        }
+        else {
+            Log.i(TAG, "Crop fail, do myLowClassCrop");
+            toast("Crop failed, do myLowClassCrop");
+            bmp = myLowClassCrop(bmp);
+        }
+
+        mImgView.setImageBitmap(bmp);
+        try {
+            mImage = SketchImage.createFromPhoto(bmp);
+        } catch (IOException e) {
+            e.printStackTrace();
+            return;
+        }
+
+        BitmapDrawable result = new BitmapDrawable(getResources(), scaleBitmap(mImage.getBitmapTransparent()));
+        mImgView.setImageDrawable(result);
+    }
 
     /**
      *
