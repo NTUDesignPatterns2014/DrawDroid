@@ -4,7 +4,6 @@
     <string name="app_name">PaintHelper</string>
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
-
     <string name="app_id">1405501183074777</string>
     <string name="account_info_frag_tag">info_tag</string>
 
@@ -18,9 +17,15 @@
         <item>Vehicle</item>
         <item>Groceries</item>
     </string-array>
+
     <string name="drawer_open">Open navigation drawer</string>
     <string name="drawer_close">Close navigation drawer</string>
     <string name="action_websearch">Web search</string>
     <string name="app_not_available">Sorry, there\'s no web browser available</string>
-
+    <string name="title_activity_crop">CropActivity</string>
+    <string name="cancel">CANCEL</string>
+    <string name="done">DONE</string>
+    <string name="crop_img_uri">I_AM_TO_BE_CROPPED</string>
+    <string name="title_activity_dummy">DummyActivity</string>
+    <string name="request_code_key">RequestCodeKey</string>
 </resources>
