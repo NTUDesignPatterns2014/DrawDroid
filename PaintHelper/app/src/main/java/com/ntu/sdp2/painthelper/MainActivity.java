@@ -3,26 +3,28 @@ package com.ntu.sdp2.painthelper;
 import android.app.ActionBar;
 import android.app.FragmentTransaction;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.Signature;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.support.v4.app.FragmentActivity;
 import android.util.Base64;
 import android.util.Log;
+import android.widget.Toast;
 
+import com.facebook.Session;
 import com.ntu.sdp2.painthelper.BackButtonHandler.BackButtonHandler;
 import com.ntu.sdp2.painthelper.BackButtonHandler.FragmentHandler;
 import com.ntu.sdp2.painthelper.DataManagement.DataManagement;
 import com.ntu.sdp2.painthelper.DataManagement.ParseLocalManager;
 import com.ntu.sdp2.painthelper.DataManagement.ParseManager;
 import org.opencv.android.OpenCVLoader;
+import com.parse.ParseFacebookUtils;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
 public class MainActivity extends FragmentActivity {
+    private static final String TAG = "MainActivity";
     NonSwipeableViewPager Tab;
     TabPagerAdapter TabAdapter;
     ActionBar actionBar;
@@ -128,7 +130,14 @@ public class MainActivity extends FragmentActivity {
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data)
     {
+        Toast.makeText(this, "onActivityResult, code=" + requestCode, Toast.LENGTH_SHORT).show();
+        if ((requestCode == 32665 || requestCode == Session.DEFAULT_AUTHORIZE_ACTIVITY_CODE) && resultCode == RESULT_OK) {
+            // 32665: facebook login but not linked with Parse
+            ParseFacebookUtils.finishAuthentication(requestCode, resultCode, data);
+        }
+
         super.onActivityResult(requestCode, resultCode, data);
+
     }
 
 

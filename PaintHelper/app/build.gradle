@@ -1,12 +1,12 @@
 apply plugin: 'com.android.application'
-
+import org.apache.tools.ant.taskdefs.condition.Os
 android {
     compileSdkVersion 21
     buildToolsVersion "20.0.0"
 
     defaultConfig {
         applicationId "com.ntu.sdp2.painthelper"
-        minSdkVersion 17
+        minSdkVersion 15
         targetSdkVersion 21
         versionCode 1
         versionName "1.0"
@@ -22,16 +22,26 @@ android {
 
 
     sourceSets.main.jni.srcDirs = []
-
     task ndkBuild(type: Exec, description: 'Compile JNI source via NDK') {
         Properties properties = new Properties()
         properties.load(project.rootProject.file('local.properties').newDataInputStream())
         def ndkDir = properties.getProperty('ndk.dir')
-        commandLine "$ndkDir\\ndk-build.cmd",
+        def SEP = "\\"
+        if (Os.isFamily(Os.FAMILY_WINDOWS)) {
+            SEP = "\\"
+        }
+        else if (Os.isFamily(Os.FAMILY_UNIX)) {
+            SEP = "/"
+        }
+        else if (Os.isFamily(Os.FAMILY_MAC)) {
+            SEP = "/"
+        }
+
+        commandLine ndkDir + SEP + 'ndk-build.cmd',
                 'NDK_PROJECT_PATH=.',
-                'NDK_LIBS_OUT=src\\main\\jniLibs',
-                'APP_BUILD_SCRIPT=src\\main\\jni\\Android.mk',
-                'NDK_APPLICATION_MK=src\\main\\jni\\Application.mk',
+                'NDK_LIBS_OUT=' + 'src' + SEP + 'main' + SEP + 'jniLibs',
+                'APP_BUILD_SCRIPT=' + 'src' + SEP + 'main' + SEP + 'jni' + SEP + 'Android.mk',
+                'NDK_APPLICATION_MK=' + 'src' + SEP + 'main' + SEP + 'jni' + SEP + 'Application.mk',
                 "V=1"
     }
 
