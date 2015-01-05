@@ -38,9 +38,7 @@ public class TutorialInstantTracking extends ARViewActivity
 
 
 	private View m2DButton;
-	private View m2DRectifiedButton;
 	private View m3DButton;
-	private View m2DSLAMButton;
 	private View m2DSLAMExtrapolationButton;
 	
 	public Vector3d size=new Vector3d(3.0f);
@@ -69,9 +67,7 @@ public class TutorialInstantTracking extends ARViewActivity
 
 
 			m2DButton = mGUIView.findViewById(R.id.instant2DButton);
-			m2DRectifiedButton = mGUIView.findViewById(R.id.instant2DRectifiedButton);
 			m3DButton = mGUIView.findViewById(R.id.instant3DButton);
-			m2DSLAMButton = mGUIView.findViewById(R.id.instant2DSLAMButton);
 			m2DSLAMExtrapolationButton = mGUIView.findViewById(R.id.instant2DSLAMExtrapolationButton);
 
 
@@ -154,22 +150,9 @@ public class TutorialInstantTracking extends ARViewActivity
 	public void on2DButtonClicked(View v)
 	{
 
-		m2DRectifiedButton.setEnabled(!mPreview);
 		m3DButton.setEnabled(!mPreview);
-		m2DSLAMButton.setEnabled(!mPreview);
 		m2DSLAMExtrapolationButton.setEnabled(!mPreview);
 		metaioSDK.startInstantTracking("INSTANT_2D", "", mPreview);
-		mPreview = !mPreview;
-	}
-
-	public void on2DRectifiedButtonClicked(View v)
-	{
-
-		m2DButton.setEnabled(!mPreview);
-		m3DButton.setEnabled(!mPreview);
-		m2DSLAMButton.setEnabled(!mPreview);
-		m2DSLAMExtrapolationButton.setEnabled(!mPreview);
-		metaioSDK.startInstantTracking("INSTANT_2D_GRAVITY", "", mPreview);
 		mPreview = !mPreview;
 	}
 
@@ -179,50 +162,58 @@ public class TutorialInstantTracking extends ARViewActivity
 		metaioSDK.startInstantTracking("INSTANT_3D");
 	}
 
-	public void on2DSLAMButtonClicked(View v)
-	{
-
-		m2DButton.setEnabled(!mPreview);
-		m2DRectifiedButton.setEnabled(!mPreview);
-		m3DButton.setEnabled(!mPreview);
-		m2DSLAMExtrapolationButton.setEnabled(!mPreview);
-		metaioSDK.startInstantTracking("INSTANT_2D_GRAVITY_SLAM", "", mPreview);
-		mPreview = !mPreview;
-	}
 
 	public void on2DSLAMExtrapolationButtonClicked(View v)
 	{
 
 		m2DButton.setEnabled(!mPreview);
-		m2DRectifiedButton.setEnabled(!mPreview);
 		m3DButton.setEnabled(!mPreview);
-		m2DSLAMButton.setEnabled(!mPreview);
 		metaioSDK.startInstantTracking("INSTANT_2D_GRAVITY_SLAM_EXTRAPOLATED", "", mPreview);
 		mPreview = !mPreview;
 	}
+    int came_count=0;
     public void onConvertButtonClick(View v)
     {
         final CameraVector cameras = metaioSDK.getCameraList();
-        if (!cameras.isEmpty())
-        {
-            com.metaio.sdk.jni.Camera camera = cameras.get(0);
+        if(came_count==0) {
+            if (!cameras.isEmpty()) {
+                com.metaio.sdk.jni.Camera camera = cameras.get(0);
 
-            // Try to choose the camera with desired facing
-            for (int i = 0; i < cameras.size(); i++)
-            {
-                // TODO: Use Camera.FACE_BACK for back facing camera
-                if (cameras.get(i).getFacing() == Camera.FACE_FRONT)
-                {
-                    camera = cameras.get(i);
-                    break;
+                // Try to choose the camera with desired facing
+                for (int i = 0; i < cameras.size(); i++) {
+                    // TODO: Use Camera.FACE_BACK for back facing camera
+                    if (cameras.get(i).getFacing() == Camera.FACE_FRONT) {
+                        camera = cameras.get(i);
+                        break;
+                    }
                 }
-            }
 
-            metaioSDK.startCamera(camera);
+                metaioSDK.startCamera(camera);
+                came_count=1;
+            } else {
+                MetaioDebug.log(Log.WARN, "No camera found on the device!");
+            }
         }
-        else
-        {
-            MetaioDebug.log(Log.WARN, "No camera found on the device!");
+        else{
+            if (!cameras.isEmpty()) {
+                com.metaio.sdk.jni.Camera camera = cameras.get(0);
+
+                // Try to choose the camera with desired facing
+                for (int i = 0; i < cameras.size(); i++) {
+                    // TODO: Use Camera.FACE_BACK for back facing camera
+                    if (cameras.get(i).getFacing() == Camera.FACE_BACK) {
+                        camera = cameras.get(i);
+                        break;
+                    }
+                }
+
+                metaioSDK.startCamera(camera);
+                came_count=1;
+            } else {
+                MetaioDebug.log(Log.WARN, "No camera found on the device!");
+            }
+            came_count=0;
+
         }
 
 
