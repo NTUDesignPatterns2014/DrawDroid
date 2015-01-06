@@ -188,7 +188,7 @@ public class Page_1 extends Fragment {
 
         }
         if(isExternalStorageWritable()) {
-            Toast.makeText(getActivity(),"SDCard_Ready!",Toast.LENGTH_LONG).show();
+
             Sd_write=true;
         }
         else {
