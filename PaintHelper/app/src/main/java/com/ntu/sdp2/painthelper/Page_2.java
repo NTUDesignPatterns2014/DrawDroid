@@ -24,8 +24,10 @@ import android.widget.ArrayAdapter;
 import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import com.ntu.sdp2.painthelper.DataManagement.CallBack.OriginCallback;
+import com.ntu.sdp2.painthelper.DataManagement.CallBack.SaveCallBack;
 import com.ntu.sdp2.painthelper.DataManagement.Images.PaintImage;
 import com.ntu.sdp2.painthelper.settings.Myadapter;
 
@@ -162,7 +164,12 @@ public class Page_2 extends Fragment {
             @Override
             public boolean onOptionsItemSelected(MenuItem item) {
                 if(item.getItemId() == 1){
-                    ((MainActivity)getActivity()).getCloudManager().saveImage(mpaintImage);
+                    ((MainActivity)getActivity()).getCloudManager().saveImage(mpaintImage, new SaveCallBack() {
+                        @Override
+                        public void done() {
+                            Toast.makeText(getActivity(), "Upload success!!", Toast.LENGTH_SHORT);
+                        }
+                    });
                 }
                 if(item.getItemId() == 2){
                     AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());

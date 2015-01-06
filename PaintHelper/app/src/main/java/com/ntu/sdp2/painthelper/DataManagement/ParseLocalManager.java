@@ -7,6 +7,7 @@ import android.util.Log;
 
 import com.ntu.sdp2.painthelper.DataManagement.CallBack.ElementCallBack;
 import com.ntu.sdp2.painthelper.DataManagement.CallBack.OriginCallback;
+import com.ntu.sdp2.painthelper.DataManagement.CallBack.SaveCallBack;
 import com.ntu.sdp2.painthelper.DataManagement.CallBack.ThumbCallBack;
 import com.ntu.sdp2.painthelper.DataManagement.Images.OriginImage;
 import com.ntu.sdp2.painthelper.DataManagement.Images.PaintElement;
@@ -15,11 +16,13 @@ import com.ntu.sdp2.painthelper.DataManagement.Images.ThumbImage;
 import com.parse.FindCallback;
 import com.parse.GetCallback;
 import com.parse.GetDataCallback;
+import com.parse.Parse;
 import com.parse.ParseException;
 import com.parse.ParseFile;
 import com.parse.ParseObject;
 import com.parse.ParseQuery;
 import com.parse.ParseUser;
+import com.parse.SaveCallback;
 
 import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
@@ -124,7 +127,7 @@ public class ParseLocalManager implements LocalDataManagement {
     }
 
     @Override
-    public boolean saveImage(PaintImage paintImage){
+    public boolean saveImage(PaintImage paintImage, final SaveCallBack saveCallBack){
         ParseObject parseObject = new ParseObject("Img");
         addDetails(parseObject, paintImage);
         // create byte array
@@ -137,8 +140,48 @@ public class ParseLocalManager implements LocalDataManagement {
         parseObject.put("Img", parseImg);
 
 
-        parseObject.pinInBackground();
+        parseObject.pinInBackground(new SaveCallback() {
+            @Override
+            public void done(ParseException e) {
+                saveCallBack.done();
+            }
+        });
         return false;
+    }
+
+    // should pass thumbImage only!!
+    public void deleteImage(final PaintImage paintImage){
+        if(paintImage.getId() == null){
+            return;
+        }
+        // remove thumbnail
+        ParseQuery<ParseObject> parseQuery = new ParseQuery<ParseObject>("Thumbnails");
+        parseQuery.whereEqualTo("ImgId", paintImage.getId());
+        parseQuery.getFirstInBackground(new GetCallback<ParseObject>() {
+            @Override
+            public void done(ParseObject parseObject, ParseException e) {
+                if(e == null) {
+                    parseObject.unpinInBackground();
+                    Log.i(TAG, "Thumb " + paintImage.getName() + " with ImgID: " + paintImage.getId() + " removed from local.");
+                }else{
+                    Log.w(TAG, "Thumb " + paintImage.getName() + " with ImgID: " + paintImage.getId() + " not found.");
+                }
+            }
+        });
+        // remove Img
+        parseQuery = new ParseQuery<ParseObject>("Img");
+        parseQuery.getInBackground(paintImage.getId(), new GetCallback<ParseObject>() {
+            @Override
+            public void done(ParseObject parseObject, ParseException e) {
+                if(e == null) {
+                    parseObject.unpinInBackground();
+                    Log.i(TAG, "Img " + paintImage.getName() + " with ID: " + paintImage.getId() + " removed from local.");
+                }else{
+                    Log.w(TAG, "Img " + paintImage.getName() + " with ID: " + paintImage.getId() + " not found.");
+                }
+            }
+        });
+
     }
     /*--------------------------------------------------------------*
                                 Private Methods

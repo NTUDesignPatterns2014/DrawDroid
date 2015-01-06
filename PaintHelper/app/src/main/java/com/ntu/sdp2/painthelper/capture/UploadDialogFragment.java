@@ -19,6 +19,7 @@ import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.Toast;
 
+import com.ntu.sdp2.painthelper.DataManagement.CallBack.SaveCallBack;
 import com.ntu.sdp2.painthelper.DataManagement.DataManagement;
 import com.ntu.sdp2.painthelper.DataManagement.Images.PaintImage;
 import com.ntu.sdp2.painthelper.MainActivity;
@@ -165,7 +166,13 @@ public class UploadDialogFragment extends DialogFragment {
         catagories.add(catagory);
         paintImage.setCategory(catagories);
         DataManagement parseManager = ((MainActivity) getActivity()).getCloudManager();
-        if (parseManager.saveImage(paintImage)) {
+        if (parseManager.saveImage(paintImage, new SaveCallBack() {
+            @Override
+            public void done() {
+                //toast("Img Upload Success!");
+
+            }
+        })) {
             Log.i(TAG, "Upload failed: saveImage return true");
             toast("Login Facebook first!");
         }

@@ -3,10 +3,12 @@ package com.ntu.sdp2.painthelper;
 import android.app.ActionBar;
 import android.app.FragmentTransaction;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.Signature;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v4.app.FragmentActivity;
 import android.util.Base64;
 import android.util.Log;
@@ -31,6 +33,7 @@ public class MainActivity extends FragmentActivity {
     BackButtonHandler backButtonHandler = new BackButtonHandler();
     DataManagement cloudManager;
     DataManagement localManager;
+    int defaultTab;
     public final static String EXTRA_MESSAGE = "com.mycompany.myfirstapp.MESSAGE";
 
     @Override
@@ -98,6 +101,17 @@ public class MainActivity extends FragmentActivity {
         localManager = new ParseLocalManager();
         cloudManager = new ParseManager();
 
+        // get default tab
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+        if( sharedPreferences.getInt("DefaultTab", -1) == -1){
+            // first time
+            sharedPreferences.edit().putInt("DefaultTab", 0);
+            defaultTab = 0;
+        }else{
+            // get default tab
+            defaultTab = sharedPreferences.getInt("DefaultTab", 0);
+        }
+        Tab.setCurrentItem(defaultTab);
         // Generate HashKey
         PackageInfo info;
         try {
