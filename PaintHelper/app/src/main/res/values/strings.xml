@@ -28,4 +28,6 @@
     <string name="crop_img_uri">I_AM_TO_BE_CROPPED</string>
     <string name="title_activity_dummy">DummyActivity</string>
     <string name="request_code_key">RequestCodeKey</string>
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+
 </resources>

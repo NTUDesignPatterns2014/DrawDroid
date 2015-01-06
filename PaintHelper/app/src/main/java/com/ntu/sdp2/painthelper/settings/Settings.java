@@ -91,6 +91,15 @@ public class Settings extends ListFragment {
                 break;
 
             case 2:
+                Fragment fragment2 = new About();
+                FragmentManager fragmentManager2 = getFragmentManager();
+                FragmentTransaction fragmentTransaction2 = fragmentManager2.beginTransaction();
+                fragmentTransaction2.replace(getId(), fragment2, "About");
+                fragmentTransaction2.addToBackStack(null);
+                // add this to BackButtonHandler to make back button work.
+                ((MainActivity)getActivity()).addToBackStack(new Page4Handler(fragment2));
+                fragmentTransaction2.commit();
+                fragmentManager2.executePendingTransactions();
 
                 break;
             // THIS IS FOR DEBUGGGGGG!!
