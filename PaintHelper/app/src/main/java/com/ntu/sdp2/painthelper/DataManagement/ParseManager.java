@@ -167,10 +167,11 @@ public class ParseManager implements CloudManagement {
                                                 callBack.done(ParseUser.getCurrentUser());
                                             }
                                         });
+                                    }else {
+                                        ParseUser.getCurrentUser().setUsername(user.getName());
+                                        ParseUser.getCurrentUser().saveEventually();
+                                        callBack.done(ParseUser.getCurrentUser());
                                     }
-                                    ParseUser.getCurrentUser().setUsername(user.getName());
-                                    ParseUser.getCurrentUser().saveEventually();
-                                    callBack.done(ParseUser.getCurrentUser());
                                 }else if (response.getError() != null) {
                                     if ((response.getError().getCategory() ==
                                             FacebookRequestError.Category.AUTHENTICATION_RETRY) ||

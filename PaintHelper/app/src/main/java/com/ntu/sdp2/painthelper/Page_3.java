@@ -269,19 +269,11 @@ public class Page_3 extends Fragment {
                                     Log.i(TAG, "Log in unsuccessful");
                                 } else {
                                     Log.i(TAG, "Log in successful");
-                                    List<String> list = new ArrayList<>();
-                                    list.add("Food");
-                                    Bitmap.Config conf = Bitmap.Config.ARGB_8888; // see other conf types
-                                    Bitmap bmp = BitmapFactory.decodeResource(getActivity().getResources(), R.drawable.img);
-
-                                    PaintImage paintImage = new PaintImage(parseUser.getUsername(), "Test", bmp, new String(), list, parseUser);
-                                    if (cloudManager.saveImage(paintImage)) {
-                                        Toast.makeText(getActivity(), "not loggin!!", Toast.LENGTH_SHORT).show();
-                                    }
+                                    showDialog();
                                 }
                             }
                         });
-                        Log.i(TAG, "User Logged out");
+
                     }
 
                 })
