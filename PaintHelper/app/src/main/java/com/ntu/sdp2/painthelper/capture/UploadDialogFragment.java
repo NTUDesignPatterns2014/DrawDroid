@@ -2,9 +2,12 @@ package com.ntu.sdp2.painthelper.capture;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.graphics.Bitmap;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.support.v4.app.DialogFragment;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -33,12 +36,13 @@ import java.util.ArrayList;
 public class UploadDialogFragment extends DialogFragment {
 
     private final static String TAG = "UploadDialogFragment";
+    private final static String KEY_TOAST = "toast";
 
     private String mName = null;
     private String mCatagory = null;
     private Bitmap mImage = null;
 
-
+    private Handler mToastHandler = null;
 
     /**
      * Create a new instance of MyDialogFragment, providing "num"
@@ -59,6 +63,16 @@ public class UploadDialogFragment extends DialogFragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mImage = (Bitmap) getArguments().getParcelable("image");
+        mToastHandler = new Handler() {
+            final Context context = getActivity();
+            @Override
+            public void handleMessage(Message msg) {
+                if (msg.what == 0) {
+                    Toast.makeText(context, msg.obj.toString(), Toast.LENGTH_SHORT).show();
+                }
+                super.handleMessage(msg);
+            }
+        };
     }
 
     @Override
@@ -169,8 +183,7 @@ public class UploadDialogFragment extends DialogFragment {
         if (parseManager.saveImage(paintImage, new SaveCallBack() {
             @Override
             public void done() {
-                //toast("Img Upload Success!");
-
+                mToastHandler.sendMessage(Message.obtain(mToastHandler, 0, "Img Upload Success"));
             }
         })) {
             Log.i(TAG, "Upload failed: saveImage return true");
