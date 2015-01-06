@@ -30,7 +30,6 @@ import android.widget.Toast;
 
 import com.ntu.sdp2.painthelper.DataManagement.CallBack.LogInCallBack;
 import com.ntu.sdp2.painthelper.DataManagement.CloudManagement;
-import com.ntu.sdp2.painthelper.DataManagement.Images.PaintImage;
 import com.ntu.sdp2.painthelper.DataManagement.ParseManager;
 import com.ntu.sdp2.painthelper.capture.DummyCropFailActivity;
 import com.ntu.sdp2.painthelper.capture.UploadDialogFragment;
@@ -41,8 +40,6 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 
 public class Page_3 extends Fragment {
     private static final String TAG = "Page_3";
@@ -231,6 +228,11 @@ public class Page_3 extends Fragment {
             showLoginDialog();
         }
         else {
+            if (mImage == null) {
+                toast("Please take an image first");
+                return;
+            }
+
             mStackLevel++;
 
             // DialogFragment.show() will take care of adding the fragment
