@@ -15,6 +15,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
@@ -76,23 +77,10 @@ public class UploadDialogFragment extends DialogFragment {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        /*View v = inflater.inflate(R.layout.upload_dialog, container, false);
-        View tv = v.findViewById(R.id.txt_type);
-
-        // Watch for button clicks.
-        Button button = (Button)v.findViewById(R.id.btn_showdialog);
-        button.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                // When button is clicked, call up to owning activity.
-                ((Page_3)getTargetFragment()).showDialog();
-            }
-        });
-
-        return v;*/
-        return super.onCreateView(inflater, container, savedInstanceState);
-
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        View v = super.onCreateView(inflater, container, savedInstanceState);
+        getDialog().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
+        return v;
     }
 
 
@@ -150,6 +138,7 @@ public class UploadDialogFragment extends DialogFragment {
                 });
             }
         });
+        editName.requestFocus();
         return aDialog;
     }
 
