@@ -1,6 +1,2 @@
-
-include ':metaioSDK'
-include ':arcmenu'
-include ':app'
-include ':opencv'
+include ':app', ':arcmenu', ':metaioSDK', ':opencv'
 include ':facebook'

@@ -83,7 +83,9 @@ public class Settings extends ListFragment {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
-                        sharedPreferences.edit().putInt("DefaultTab", which);}
+                        sharedPreferences.edit().putInt("DefaultTab", which).apply();
+                    }
+
                 });
                 builder.create().show();
                 break;
