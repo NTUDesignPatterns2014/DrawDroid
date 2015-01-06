@@ -43,7 +43,6 @@ import java.util.Arrays;
 public class UploadDialogFragment extends DialogFragment {
 
     private final static String TAG = "UploadDialogFragment";
-    private final static String KEY_TOAST = "toast";
 
     private String mName = null;
     private String mCatagory = null;

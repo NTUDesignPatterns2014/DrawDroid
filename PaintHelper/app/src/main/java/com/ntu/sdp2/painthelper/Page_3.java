@@ -95,7 +95,7 @@ public class Page_3 extends Fragment {
     public void onActivityResult(int requestCode, int resultCode, Intent data)
     {
         Log.i(TAG, "onActivityResult called, request = " + requestCode);
-        if (requestCode == 0) {
+        if (requestCode == 0 && resultCode == Activity.RESULT_OK) {
             // from my camera startCamera~
             performCrop(mImgCapturedUri, mCroppedUri);
         }
