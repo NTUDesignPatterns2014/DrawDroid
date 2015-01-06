@@ -20,8 +20,10 @@ import com.ntu.sdp2.painthelper.BackButtonHandler.FragmentHandler;
 import com.ntu.sdp2.painthelper.DataManagement.DataManagement;
 import com.ntu.sdp2.painthelper.DataManagement.ParseLocalManager;
 import com.ntu.sdp2.painthelper.DataManagement.ParseManager;
-import org.opencv.android.OpenCVLoader;
 import com.parse.ParseFacebookUtils;
+
+import org.opencv.android.OpenCVLoader;
+
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
@@ -91,10 +93,11 @@ public class MainActivity extends FragmentActivity {
             }
         };
         //Add New Tab
-        actionBar.addTab(actionBar.newTab().setText("OAO1").setTabListener(tabListener));
-        actionBar.addTab(actionBar.newTab().setText("OAO2").setTabListener(tabListener));
-        actionBar.addTab(actionBar.newTab().setText("OAO3").setTabListener(tabListener));
-        actionBar.addTab(actionBar.newTab().setText("OAO4").setTabListener(tabListener));
+        String[] tabNames = getResources().getStringArray(R.array.tabs);
+        actionBar.addTab(actionBar.newTab().setText(tabNames[0]).setTabListener(tabListener));
+        actionBar.addTab(actionBar.newTab().setText(tabNames[1]).setTabListener(tabListener));
+        actionBar.addTab(actionBar.newTab().setText(tabNames[2]).setTabListener(tabListener));
+        actionBar.addTab(actionBar.newTab().setText(tabNames[3]).setTabListener(tabListener));
 
 
         // initialize data manager
