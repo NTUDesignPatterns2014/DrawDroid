@@ -95,11 +95,14 @@ public class Page_2 extends Fragment {
         private int i;
         private String categroy;
         private String imageid;
-        private PaintImage picture;
+        private PaintImage localpicture;
+        private PaintImage cloudpicture;
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
                                  Bundle savedInstanceState) {
             View rootView = inflater.inflate(R.layout.fragment_sort, container, false);
+            i = getArguments().getInt(ARG_SORT_NUMBER);
+            categroy = getResources().getStringArray(R.array.catagories)[i];
             final GridView gridview = (GridView)rootView.findViewById(R.id.gridView);
             final Myadapter adapter= new Myadapter(this.getActivity());
             gridview.setAdapter(adapter);
@@ -107,35 +110,113 @@ public class Page_2 extends Fragment {
                 //@Override
                 public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                     imageid = adapter.getPiantImageID(position);
+                    if(i==0){
+                        ((MainActivity)getActivity()).getLocalManager().getImageById(imageid,new OriginCallback() {
+                            @Override
+                            public void done(PaintImage paintImage) {
+                                localpicture = paintImage;
+                                Fragment fragment = new ImageLocalFragment();
+                                ((ImageLocalFragment) fragment).setImage(localpicture);
 
-                    ((MainActivity)getActivity()).getCloudManager().getImageById(imageid,new OriginCallback() {
-                        @Override
-                        public void done(PaintImage paintImage) {
-                            Log.i("Gallery", "OriginDone");
-                            picture = paintImage;
-                            Fragment fragment = new ImageFragment();
-                            ((ImageFragment)fragment).setImage(picture);
+                                FragmentManager fragmentManager = getFragmentManager();
+                                FragmentTransaction transaction = fragmentManager.beginTransaction();
+                                transaction.replace(R.id.content_frame, fragment);
+                                transaction.addToBackStack("msg_fragment");
+                                transaction.commit();
+                            }
+                        });
+                    }
+                    if(i!=0) {
+                        ((MainActivity) getActivity()).getCloudManager().getImageById(imageid, new OriginCallback() {
+                            @Override
+                            public void done(PaintImage paintImage) {
+                                cloudpicture = paintImage;
+                                Fragment fragment = new ImageCloudFragment();
+                                ((ImageCloudFragment) fragment).setImage(cloudpicture);
 
-                            FragmentManager fragmentManager = getFragmentManager();
-                            FragmentTransaction transaction = fragmentManager.beginTransaction();
-                            transaction.replace(R.id.content_frame, fragment);
-                            transaction.addToBackStack("msg_fragment");
-                            transaction.commit();
-                        }
-                    });
-
+                                FragmentManager fragmentManager = getFragmentManager();
+                                FragmentTransaction transaction = fragmentManager.beginTransaction();
+                                transaction.replace(R.id.content_frame, fragment);
+                                transaction.addToBackStack("msg_fragment");
+                                transaction.commit();
+                            }
+                        });
+                    }
                 }
             });
 
-            i = getArguments().getInt(ARG_SORT_NUMBER);
-            categroy = getResources().getStringArray(R.array.catagories)[i];
-            Log.i("Gallery", "getImageByCategory");
-            ((MainActivity)getActivity()).getCloudManager().getImageByCategory(categroy,adapter);
-
+            if(i==0){
+                ((MainActivity)getActivity()).getLocalManager().getImageByCategory("",adapter);
+            }
+            if(i!=0) {
+                ((MainActivity) getActivity()).getCloudManager().getImageByCategory(categroy, adapter);
+            }
             return rootView;
         }
 
-        public static class ImageFragment extends Fragment{
+        public static class ImageLocalFragment extends Fragment{
+            private ImageView image;
+            private PaintImage mpaintImage;
+
+            public void setImage(PaintImage paintImage){
+                mpaintImage = paintImage;
+            }
+
+            public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                                     Bundle savedInstanceState){
+                View rootView = inflater.inflate(R.layout.image, container, false);
+                image = (ImageView) rootView.findViewById(R.id.image);
+                image.setImageBitmap(mpaintImage.getImage());
+                image.setOnClickListener(new imagelistener());
+                setHasOptionsMenu(true);
+                return rootView;
+            }
+
+            public void onCreateOptionsMenu(Menu menu,MenuInflater inflater){
+                menu.add(0,1,1,"delete");
+                menu.add(0,2,2,"detail");
+                super.onCreateOptionsMenu(menu,inflater);
+            }
+
+            @Override
+            public boolean onOptionsItemSelected(MenuItem item) {
+                if(item.getItemId() == 1){
+                    ((MainActivity)getActivity()).getCloudManager().saveImage(mpaintImage);
+                }
+                if(item.getItemId() == 2){
+                    AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+                    builder.setTitle("detail");
+                    String author=mpaintImage.getAuthor();
+                    String name=mpaintImage.getName();
+                    String id=mpaintImage.getId();
+                    List<String> category=mpaintImage.getCategory();
+                    String msg = "";
+                    msg += "Author:"+author+"\n"+"Name:"+name+"\n"+"ID:"+id+"\n"+"Category:";
+                    for (String cat : category) {
+                        msg += (cat + " ");
+                    }
+                    builder.setMessage(msg);
+                    builder.setPositiveButton("Exit",new DialogInterface.OnClickListener(){
+                        public void onClick(DialogInterface dialog,int which){
+                            dialog.dismiss();
+                        }
+                    });
+                    builder.show();
+
+                }
+                return super.onOptionsItemSelected(item);
+            }
+
+            class imagelistener implements View.OnClickListener{
+
+                @Override
+                public void onClick(View v) {
+                    getFragmentManager().popBackStackImmediate();
+                }
+            }
+        }
+
+        public static class ImageCloudFragment extends Fragment{
             private ImageView image;
             private PaintImage mpaintImage;
 
