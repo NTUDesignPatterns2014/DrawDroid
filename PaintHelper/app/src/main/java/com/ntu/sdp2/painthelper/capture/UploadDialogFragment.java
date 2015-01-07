@@ -22,8 +22,6 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.CheckBox;
-import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Spinner;
@@ -100,7 +98,7 @@ public class UploadDialogFragment extends DialogFragment {
         ImageView imgView = (ImageView) v.findViewById(R.id.img_uploadimg);
         final Spinner cataSpin = (Spinner) v.findViewById(R.id.spin_catagory);
         final EditText editName = (EditText) v.findViewById(R.id.edit_name);
-        final CheckBox checkLocal = (CheckBox) v.findViewById(R.id.checkbox_local);
+        //final CheckBox checkLocal = (CheckBox) v.findViewById(R.id.checkbox_local);
         imgView.setImageBitmap(mImage);
 
         String[] oriCategories = getResources().getStringArray(R.array.catagories);
@@ -162,13 +160,13 @@ public class UploadDialogFragment extends DialogFragment {
                 return false;
             }
         });
-        checkLocal.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                Log.i(TAG, "Save to local CHECK = " + isChecked);
-                //mSaveToLocal = isChecked;
-            }
-        });
+//        checkLocal.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+//            @Override
+//            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+//                Log.i(TAG, "Save to local CHECK = " + isChecked);
+//                //mSaveToLocal = isChecked;
+//            }
+//        });
 
         AlertDialog aDialog = new AlertDialog.Builder(getActivity())
                 .setIcon(R.drawable.ic_launcher)

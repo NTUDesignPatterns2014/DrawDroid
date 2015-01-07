@@ -51,6 +51,8 @@
                 />
         </TableRow>
     </TableLayout>
+
+    <!--
     <CheckBox
         android:id="@+id/checkbox_local"
         android:layout_width="match_parent"
@@ -59,5 +61,5 @@
         android:visibility="invisible"
         android:text="Save to local"
         />
-
+    -->
 </LinearLayout>
