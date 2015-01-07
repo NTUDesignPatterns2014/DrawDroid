@@ -49,7 +49,6 @@ public class MovableImageView extends ImageView {
         float X = event.getRawX();
         float Y = event.getRawY();
 
-        Log.i("onTouchEvent", "motion event = " + eventAction);
         switch (eventAction) {
             case MotionEvent.ACTION_DOWN:
                 atX = this.getX();
