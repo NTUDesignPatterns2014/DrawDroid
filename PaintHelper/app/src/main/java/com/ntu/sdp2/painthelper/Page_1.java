@@ -239,39 +239,9 @@ public class Page_1 extends Fragment {
             View rootView = inflater.inflate(R.layout.fragment_sort, container, false);
             final GridView gridview = (GridView)rootView.findViewById(R.id.gridView);
             final Myadapter adapter= new Myadapter(this.getActivity());
-<<<<<<< HEAD
+
             final Myadapter02 adapter02= new Myadapter02(this.getActivity());
-=======
-            gridview.setAdapter(adapter);
-            gridview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                //@Override
-                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                    imageid = adapter.getPiantImageID(position);
 
-                    ((MainActivity)getActivity()).getCloudManager().getImageById(imageid,new OriginCallback() {
-                        @Override
-                        public void done(PaintImage paintImage) {
-                            MovableImageView imageView = new MovableImageView(container.getContext());
-                            imageView.setImageBitmap(paintImage.getImage());
-                            imageView.genSketchImage();
-                            imageView.setLineWidth(1);
-
-                            DrawerLayout drawerLayout = (DrawerLayout)container.getParent();
-                            if (drawerLayout != null) {
-                                drawerLayout.addView(imageView, 1);
-                                container.setVisibility(View.INVISIBLE);
-                            }
-                            else {
-                                Log.i("Painter", "layout null");
-                                Log.i("Painter", container.getClass().toString());
-                            }
-                        }
-                    });
-
-                }
-            });
-
->>>>>>> dev
             i = getArguments().getInt(ARG_SORT_NUMBER);
             category = getResources().getStringArray(R.array.catagories)[i];
             if(i==0) {
