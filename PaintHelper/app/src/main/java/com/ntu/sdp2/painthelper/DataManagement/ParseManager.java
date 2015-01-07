@@ -337,6 +337,7 @@ public class ParseManager implements CloudManagement {
 
         switch (type){
             case "Origin":
+                id = parseObject.getObjectId();
                 return new OriginImage(author, name, bitmap, id, categoryList, user);
             case "Thumb":
                 return new ThumbImage(author, name, bitmap, id, categoryList, user);

@@ -49,6 +49,8 @@ public class UploadDialogFragment extends DialogFragment {
     private Bitmap mImage = null;
 
     private Handler mToastHandler = null;
+    private boolean mSaveToLocal = false;
+
 
     /**
      * Create a new instance of MyDialogFragment, providing "num"
@@ -96,6 +98,7 @@ public class UploadDialogFragment extends DialogFragment {
         ImageView imgView = (ImageView) v.findViewById(R.id.img_uploadimg);
         final Spinner cataSpin = (Spinner) v.findViewById(R.id.spin_catagory);
         final EditText editName = (EditText) v.findViewById(R.id.edit_name);
+        //final CheckBox checkLocal = (CheckBox) v.findViewById(R.id.checkbox_local);
         imgView.setImageBitmap(mImage);
 
         String[] oriCategories = getResources().getStringArray(R.array.catagories);
@@ -157,6 +160,13 @@ public class UploadDialogFragment extends DialogFragment {
                 return false;
             }
         });
+//        checkLocal.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+//            @Override
+//            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+//                Log.i(TAG, "Save to local CHECK = " + isChecked);
+//                //mSaveToLocal = isChecked;
+//            }
+//        });
 
         AlertDialog aDialog = new AlertDialog.Builder(getActivity())
                 .setIcon(R.drawable.ic_launcher)
@@ -214,13 +224,45 @@ public class UploadDialogFragment extends DialogFragment {
         ArrayList<String> catagories = new ArrayList<String>();
         catagories.add(catagory);
         paintImage.setCategory(catagories);
-        DataManagement parseManager = ((MainActivity) getActivity()).getCloudManager();
-        if (parseManager.saveImage(paintImage, new SaveCallBack() {
-            @Override
-            public void done() {
-                mToastHandler.sendMessage(Message.obtain(mToastHandler, 0, "Img Upload Success"));
-            }
-        })) {
+        final PaintImage paintImageRef = paintImage;
+        final DataManagement parseManager = ((MainActivity) getActivity()).getCloudManager();
+
+        SaveCallBack saveCb = null;
+        if (!mSaveToLocal) {
+            saveCb = new SaveCallBack() {
+                @Override
+                public void done() {
+                    mToastHandler.sendMessage(Message.obtain(mToastHandler, 0, "Img Upload Success"));
+                    Log.i(TAG, "img upload success, no local");
+                }
+            };
+        }
+
+//        else {
+//            saveCb = new SaveCallBack() {
+//                MainActivity activity = (MainActivity) getActivity();
+//                @Override
+//                public void done() {
+//                    mToastHandler.sendMessage(Message.obtain(mToastHandler, 0, "Img Upload Success"));
+//                    Log.i(TAG, "img upload success, yes local");
+//
+//                    PaintImage uploadedPI =
+//
+//                    DataManagement localManager = activity.getLocalManager();
+//                    localManager.saveImage(paintImageRef, new SaveCallBack() {
+//                        @Override
+//                        public void done() {
+//                            mToastHandler.sendMessage(Message.obtain(mToastHandler, 0, "Img save success"));
+//                            Log.i(TAG, "img save local success");
+//                        }
+//                    });
+//                }
+//            };
+//        }
+
+
+
+        if (parseManager.saveImage(paintImage, saveCb)) {
             Log.i(TAG, "Upload failed: saveImage return true");
             toast("Login Facebook first!");
         }

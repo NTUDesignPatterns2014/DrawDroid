@@ -1,10 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/page_3_relative"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:gravity="center"
-    android:orientation="vertical" >
+    android:gravity="center">
+    <!--
     <TableLayout
+        android:id="@+id/table1"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:stretchColumns="0,1">
@@ -12,26 +14,94 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
             <Button
-                android:id="@+id/btn_capture"
+                android:id="@+id/btn_capture____"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="Capture" />
             <Button
-                android:id="@+id/btn_upload"
+                android:id="@+id/btn_upload____"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="Upload" />
             <Button
-                android:id="@+id/btn_testimage"
+                android:id="@+id/btn_testimage____"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="TestImg"/>
         </TableRow>
     </TableLayout>
-    <ImageView
-        android:id="@+id/imgview_capture"
+    -->
+    <LinearLayout android:id="@+id/buttonPanel"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_weight="1"
+        android:minHeight="@dimen/alert_dialog_button_bar_height"
+        android:orientation="vertical"
+        android:divider="?android:attr/dividerHorizontal"
+        android:showDividers="beginning"
+        android:dividerPadding="0dip">
+        <LinearLayout
+            style="?android:attr/buttonBarStyle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layoutDirection="locale"
+            android:measureWithLargestChild="true">
+            <Button android:id="@+id/btn_testimage"
+                android:layout_width="0dip"
+                android:layout_gravity="left"
+                android:layout_weight="1"
+                android:maxLines="2"
+                style="?android:attr/buttonBarButtonStyle"
+                android:textSize="14sp"
+                android:enabled="true"
+                android:minHeight="@dimen/alert_dialog_button_bar_height"
+                android:layout_height="wrap_content" />
+            <Button android:id="@+id/btn_capture"
+                android:layout_width="0dip"
+                android:layout_gravity="center_horizontal"
+                android:layout_weight="1"
+                android:maxLines="2"
+                style="?android:attr/buttonBarButtonStyle"
+                android:textSize="14sp"
+                android:text="Capture"
+                android:minHeight="@dimen/alert_dialog_button_bar_height"
+                android:layout_height="wrap_content" />
+            <Button android:id="@+id/btn_upload"
+                android:layout_width="0dip"
+                android:layout_gravity="right"
+                android:layout_weight="1"
+                android:maxLines="2"
+                android:minHeight="@dimen/alert_dialog_button_bar_height"
+                style="?android:attr/buttonBarButtonStyle"
+                android:textSize="14sp"
+                android:text="Upload"
+                android:layout_height="wrap_content" />
+        </LinearLayout>
+    </LinearLayout>
+
+
+    <LinearLayout
+        android:id="@+id/linear_image"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:scaleType="fitCenter"
-        />
-</LinearLayout>
+        android:layout_above="@id/buttonPanel"
+        android:background="#D4D4D4">
+        <ImageView
+            android:id="@+id/imgview_capture"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="center"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"
+            android:layout_marginTop="20dp"
+            android:layout_marginBottom="20dp"
+            android:scaleType="fitCenter"
+            android:src="@drawable/capture_come"
+            />
+    </LinearLayout>
+
+
+
+</RelativeLayout>
