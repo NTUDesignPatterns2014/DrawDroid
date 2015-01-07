@@ -3,7 +3,9 @@ package com.ntu.sdp2.painthelper.Painter;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
+import android.support.v4.widget.DrawerLayout;
 import android.util.Log;
+import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.widget.ImageView;
 import com.ntu.sdp2.painthelper.utils.SketchImage;
@@ -15,6 +17,8 @@ import java.io.IOException;
 public class MovableImageView extends ImageView {
     public MovableImageView(Context context) {
         super(context);
+        gestureDetector = new GestureDetector(context, new GestureListener());
+        thisView = this;
     }
 
     public void genSketchImage() {
@@ -53,11 +57,31 @@ public class MovableImageView extends ImageView {
         }
 
         invalidate();
-        return true;
+        return gestureDetector.onTouchEvent(event);
+    }
+
+    private class GestureListener extends GestureDetector.SimpleOnGestureListener {
+
+        @Override
+        public boolean onDown(MotionEvent e) {
+            return true;
+        }
+        // event when double tap occurs
+        @Override
+        public boolean onDoubleTap(MotionEvent e) {
+            float x = e.getX();
+            float y = e.getY();
+
+            ((DrawerLayout)thisView.getParent()).removeView(thisView);
+
+            return true;
+        }
     }
 
     private float atX, atY;
     private float startX, startY;
+    private GestureDetector gestureDetector;
+    private MovableImageView thisView;
 
     private SketchImage sketchImage;
 }
