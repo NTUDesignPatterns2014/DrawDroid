@@ -27,17 +27,18 @@ android {
         properties.load(project.rootProject.file('local.properties').newDataInputStream())
         def ndkDir = properties.getProperty('ndk.dir')
         def SEP = "\\"
-        if (Os.isFamily(Os.FAMILY_WINDOWS)) {
-            SEP = "\\"
-        }
+        def ndkExec = "ndk-build.cmd"
+        if (Os.isFamily(Os.FAMILY_WINDOWS)) {}
         else if (Os.isFamily(Os.FAMILY_UNIX)) {
             SEP = "/"
+            ndkExec = "ndk-build"
         }
         else if (Os.isFamily(Os.FAMILY_MAC)) {
             SEP = "/"
+            ndkExec = "ndk-build"
         }
 
-        commandLine ndkDir + SEP + 'ndk-build.cmd',
+        commandLine ndkDir + SEP + ndkExec,
                 'NDK_PROJECT_PATH=.',
                 'NDK_LIBS_OUT=' + 'src' + SEP + 'main' + SEP + 'jniLibs',
                 'APP_BUILD_SCRIPT=' + 'src' + SEP + 'main' + SEP + 'jni' + SEP + 'Android.mk',
