@@ -2,11 +2,13 @@ package com.ntu.sdp2.painthelper.Painter;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.support.v4.widget.DrawerLayout;
 import android.util.Log;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
+import android.view.ScaleGestureDetector;
 import android.widget.ImageView;
 import com.ntu.sdp2.painthelper.utils.SketchImage;
 import java.io.IOException;
@@ -18,7 +20,9 @@ public class MovableImageView extends ImageView {
     public MovableImageView(Context context) {
         super(context);
         gestureDetector = new GestureDetector(context, new GestureListener());
+        scaleGestureDetector = new ScaleGestureDetector(context, new ScaleListener());
         thisView = this;
+
     }
 
     public void genSketchImage() {
@@ -48,16 +52,26 @@ public class MovableImageView extends ImageView {
                 atY = this.getY();
                 startX = X;
                 startY = Y;
+                this.setBackgroundColor(Color.rgb(192, 192, 192));
                 break;
 
             case MotionEvent.ACTION_MOVE:
                 this.setX(atX + X - startX);
                 this.setY(atY + Y - startY);
                 break;
+
+            case MotionEvent.ACTION_UP:
+                this.setBackgroundColor(Color.TRANSPARENT);
+                break;
+            default:
+                Log.d("default", "default");
+                break;
         }
 
         invalidate();
-        return gestureDetector.onTouchEvent(event);
+        gestureDetector.onTouchEvent(event);
+        scaleGestureDetector.onTouchEvent(event);
+        return true;
     }
 
     private class GestureListener extends GestureDetector.SimpleOnGestureListener {
@@ -69,19 +83,35 @@ public class MovableImageView extends ImageView {
         // event when double tap occurs
         @Override
         public boolean onDoubleTap(MotionEvent e) {
-            float x = e.getX();
-            float y = e.getY();
-
             ((DrawerLayout)thisView.getParent()).removeView(thisView);
-
             return true;
+        }
+    }
+
+    private class ScaleListener extends ScaleGestureDetector.SimpleOnScaleGestureListener {
+        @Override
+        public void onScaleEnd(ScaleGestureDetector detector) {
+            thisView.setBackgroundColor(Color.TRANSPARENT);
+        }
+        @Override
+        public boolean onScaleBegin(ScaleGestureDetector detector) {
+            thisView.setBackgroundColor(Color.rgb(192, 192, 192));
+            return true;
+        }
+        @Override
+        public boolean onScale(ScaleGestureDetector detector) {
+            Log.d("Scaling", "zoom ongoing, scale: " + detector.getScaleFactor());
+            thisView.setScaleX(thisView.getScaleX() * detector.getScaleFactor());
+            thisView.setScaleY(thisView.getScaleY() * detector.getScaleFactor());
+            thisView.invalidate();
+            return false;
         }
     }
 
     private float atX, atY;
     private float startX, startY;
     private GestureDetector gestureDetector;
+    private ScaleGestureDetector scaleGestureDetector;
     private MovableImageView thisView;
-
     private SketchImage sketchImage;
 }
