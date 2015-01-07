@@ -134,8 +134,8 @@ public class Page_1 extends Fragment {
 
         final ArcMenu cornerButton = (ArcMenu)page_1.findViewById(R.id.arcMenu);
         int[] images = {
+                R.drawable.composer_place,
                 R.drawable.composer_camera,
-                R.drawable.composer_music,
                 R.drawable.composer_with};
         final int itemCount = images.length;
 
