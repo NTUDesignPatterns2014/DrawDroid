@@ -55,7 +55,7 @@
                 android:maxLines="2"
                 style="?android:attr/buttonBarButtonStyle"
                 android:textSize="14sp"
-                android:enabled="true"
+                android:enabled="false"
                 android:minHeight="@dimen/alert_dialog_button_bar_height"
                 android:layout_height="wrap_content" />
             <Button android:id="@+id/btn_capture"

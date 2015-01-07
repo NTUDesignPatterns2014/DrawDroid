@@ -2,7 +2,6 @@ package com.ntu.sdp2.painthelper.settings;
 
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
@@ -37,7 +36,8 @@ import java.util.List;
  * Created by lou on 2014/12/12.
  */
 public class Settings extends ListFragment {
-    static final String[] itemList = {"Account", "Default Tab", "About", "saveImageTest", "queryTest"};
+    //static final String[] itemList = {"Account", "Default Tab", "About", "saveImageTest", "queryTest"};
+    static final String[] itemList = {"Account", "Default Tab", "About"};
     final String TAG = "Settings";
     //static Account_Info account_info = new Account_Info();
 
