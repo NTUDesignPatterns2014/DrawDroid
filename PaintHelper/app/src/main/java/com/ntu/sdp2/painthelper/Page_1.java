@@ -131,29 +131,11 @@ public class Page_1 extends Fragment {
         mTitles = getResources().getStringArray(R.array.catagories);
         mDrawerLayout = (DrawerLayout) page_1.findViewById(R.id.drawerContainer);
         mDrawerList = (ListView) page_1.findViewById(R.id.leftDrawer);
-/*
-        final GridView gridview = (GridView)page_1.findViewById(R.id.gridView);
-        final ImageAdapter imageAdapter = new ImageAdapter(this.getActivity());
-        gridview.setAdapter(imageAdapter);
 
-        gridview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
-                MovableImageView imageView = imageAdapter.getItem(position);
-                imageView.genSketchImage();
-                imageView.setLineWidth(3);
-
-                RelativeLayout relativeLayout = (RelativeLayout) page_1.findViewById(R.id.relativeLayout);
-                relativeLayout.addView(imageView);
-                relativeLayout.removeViewInLayout(gridview);
-            }
-        });
-        RelativeLayout relativeLayout = (RelativeLayout) page_1.findViewById(R.id.relativeLayout);
-        relativeLayout.removeViewInLayout(gridview);
-*/
         final ArcMenu cornerButton = (ArcMenu)page_1.findViewById(R.id.arcMenu);
         int[] images = {
+                R.drawable.composer_place,
                 R.drawable.composer_camera,
-                R.drawable.composer_music,
                 R.drawable.composer_with};
         final int itemCount = images.length;
 
@@ -182,6 +164,7 @@ public class Page_1 extends Fragment {
                         intent.putExtra(MainActivity.EXTRA_MESSAGE,message);
 
                         startActivity(intent);
+                        cornerButton.setVisibility(View.VISIBLE);
                     }
                 }
             });
@@ -267,7 +250,7 @@ public class Page_1 extends Fragment {
                             MovableImageView imageView = new MovableImageView(container.getContext());
                             imageView.setImageBitmap(paintImage.getImage());
                             imageView.genSketchImage();
-                            imageView.setLineWidth(3);
+                            imageView.setLineWidth(1);
 
                             DrawerLayout drawerLayout = (DrawerLayout)container.getParent();
                             if (drawerLayout != null) {

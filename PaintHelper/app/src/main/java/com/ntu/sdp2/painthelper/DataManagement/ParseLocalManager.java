@@ -2,6 +2,7 @@ package com.ntu.sdp2.painthelper.DataManagement;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.media.ThumbnailUtils;
 import android.preference.PreferenceManager;
 import android.util.Log;
 
@@ -38,6 +39,8 @@ public class ParseLocalManager implements LocalDataManagement {
                             Local Variables
      *--------------------------------------------------------------*/
     public static final String TAG = "ParseLocalManager";
+    public final static int THUMB_WIDTH = 100;
+    public final static int THUMB_HEIGHT = 100;
 
 
     /*--------------------------------------------------------------*
@@ -127,23 +130,32 @@ public class ParseLocalManager implements LocalDataManagement {
     }
 
     @Override
-    public boolean saveImage(PaintImage paintImage, final SaveCallBack saveCallBack){
-        ParseObject parseObject = new ParseObject("Img");
-        addDetails(parseObject, paintImage);
-        // create byte array
-        ByteArrayOutputStream stream = new ByteArrayOutputStream();
-        paintImage.getImage().compress(Bitmap.CompressFormat.PNG, 100, stream);
-        byte[] image_byte = stream.toByteArray();
-
-        // create ParseFiles for original image
-        ParseFile parseImg = new ParseFile(paintImage.getName(), image_byte);
-        parseObject.put("Img", parseImg);
-
-
-        parseObject.pinInBackground(new SaveCallback() {
+    public boolean saveImage(final PaintImage paintImage, final SaveCallBack saveCallBack){
+        // save thumbnail
+        ParseQuery<ParseObject> parseQuery = new ParseQuery<ParseObject>("Thumbnails");
+        parseQuery.whereEqualTo("ImgId", paintImage.getId());
+        parseQuery.getFirstInBackground(new GetCallback<ParseObject>() {
             @Override
-            public void done(ParseException e) {
-                saveCallBack.done();
+            public void done(ParseObject parseObject, ParseException e) {
+                if(e == null) {
+                    parseObject.pinInBackground();
+                    Log.i(TAG, "Thumb " + paintImage.getName() + " with ImgID: " + paintImage.getId() + " added to local.");
+                }else{
+                    Log.w(TAG, "Thumb " + paintImage.getName() + " with ImgID: " + paintImage.getId() + " pin failed.");
+                }
+            }
+        });
+        // save Img
+        parseQuery = new ParseQuery<ParseObject>("Img");
+        parseQuery.getInBackground(paintImage.getId(), new GetCallback<ParseObject>() {
+            @Override
+            public void done(ParseObject parseObject, ParseException e) {
+                if(e == null) {
+                    parseObject.pinInBackground();
+                    Log.i(TAG, "Img " + paintImage.getName() + " with ID: " + paintImage.getId() + " added to local.");
+                }else{
+                    Log.w(TAG, "Img " + paintImage.getName() + " with ID: " + paintImage.getId() + " pin failed.");
+                }
             }
         });
         return false;
@@ -226,6 +238,7 @@ public class ParseLocalManager implements LocalDataManagement {
 
         switch (type){
             case "Origin":
+                id = parseObject.getObjectId();
                 return new OriginImage(author, name, bitmap, id, categoryList, user);
             case "Thumb":
                 return new ThumbImage(author, name, bitmap, id, categoryList, user);
@@ -242,7 +255,7 @@ public class ParseLocalManager implements LocalDataManagement {
         parseObject.put("Name", paintImage.getName());
         parseObject.put("user", paintImage.getParseUser());
         parseObject.put("Category", paintImage.getCategory());
-        parseObject.setObjectId(paintImage.getId());
+
     }
 
 }
