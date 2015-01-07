@@ -30,7 +30,6 @@ import android.widget.Toast;
 
 import com.ntu.sdp2.painthelper.DataManagement.CallBack.LogInCallBack;
 import com.ntu.sdp2.painthelper.DataManagement.CloudManagement;
-import com.ntu.sdp2.painthelper.DataManagement.Images.PaintImage;
 import com.ntu.sdp2.painthelper.DataManagement.ParseManager;
 import com.ntu.sdp2.painthelper.capture.DummyCropFailActivity;
 import com.ntu.sdp2.painthelper.capture.UploadDialogFragment;
@@ -41,8 +40,6 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 
 public class Page_3 extends Fragment {
     private static final String TAG = "Page_3";
@@ -98,7 +95,7 @@ public class Page_3 extends Fragment {
     public void onActivityResult(int requestCode, int resultCode, Intent data)
     {
         Log.i(TAG, "onActivityResult called, request = " + requestCode);
-        if (requestCode == 0) {
+        if (requestCode == 0 && resultCode == Activity.RESULT_OK) {
             // from my camera startCamera~
             performCrop(mImgCapturedUri, mCroppedUri);
         }
@@ -231,6 +228,11 @@ public class Page_3 extends Fragment {
             showLoginDialog();
         }
         else {
+            if (mImage == null) {
+                toast("Please take an image first");
+                return;
+            }
+
             mStackLevel++;
 
             // DialogFragment.show() will take care of adding the fragment
@@ -269,19 +271,11 @@ public class Page_3 extends Fragment {
                                     Log.i(TAG, "Log in unsuccessful");
                                 } else {
                                     Log.i(TAG, "Log in successful");
-                                    List<String> list = new ArrayList<>();
-                                    list.add("Food");
-                                    Bitmap.Config conf = Bitmap.Config.ARGB_8888; // see other conf types
-                                    Bitmap bmp = BitmapFactory.decodeResource(getActivity().getResources(), R.drawable.img);
-
-                                    PaintImage paintImage = new PaintImage(parseUser.getUsername(), "Test", bmp, new String(), list, parseUser);
-                                    if (cloudManager.saveImage(paintImage)) {
-                                        Toast.makeText(getActivity(), "not loggin!!", Toast.LENGTH_SHORT).show();
-                                    }
+                                    showDialog();
                                 }
                             }
                         });
-                        Log.i(TAG, "User Logged out");
+
                     }
 
                 })

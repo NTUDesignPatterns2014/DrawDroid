@@ -2,10 +2,13 @@ package com.ntu.sdp2.painthelper.settings;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.DialogInterface;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
@@ -18,6 +21,7 @@ import android.widget.Toast;
 
 import com.ntu.sdp2.painthelper.BackButtonHandler.Page4Handler;
 import com.ntu.sdp2.painthelper.DataManagement.CallBack.LogInCallBack;
+import com.ntu.sdp2.painthelper.DataManagement.CallBack.SaveCallBack;
 import com.ntu.sdp2.painthelper.DataManagement.CallBack.ThumbCallBack;
 import com.ntu.sdp2.painthelper.DataManagement.CloudManagement;
 import com.ntu.sdp2.painthelper.DataManagement.Images.PaintImage;
@@ -71,6 +75,33 @@ public class Settings extends ListFragment {
                 //Toast.makeText((Activity)getActivity(), "add!!", Toast.LENGTH_LONG).show();
                 break;
 
+            case 1:
+                AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+                builder.setTitle("Choose Default Tab");
+                String[] tabs = {"Painter", "Gallery", "Capture", "Settings"};
+                builder.setItems(tabs, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
+                        sharedPreferences.edit().putInt("DefaultTab", which).apply();
+                    }
+
+                });
+                builder.create().show();
+                break;
+
+            case 2:
+                Fragment fragment2 = new About();
+                FragmentManager fragmentManager2 = getFragmentManager();
+                FragmentTransaction fragmentTransaction2 = fragmentManager2.beginTransaction();
+                fragmentTransaction2.replace(getId(), fragment2, "About");
+                fragmentTransaction2.addToBackStack(null);
+                // add this to BackButtonHandler to make back button work.
+                ((MainActivity)getActivity()).addToBackStack(new Page4Handler(fragment2));
+                fragmentTransaction2.commit();
+                fragmentManager2.executePendingTransactions();
+
+                break;
             // THIS IS FOR DEBUGGGGGG!!
             case 3:
                 CloudManagement cloudManager = (CloudManagement)((MainActivity)getActivity()).getCloudManager();
@@ -100,7 +131,13 @@ public class Settings extends ListFragment {
                                                 Bitmap bmp = BitmapFactory.decodeResource(getActivity().getResources(), R.drawable.img);
 
                                                 PaintImage paintImage = new PaintImage(parseUser.getUsername(),"Test" , bmp, new String(), list , parseUser);
-                                                if(cloudManagement.saveImage(paintImage)){
+                                                if(cloudManagement.saveImage(paintImage, new SaveCallBack() {
+                                                    @Override
+                                                    public void done() {
+                                                        Toast.makeText(getActivity(), "Success!", Toast.LENGTH_SHORT).show();
+
+                                                    }
+                                                })){
                                                     Toast.makeText(getActivity(), "not loggin!!", Toast.LENGTH_SHORT).show();
                                                 }
                                             }
@@ -119,7 +156,13 @@ public class Settings extends ListFragment {
                     Bitmap bmp = BitmapFactory.decodeResource(getActivity().getResources(), R.drawable.img);
 
                     PaintImage paintImage = new PaintImage(user.getUsername(),"Test" , bmp, new String(), list , user);
-                    if(cloudManager.saveImage(paintImage)){
+                    if(cloudManager.saveImage(paintImage, new SaveCallBack() {
+                        @Override
+                        public void done() {
+                            Toast.makeText(getActivity(), "Success!", Toast.LENGTH_SHORT).show();
+
+                        }
+                    })){
                         Toast.makeText(getActivity(), "not loggin!!", Toast.LENGTH_SHORT).show();
                     }
                 }

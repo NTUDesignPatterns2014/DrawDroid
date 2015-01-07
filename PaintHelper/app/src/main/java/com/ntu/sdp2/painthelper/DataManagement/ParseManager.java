@@ -13,6 +13,7 @@ import com.facebook.model.GraphUser;
 import com.ntu.sdp2.painthelper.DataManagement.CallBack.ElementCallBack;
 import com.ntu.sdp2.painthelper.DataManagement.CallBack.LogInCallBack;
 import com.ntu.sdp2.painthelper.DataManagement.CallBack.OriginCallback;
+import com.ntu.sdp2.painthelper.DataManagement.CallBack.SaveCallBack;
 import com.ntu.sdp2.painthelper.DataManagement.CallBack.ThumbCallBack;
 import com.ntu.sdp2.painthelper.DataManagement.Images.OriginImage;
 import com.ntu.sdp2.painthelper.DataManagement.Images.PaintElement;
@@ -116,11 +117,13 @@ public class ParseManager implements CloudManagement {
     }
 
     @Override
-    public boolean saveImage(PaintImage image) {
-        if( uploadImage(image) != 0){
-            Log.i(TAG, "Not Logged in !");
+    public boolean saveImage(PaintImage image, SaveCallBack saveCallBack) {
+        if(ParseUser.getCurrentUser() == null){
+            Log.w(TAG, "saveImage/Not Logged in");
             return true;
         }
+        performUpload(image, saveCallBack);
+
         return false;
     }
 
@@ -167,10 +170,11 @@ public class ParseManager implements CloudManagement {
                                                 callBack.done(ParseUser.getCurrentUser());
                                             }
                                         });
+                                    }else {
+                                        ParseUser.getCurrentUser().setUsername(user.getName());
+                                        ParseUser.getCurrentUser().saveEventually();
+                                        callBack.done(ParseUser.getCurrentUser());
                                     }
-                                    ParseUser.getCurrentUser().setUsername(user.getName());
-                                    ParseUser.getCurrentUser().saveEventually();
-                                    callBack.done(ParseUser.getCurrentUser());
                                 }else if (response.getError() != null) {
                                     if ((response.getError().getCategory() ==
                                             FacebookRequestError.Category.AUTHENTICATION_RETRY) ||
@@ -216,33 +220,8 @@ public class ParseManager implements CloudManagement {
 
     }
 
-
-
-
-    /**
-     * function to upload an image
-     * return: 0: success; -1:need login
-     * user should check this before calling this function
-     */
-    private int uploadImage(PaintImage paintImage){
-
-        // user login
-        ParseUser currentUser = ParseUser.getCurrentUser();
-        if( currentUser != null ){
-            // user active
-            performUpload(paintImage);
-        }else{
-            // need login fb
-            return -1;
-        }
-
-
-        return 0;
-    }
-
-
     // perform upload, User must have logged in or error!!!
-    private void performUpload(PaintImage paintImage) {
+    private void performUpload(PaintImage paintImage, final SaveCallBack saveCallBack) {
         Bitmap image = paintImage.getImage();
         String imgName = paintImage.getName();
         // create thumbnails
@@ -284,7 +263,13 @@ public class ParseManager implements CloudManagement {
                     Log.i(TAG, "Img upload success");
                     id.myStr = parseObject_origin.getObjectId();
                     parseThumb.put("ImgId", id.myStr);
-                    parseThumb.saveInBackground();
+                    parseThumb.saveInBackground(new SaveCallback() {
+                        @Override
+                        public void done(ParseException e) {
+                            Log.i(TAG, "Thumb upload success");
+                            saveCallBack.done();
+                        }
+                    });
                 } else {
                     // failed!!
                     Log.i(TAG, "upload failed");

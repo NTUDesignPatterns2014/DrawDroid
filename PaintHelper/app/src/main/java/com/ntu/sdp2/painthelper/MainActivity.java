@@ -3,10 +3,12 @@ package com.ntu.sdp2.painthelper;
 import android.app.ActionBar;
 import android.app.FragmentTransaction;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.Signature;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v4.app.FragmentActivity;
 import android.util.Base64;
 import android.util.Log;
@@ -18,8 +20,10 @@ import com.ntu.sdp2.painthelper.BackButtonHandler.FragmentHandler;
 import com.ntu.sdp2.painthelper.DataManagement.DataManagement;
 import com.ntu.sdp2.painthelper.DataManagement.ParseLocalManager;
 import com.ntu.sdp2.painthelper.DataManagement.ParseManager;
-import org.opencv.android.OpenCVLoader;
 import com.parse.ParseFacebookUtils;
+
+import org.opencv.android.OpenCVLoader;
+
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
@@ -31,6 +35,7 @@ public class MainActivity extends FragmentActivity {
     BackButtonHandler backButtonHandler = new BackButtonHandler();
     DataManagement cloudManager;
     DataManagement localManager;
+    int defaultTab;
     public final static String EXTRA_MESSAGE = "com.mycompany.myfirstapp.MESSAGE";
 
     @Override
@@ -88,16 +93,28 @@ public class MainActivity extends FragmentActivity {
             }
         };
         //Add New Tab
-        actionBar.addTab(actionBar.newTab().setText("OAO1").setTabListener(tabListener));
-        actionBar.addTab(actionBar.newTab().setText("OAO2").setTabListener(tabListener));
-        actionBar.addTab(actionBar.newTab().setText("OAO3").setTabListener(tabListener));
-        actionBar.addTab(actionBar.newTab().setText("OAO4").setTabListener(tabListener));
+        String[] tabNames = getResources().getStringArray(R.array.tabs);
+        actionBar.addTab(actionBar.newTab().setText(tabNames[0]).setTabListener(tabListener));
+        actionBar.addTab(actionBar.newTab().setText(tabNames[1]).setTabListener(tabListener));
+        actionBar.addTab(actionBar.newTab().setText(tabNames[2]).setTabListener(tabListener));
+        actionBar.addTab(actionBar.newTab().setText(tabNames[3]).setTabListener(tabListener));
 
 
         // initialize data manager
         localManager = new ParseLocalManager();
         cloudManager = new ParseManager();
 
+        // get default tab
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+        if( sharedPreferences.getInt("DefaultTab", -1) == -1){
+            // first time
+            sharedPreferences.edit().putInt("DefaultTab", 0);
+            defaultTab = 0;
+        }else{
+            // get default tab
+            defaultTab = sharedPreferences.getInt("DefaultTab", 0);
+        }
+        Tab.setCurrentItem(defaultTab);
         // Generate HashKey
         PackageInfo info;
         try {
