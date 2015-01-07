@@ -37,6 +37,13 @@ public class SketchImage {
         return bmp;
     }
 
+    public final Bitmap getBitmapInvert() {
+        invert();
+        Bitmap bmp = mBmp.copy(mBmp.getConfig(), true);
+        invert();
+        return bmp;
+    }
+
 
     public void resize(int width, int height) {
         // TODO

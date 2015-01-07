@@ -246,7 +246,7 @@ public class Page_3 extends Fragment {
             ft.addToBackStack(null);
 
             // Create and show the dialog.
-            DialogFragment newFragment = UploadDialogFragment.newInstance(mImage.getBitmapTransparent());
+            DialogFragment newFragment = UploadDialogFragment.newInstance(mImage.getBitmapInvert());
             newFragment.setTargetFragment(this, UPLOAD_DIALOG_REQUEST_CODE);
             newFragment.show(ft, "dialog");
         }
