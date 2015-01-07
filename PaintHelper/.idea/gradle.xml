@@ -3,17 +3,17 @@
   <component name="GradleSettings">
     <option name="linkedExternalProjectsSettings">
       <GradleProjectSettings>
-        <option name="distributionType" value="DEFAULT_WRAPPED" />
+        <option name="distributionType" value="LOCAL" />
         <option name="externalProjectPath" value="$PROJECT_DIR$" />
-        <option name="gradleHome" value="C:\Users\JimmyPrime\AppData\Local\Android\android-studio\gradle\gradle-2.2.1" />
+        <option name="gradleHome" value="C:\Program Files\Android\Android Studio\gradle\gradle-2.2.1" />
         <option name="modules">
           <set>
-            <option value="$USER_HOME$/Dropbox/NTU/Lou/SoftwareDesignPattern/Project/App/team2/PaintHelper" />
-            <option value="$USER_HOME$/Dropbox/NTU/Lou/SoftwareDesignPattern/Project/App/team2/PaintHelper/app" />
-            <option value="$USER_HOME$/Dropbox/NTU/Lou/SoftwareDesignPattern/Project/App/team2/PaintHelper/arcmenu" />
-            <option value="$USER_HOME$/Dropbox/NTU/Lou/SoftwareDesignPattern/Project/App/team2/PaintHelper/facebook" />
-            <option value="$USER_HOME$/Dropbox/NTU/Lou/SoftwareDesignPattern/Project/App/team2/PaintHelper/metaioSDK" />
-            <option value="$USER_HOME$/Dropbox/NTU/Lou/SoftwareDesignPattern/Project/App/team2/PaintHelper/opencv" />
+            <option value="$PROJECT_DIR$" />
+            <option value="$PROJECT_DIR$/app" />
+            <option value="$PROJECT_DIR$/arcmenu" />
+            <option value="$PROJECT_DIR$/facebook" />
+            <option value="$PROJECT_DIR$/metaioSDK" />
+            <option value="$PROJECT_DIR$/opencv" />
           </set>
         </option>
       </GradleProjectSettings>

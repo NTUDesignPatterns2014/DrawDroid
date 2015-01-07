@@ -8,20 +8,20 @@
         android:id="@+id/button1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentRight="true"
         android:background="@android:color/transparent"
         android:onClick="onButtonClick"
-        android:src="@drawable/cancel" />
+        android:src="@drawable/cancel"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentStart="true" />
 
     <LinearLayout
         android:id="@+id/buttonBar"
         style="@android:style/ButtonBar"
         android:layout_width="116dp"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentRight="true"
-        android:layout_marginBottom="10dp"
-        android:orientation="vertical" >
+        android:orientation="vertical"
+        android:layout_alignParentTop="true"
+        android:layout_toStartOf="@+id/bigger">
 
         <Button
             android:id="@+id/instant2DButton"
@@ -32,14 +32,7 @@
             android:onClick="on2DButtonClicked"
             android:text="2D" />
 
-        <Button
-            android:id="@+id/instant2DRectifiedButton"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:layout_weight="1"
-            android:onClick="on2DRectifiedButtonClicked"
-            android:text="2D Rectified" />
+
 
         <Button
             android:id="@+id/instant3DButton"
@@ -50,14 +43,6 @@
             android:onClick="on3DButtonClicked"
             android:text="3D" />
 
-        <Button
-            android:id="@+id/instant2DSLAMButton"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:layout_weight="1"
-            android:onClick="on2DSLAMButtonClicked"
-            android:text="2D SLAM" />
 
         <Button
             android:id="@+id/instant2DSLAMExtrapolationButton"
@@ -66,28 +51,34 @@
             android:layout_gravity="center_horizontal"
             android:layout_weight="1"
             android:onClick="on2DSLAMExtrapolationButtonClicked"
-            android:text="2D SLAM + sensor extrapolation" />
-        <Button
-            android:id="@+id/biggerButton"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:onClick="onBiggerButtonClick"
-            android:text="bigger" />
-        <Button
-            android:id="@+id/smallerButton"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:onClick="onSmallerButtonClick"
-            android:text="smaller" />
-        <Button
-            android:id="@+id/convertButton"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:onClick="onConvertButtonClick"
-            android:text="Front/Back" />
+            android:text="G" />
+
+
     </LinearLayout>
 
+    <ImageButton
+        android:id="@+id/bigger"
+        android:src="@drawable/plus"
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
+        android:onClick="onBiggerButtonClick"
+        android:layout_alignParentTop="true"
+        android:layout_alignStart="@+id/smaller" />
+
+    <ImageButton
+        android:id="@+id/smaller"
+        android:src="@drawable/minus"
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
+        android:onClick="onSmallerButtonClick"
+        android:layout_below="@+id/bigger"
+        android:layout_alignParentEnd="true" />
+    <ImageButton
+        android:id="@+id/convert"
+        android:src="@drawable/camera"
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
+        android:onClick="onConvertButtonClick"
+        android:layout_below="@+id/smaller"
+        android:layout_alignParentEnd="true" />
 </RelativeLayout>

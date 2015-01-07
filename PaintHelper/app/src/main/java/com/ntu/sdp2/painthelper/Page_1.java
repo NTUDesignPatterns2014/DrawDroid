@@ -132,29 +132,11 @@ public class Page_1 extends Fragment {
         mTitles = getResources().getStringArray(R.array.catagories);
         mDrawerLayout = (DrawerLayout) page_1.findViewById(R.id.drawerContainer);
         mDrawerList = (ListView) page_1.findViewById(R.id.leftDrawer);
-/*
-        final GridView gridview = (GridView)page_1.findViewById(R.id.gridView);
-        final ImageAdapter imageAdapter = new ImageAdapter(this.getActivity());
-        gridview.setAdapter(imageAdapter);
 
-        gridview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
-                MovableImageView imageView = imageAdapter.getItem(position);
-                imageView.genSketchImage();
-                imageView.setLineWidth(3);
-
-                RelativeLayout relativeLayout = (RelativeLayout) page_1.findViewById(R.id.relativeLayout);
-                relativeLayout.addView(imageView);
-                relativeLayout.removeViewInLayout(gridview);
-            }
-        });
-        RelativeLayout relativeLayout = (RelativeLayout) page_1.findViewById(R.id.relativeLayout);
-        relativeLayout.removeViewInLayout(gridview);
-*/
         final ArcMenu cornerButton = (ArcMenu)page_1.findViewById(R.id.arcMenu);
         int[] images = {
+                R.drawable.composer_place,
                 R.drawable.composer_camera,
-                R.drawable.composer_music,
                 R.drawable.composer_with};
         final int itemCount = images.length;
 
@@ -183,13 +165,14 @@ public class Page_1 extends Fragment {
                         intent.putExtra(MainActivity.EXTRA_MESSAGE,message);
 
                         startActivity(intent);
+                        cornerButton.setVisibility(View.VISIBLE);
                     }
                 }
             });
 
         }
         if(isExternalStorageWritable()) {
-            Toast.makeText(getActivity(),"SDCard_Ready!",Toast.LENGTH_LONG).show();
+
             Sd_write=true;
         }
         else {
@@ -256,7 +239,39 @@ public class Page_1 extends Fragment {
             View rootView = inflater.inflate(R.layout.fragment_sort, container, false);
             final GridView gridview = (GridView)rootView.findViewById(R.id.gridView);
             final Myadapter adapter= new Myadapter(this.getActivity());
+<<<<<<< HEAD
             final Myadapter02 adapter02= new Myadapter02(this.getActivity());
+=======
+            gridview.setAdapter(adapter);
+            gridview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                //@Override
+                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                    imageid = adapter.getPiantImageID(position);
+
+                    ((MainActivity)getActivity()).getCloudManager().getImageById(imageid,new OriginCallback() {
+                        @Override
+                        public void done(PaintImage paintImage) {
+                            MovableImageView imageView = new MovableImageView(container.getContext());
+                            imageView.setImageBitmap(paintImage.getImage());
+                            imageView.genSketchImage();
+                            imageView.setLineWidth(1);
+
+                            DrawerLayout drawerLayout = (DrawerLayout)container.getParent();
+                            if (drawerLayout != null) {
+                                drawerLayout.addView(imageView, 1);
+                                container.setVisibility(View.INVISIBLE);
+                            }
+                            else {
+                                Log.i("Painter", "layout null");
+                                Log.i("Painter", container.getClass().toString());
+                            }
+                        }
+                    });
+
+                }
+            });
+
+>>>>>>> dev
             i = getArguments().getInt(ARG_SORT_NUMBER);
             category = getResources().getStringArray(R.array.catagories)[i];
             if(i==0) {

@@ -6,6 +6,7 @@ package com.ntu.sdp2.painthelper;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.nfc.Tag;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -29,6 +30,7 @@ import android.widget.Toast;
 import com.ntu.sdp2.painthelper.DataManagement.CallBack.OriginCallback;
 import com.ntu.sdp2.painthelper.DataManagement.CallBack.SaveCallBack;
 import com.ntu.sdp2.painthelper.DataManagement.Images.PaintImage;
+import com.ntu.sdp2.painthelper.DataManagement.ParseLocalManager;
 import com.ntu.sdp2.painthelper.settings.Myadapter;
 
 import java.util.List;
@@ -183,7 +185,7 @@ public class Page_2 extends Fragment {
             @Override
             public boolean onOptionsItemSelected(MenuItem item) {
                 if(item.getItemId() == 1){
-                    ((MainActivity)getActivity()).getCloudManager().saveImage(mpaintImage);
+                    ((ParseLocalManager)((MainActivity) getActivity()).getLocalManager()).deleteImage(mpaintImage);
                 }
                 if(item.getItemId() == 2){
                     AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
@@ -245,10 +247,10 @@ public class Page_2 extends Fragment {
             @Override
             public boolean onOptionsItemSelected(MenuItem item) {
                 if(item.getItemId() == 1){
-                    ((MainActivity)getActivity()).getCloudManager().saveImage(mpaintImage, new SaveCallBack() {
+                    ((MainActivity)getActivity()).getLocalManager().saveImage(mpaintImage, new SaveCallBack() {
                         @Override
                         public void done() {
-                            Toast.makeText(getActivity(), "Upload success!!", Toast.LENGTH_SHORT);
+                            Log.i("Gallery", "Save success!!");
                         }
                     });
                 }
