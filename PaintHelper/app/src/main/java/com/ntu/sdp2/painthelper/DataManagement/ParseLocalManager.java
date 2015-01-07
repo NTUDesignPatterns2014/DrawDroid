@@ -2,8 +2,6 @@ package com.ntu.sdp2.painthelper.DataManagement;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.media.ThumbnailUtils;
-import android.preference.PreferenceManager;
 import android.util.Log;
 
 import com.ntu.sdp2.painthelper.DataManagement.CallBack.ElementCallBack;
@@ -17,19 +15,12 @@ import com.ntu.sdp2.painthelper.DataManagement.Images.ThumbImage;
 import com.parse.FindCallback;
 import com.parse.GetCallback;
 import com.parse.GetDataCallback;
-import com.parse.Parse;
 import com.parse.ParseException;
-import com.parse.ParseFile;
 import com.parse.ParseObject;
 import com.parse.ParseQuery;
 import com.parse.ParseUser;
-import com.parse.SaveCallback;
 
-import java.io.ByteArrayOutputStream;
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
  * Created by lou on 2014/12/20.
@@ -224,13 +215,13 @@ public class ParseLocalManager implements LocalDataManagement {
     // convert ParseObject to PaintImage
     private PaintImage parseToPaint(ParseObject parseObject, byte[] bytes, String type){
         String name = parseObject.getString("Name");
-        String author = parseObject.getParseUser("user").getUsername();
         try {
             parseObject.getParseUser("user").fetchIfNeeded();
         }catch (Exception e){
             Log.i(TAG, "fetch userinfo failed!");
         }
         ParseUser user = parseObject.getParseUser("user");
+        String author = user.getUsername();
        // String author = "Temp Local Author";
         String id = parseObject.getString("ImgId");
         List<String> categoryList = parseObject.getList("Category");
