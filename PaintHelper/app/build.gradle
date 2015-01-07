@@ -53,7 +53,7 @@ android {
 }
 
 dependencies {
-    compile fileTree(include: ['*.jar'], dir: 'libs')
+    //compile fileTree(include: ['*.jar'], dir: 'libs')
     compile project(':opencv')
 
     //compile fileTree(include: ['*.jar'], dir: 'libs')
