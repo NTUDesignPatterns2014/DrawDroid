@@ -40,8 +40,8 @@ public class TutorialInstantTracking extends ARViewActivity
 	private View m2DButton;
 	private View m3DButton;
 	private View m2DSLAMExtrapolationButton;
-	
-	public Vector3d size=new Vector3d(3.0f);
+	private int flag=0;
+	public Vector3d size;
 	/**
 	 * The flag indicating a mode of instant tracking
 	 * 
@@ -132,7 +132,11 @@ public class TutorialInstantTracking extends ARViewActivity
 
 	public void onBiggerButtonClick(View v)
 	{
-		
+        if(flag==0)
+        {
+            size=mImagePlane.getScale();
+            flag=1;
+        }
 		float tmp=size.getX();
 		tmp+=0.1;
 		size=new Vector3d(tmp);
@@ -140,7 +144,11 @@ public class TutorialInstantTracking extends ARViewActivity
 	}public void onSmallerButtonClick(View v)
 	
 	{
-		
+		if(flag==0)
+        {
+            size=mImagePlane.getScale();
+            flag=1;
+        }
 		float tmp=size.getX();
 		tmp-=0.1;
 		size=new Vector3d(tmp);
