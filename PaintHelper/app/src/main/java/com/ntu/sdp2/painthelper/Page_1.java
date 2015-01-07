@@ -30,6 +30,7 @@ import com.ntu.sdp2.painthelper.DataManagement.CallBack.OriginCallback;
 import com.ntu.sdp2.painthelper.DataManagement.Images.PaintImage;
 import com.ntu.sdp2.painthelper.Painter.MovableImageView;
 import com.ntu.sdp2.painthelper.settings.Myadapter;
+import com.ntu.sdp2.painthelper.settings.Myadapter02;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -238,39 +239,61 @@ public class Page_1 extends Fragment {
             View rootView = inflater.inflate(R.layout.fragment_sort, container, false);
             final GridView gridview = (GridView)rootView.findViewById(R.id.gridView);
             final Myadapter adapter= new Myadapter(this.getActivity());
-            gridview.setAdapter(adapter);
-            gridview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                //@Override
-                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                    imageid = adapter.getPiantImageID(position);
 
-                    ((MainActivity)getActivity()).getCloudManager().getImageById(imageid,new OriginCallback() {
-                        @Override
-                        public void done(PaintImage paintImage) {
-                            MovableImageView imageView = new MovableImageView(container.getContext());
-                            imageView.setImageBitmap(paintImage.getImage());
-                            imageView.genSketchImage();
-                            imageView.setLineWidth(1);
-
-                            DrawerLayout drawerLayout = (DrawerLayout)container.getParent();
-                            if (drawerLayout != null) {
-                                drawerLayout.addView(imageView, 1);
-                                container.setVisibility(View.INVISIBLE);
-                            }
-                            else {
-                                Log.i("Painter", "layout null");
-                                Log.i("Painter", container.getClass().toString());
-                            }
-                        }
-                    });
-
-                }
-            });
+            final Myadapter02 adapter02= new Myadapter02(this.getActivity());
 
             i = getArguments().getInt(ARG_SORT_NUMBER);
             category = getResources().getStringArray(R.array.catagories)[i];
-            Log.i("Painter", "getImageByCategory");
-            ((MainActivity)getActivity()).getCloudManager().getImageByCategory(category,adapter);
+            if(i==0) {
+                gridview.setAdapter(adapter02);
+                gridview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                        MovableImageView imageView = new MovableImageView(container.getContext());
+                        int imgs = (int) adapter02.getItem(position);
+                        imageView.setImageResource(imgs);
+                        imageView.genSketchImage();
+                        imageView.setLineWidth(3);
+
+                        DrawerLayout drawerLayout = (DrawerLayout) container.getParent();
+                        if (drawerLayout != null) {
+                            drawerLayout.addView(imageView, 1);
+                            container.setVisibility(View.INVISIBLE);
+                        } else {
+                            Log.i("Painter", "layout null");
+                            Log.i("Painter", container.getClass().toString());
+                        }
+                    }
+                });
+            }
+            if(i!=0) {
+                gridview.setAdapter(adapter);
+                ((MainActivity) getActivity()).getCloudManager().getImageByCategory(category, adapter);
+                gridview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                    //@Override
+                    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                        imageid = adapter.getPiantImageID(position);
+
+                        ((MainActivity) getActivity()).getCloudManager().getImageById(imageid, new OriginCallback() {
+                            @Override
+                            public void done(PaintImage paintImage) {
+                                MovableImageView imageView = new MovableImageView(container.getContext());
+                                imageView.setImageBitmap(paintImage.getImage());
+                                imageView.genSketchImage();
+                                imageView.setLineWidth(3);
+
+                                DrawerLayout drawerLayout = (DrawerLayout) container.getParent();
+                                if (drawerLayout != null) {
+                                    drawerLayout.addView(imageView, 1);
+                                    container.setVisibility(View.INVISIBLE);
+                                } else {
+                                    Log.i("Painter", "layout null");
+                                    Log.i("Painter", container.getClass().toString());
+                                }
+                            }
+                        });
+                    }
+                });
+            }
 
             return rootView;
         }

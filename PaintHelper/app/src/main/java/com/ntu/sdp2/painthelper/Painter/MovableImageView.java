@@ -10,7 +10,9 @@ import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
 import android.widget.ImageView;
+
 import com.ntu.sdp2.painthelper.utils.SketchImage;
+
 import java.io.IOException;
 
 /**
@@ -40,6 +42,7 @@ public class MovableImageView extends ImageView {
         this.setImageBitmap(sketchImage.getBitmapTransparent());
     }
 
+    private boolean isPrimaryUpButNotUp = false;
     @Override
     public boolean onTouchEvent(MotionEvent event) {
         int eventAction = event.getAction();
@@ -56,16 +59,22 @@ public class MovableImageView extends ImageView {
                 break;
 
             case MotionEvent.ACTION_MOVE:
-                this.setX(atX + X - startX);
-                this.setY(atY + Y - startY);
+                if (!isPrimaryUpButNotUp) {
+                    this.setX(atX + X - startX);
+                    this.setY(atY + Y - startY);
+                }
                 break;
 
             case MotionEvent.ACTION_UP:
                 this.setBackgroundColor(Color.TRANSPARENT);
+                isPrimaryUpButNotUp = false;
+                break;
+            case MotionEvent.ACTION_POINTER_UP:
+                isPrimaryUpButNotUp = true;
                 break;
             default:
-                Log.d("default", "default");
-                break;
+                Log.d("default", "default eventAction, action=" + eventAction);
+                return false;
         }
 
         invalidate();
@@ -91,10 +100,12 @@ public class MovableImageView extends ImageView {
     private class ScaleListener extends ScaleGestureDetector.SimpleOnScaleGestureListener {
         @Override
         public void onScaleEnd(ScaleGestureDetector detector) {
+            Log.i("Scaling", "zomm end");
             thisView.setBackgroundColor(Color.TRANSPARENT);
         }
         @Override
         public boolean onScaleBegin(ScaleGestureDetector detector) {
+            Log.i("Scaling", "zomm start");
             thisView.setBackgroundColor(Color.rgb(192, 192, 192));
             return true;
         }
