@@ -1,0 +1,2 @@
+include ':app', ':arcmenu', ':metaioSDK', ':opencv'
+include ':facebook'

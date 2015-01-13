@@ -1,0 +1,70 @@
+apply plugin: 'com.android.application'
+import org.apache.tools.ant.taskdefs.condition.Os
+android {
+    compileSdkVersion 21
+    buildToolsVersion "20.0.0"
+
+    defaultConfig {
+        applicationId "com.ntu.sdp2.painthelper"
+        minSdkVersion 19
+        targetSdkVersion 21
+        versionCode 1
+        versionName "1.0"
+
+    }
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+
+
+
+    sourceSets.main.jni.srcDirs = []
+    task ndkBuild(type: Exec, description: 'Compile JNI source via NDK') {
+        Properties properties = new Properties()
+        properties.load(project.rootProject.file('local.properties').newDataInputStream())
+        def ndkDir = properties.getProperty('ndk.dir')
+        def SEP = "\\"
+        def ndkExec = "ndk-build.cmd"
+        if (Os.isFamily(Os.FAMILY_WINDOWS)) {}
+        else if (Os.isFamily(Os.FAMILY_UNIX)) {
+            SEP = "/"
+            ndkExec = "ndk-build"
+        }
+        else if (Os.isFamily(Os.FAMILY_MAC)) {
+            SEP = "/"
+            ndkExec = "ndk-build"
+        }
+
+        commandLine ndkDir + SEP + ndkExec,
+                'NDK_PROJECT_PATH=.',
+                'NDK_LIBS_OUT=' + 'src' + SEP + 'main' + SEP + 'jniLibs',
+                'APP_BUILD_SCRIPT=' + 'src' + SEP + 'main' + SEP + 'jni' + SEP + 'Android.mk',
+                'NDK_APPLICATION_MK=' + 'src' + SEP + 'main' + SEP + 'jni' + SEP + 'Application.mk',
+                "V=1"
+    }
+
+    tasks.withType(JavaCompile) {
+        compileTask -> compileTask.dependsOn ndkBuild
+    }
+
+}
+
+dependencies {
+    //compile fileTree(include: ['*.jar'], dir: 'libs')
+    compile project(':opencv')
+
+    //compile fileTree(include: ['*.jar'], dir: 'libs')
+    //compile 'com.android.support:appcompat-v7:21.0.0'
+    //below statement should not be used or get multiple dex definition
+    //In new version of sdk, annotation.jar is included in support library already
+    //compile files('libs/android-support-v4.jar')
+    compile 'com.android.support:support-v4:21.0.2'
+    compile project(':facebook')
+    compile project(':arcmenu')
+    compile 'com.parse.bolts:bolts-android:1.+'
+    compile fileTree(include: 'Parse-*.jar', dir: 'libs')
+    compile project(':metaioSDK')
+}

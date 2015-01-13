@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+     >
+
+    <ImageButton
+        android:id="@+id/button1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@android:color/transparent"
+        android:onClick="onButtonClick"
+        android:src="@drawable/cancel"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentStart="true" />
+
+    <LinearLayout
+        android:id="@+id/buttonBar"
+        style="@android:style/ButtonBar"
+        android:layout_width="116dp"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_alignParentTop="true"
+        android:layout_toStartOf="@+id/bigger">
+
+        <Button
+            android:id="@+id/instant2DButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_weight="1"
+            android:onClick="on2DButtonClicked"
+            android:text="2D" />
+
+
+
+        <Button
+            android:id="@+id/instant3DButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_weight="1"
+            android:onClick="on3DButtonClicked"
+            android:text="3D" />
+
+
+        <Button
+            android:id="@+id/instant2DSLAMExtrapolationButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_weight="1"
+            android:onClick="on2DSLAMExtrapolationButtonClicked"
+            android:text="G" />
+
+
+    </LinearLayout>
+
+    <ImageButton
+        android:id="@+id/bigger"
+        android:src="@drawable/plus"
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
+        android:onClick="onBiggerButtonClick"
+        android:layout_alignParentTop="true"
+        android:layout_alignStart="@+id/smaller" />
+
+    <ImageButton
+        android:id="@+id/smaller"
+        android:src="@drawable/minus"
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
+        android:onClick="onSmallerButtonClick"
+        android:layout_below="@+id/bigger"
+        android:layout_alignParentEnd="true" />
+    <ImageButton
+        android:id="@+id/convert"
+        android:src="@drawable/camera"
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
+        android:onClick="onConvertButtonClick"
+        android:layout_below="@+id/smaller"
+        android:layout_alignParentEnd="true" />
+</RelativeLayout>
